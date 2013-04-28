@@ -1,6 +1,6 @@
 ---
 date: 2013-04-26 14:45:10
-title: Lucnene官方示例入门
+title: Lucene官方示例入门
 layout: post
 tags:
     - Java
