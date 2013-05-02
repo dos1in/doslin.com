@@ -10,7 +10,7 @@ categories:
 - Java
 tags:
 - Java
-- javascript
+- Javascript
 ---
 
 本月中旬开的题，现在终于把坑添好了，Orz。

@@ -9,7 +9,7 @@ wordpress_id: 262
 categories:
 - JavaScript
 tags:
-- javascript
+- JavaScript
 ---
 
 **优化的必要性**
