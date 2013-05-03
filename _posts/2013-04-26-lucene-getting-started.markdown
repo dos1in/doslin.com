@@ -42,7 +42,9 @@ categories:
 [IndexFiles.java](http://lucene.apache.org/core/4_2_1/demo/src-html/org/apache/lucene/demo/IndexFiles.html)是创建索引的代码。  
 [SearchFiles.java](http://lucene.apache.org/core/4_2_1/demo/src-html/org/apache/lucene/demo/SearchFiles.html)是根据索引来检索的代码。
 
-###索引文件
+
+>###**索引文件**
+
 main()函数接受命令行中的参数，之后通过构造一个[Directory](http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/store/Directory.html)对象，并实例化[StandardAnalyzer](http://lucene.apache.org/core/4_2_1/analyzers-common/org/apache/lucene/analysis/standard/StandardAnalyzer.html)和[IndexWriterConfig](http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/index/IndexWriterConfig.html)作为实例化[IndexWriter](http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/index/IndexWriter.html)的准备工作。
 
 命令行中的`-index`参数接收的是存放索引文件的目录名称。如果在相对路径下用`-index`参数或者没有`-index`参数的情况下（将会使用默认的索引文件夹名index）调用IndexFiles，这个索引文件夹将会在当前工作目录下作为子目录创建（如果还没创建的话）。但在有一些平台中，这个索引文件夹的创建路径可能不同（比如会在用户的主目录中创建）。
@@ -59,7 +61,8 @@ IndexWriterConfig的实例保存了IndexWriter类的配置。比如说，我们�
 
 往下看，在IndexWriter实例后面，你可以看到indexDocs()代码。这个递归函数爬取指定目录下的所有文件并为它们建立[Document](http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/document/Document.html)对象。Document对象是表示相应文件的文本内容，创建时间以及位置等信息的简单数据对象。这些实例被添加到IndexWriter中。如果给定了`-update`参数，IndexWriterConfig OpenMode将被设置为[OpenMode.CREATE_OR_APPEND](http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/index/IndexWriterConfig.OpenMode.html#CREATE_OR_APPEND)，代表IndexWriter将对已经拥有相同标识符（在上述例子中，文件路径作为该标识符）的已建立索引的文档的索引进行更新操作，不存在则创建。反之，不给定`-update` 参数将表示删除先前已索引的文档，在目录中创建新索引。
 
-###搜索文件
+>###**搜索文件**
+
 [SearchFiles](http://lucene.apache.org/core/4_2_1/demo/src-html/org/apache/lucene/demo/SearchFiles.html)类很简单。它主要通过和[IndexSearcher](http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/search/IndexSearcher.html)，[StandardAnalyzer](http://lucene.apache.org/core/4_2_1/analyzers-common/org/apache/lucene/analysis/standard/StandardAnalyzer.html)(在IndexFiles中也用到了）以及[QueryParser](http://lucene.apache.org/core/4_2_1/queryparser/org/apache/lucene/queryparser/classic/QueryParser.html)协作。查询语句解析器是由分析器来构建的，和之前文档解析的方式一样用于解析你的查询语句：搜寻单词边界，大小写转换以及移除那些像 ‘a’，‘an’，和‘the’ 的无用单词。[Query](http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/search/Query.html)对象包含了传给扫描器的[QuqeryParser](http://lucene.apache.org/core/4_2_1/queryparser/org/apache/lucene/queryparser/classic/QueryParser.html)的结果。需要注意的是，以编程方式去构造一个富[Query](http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/search/Query.html)对象而不是用查询语句解析器是可行的。因为查询语句解析器仅仅是能够将[Lucene query syntax](http://lucene.apache.org/core/4_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description)解码为相应的[Query](http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/search/Query.html)对象。
 
 参考文档
