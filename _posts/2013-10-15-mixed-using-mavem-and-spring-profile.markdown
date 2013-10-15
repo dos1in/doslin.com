@@ -15,11 +15,12 @@ categories:
 
 在实际开发中，我们常常需要应对多类环境，针对不同的环境来更改相应的配置，比如常见开发环境、测试环境以及客户的实际部署环境。
 
-比如我们有下面的用例，在开发环境中数据源的获取方式是直连数据库，部署环境中需要连接的是JNDI，如何避免项目打包完每次人工更改配置文件的繁琐工作呢？
+因此我们会遇到下面的场景，在开发环境中数据源的获取方式是直连数据库，部署环境中需要连接的是JNDI，如何避免项目打包完每次人工更改配置文件的繁琐工作呢？
 
 解决方案
 -------
-下面引入Spring和Maven的profile特性来实现不同环境切换不同配置的功能。
+通过引入Spring和Maven的profile特性来实现不同环境自动切换不同配置的功能。
+
 >###**声明Spring profile**
 
 1、 定义两个beans，分别对应两个环境下的数据源配置：在Spring的配置文件`applicationContext.xml`中定义两个profile的beans。
@@ -79,6 +80,7 @@ categories:
 >###**为spring.profiles.active赋值**
 
 那么如何在打包时自动更改`spring.profiles.active`的值呢？这就需要Maven的profile特性。
+
 我们将上述`spring.profiles.active`的param-value的值更改为{profiles.active}，这是Maven的属性值替换的占位符，Maven的资源过滤插件（Maven Resources plugin）将会在构建期间替换该值，为了在打包时启用资源过滤，需要我们配置Maven打包插件（Maven war plugin）：
     
     <plugin>
@@ -97,7 +99,8 @@ categories:
                                 <include>**/web.xml</include>
                             </includes>
 							</resource>
-					</webResources>										                    <warSourceDirectory>src/main/webapp</warSourceDirectory>
+					</webResources>
+                    <warSourceDirectory>src/main/webapp</warSourceDirectory>
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
 						
             </configuration>
@@ -131,4 +134,4 @@ categories:
 		</profile>
 	</profiles>
 	
-根据上述配置，输入打包命令`mvn clean package`默认启用的是production，数据源由jndi提供，如果激活需要另一个profile，只要更改打包命令为`mvn clean package -P development`。
+根据上述配置，输入打包命令`mvn clean package`默认启用的是production，数据源由JNDI提供，如果需要激活另一个profile，只要更改打包命令为`mvn clean package -P development`。
