@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<areaDatas>
+    <areaData id="china.zhejiang">
+        <city>某某单位</city>
+        <alias>浙江省</alias>
+        <score>10</score>
+        <content>blablabla</content>
+        <url>http://doslin.com</url>
+    </areaData>
+
+</areaDatas>
