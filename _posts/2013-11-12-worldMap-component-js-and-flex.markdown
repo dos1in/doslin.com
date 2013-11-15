@@ -15,6 +15,7 @@ categories:
 
 以下是Demo演示：
 
+<script type="text/javascript" src="../assets/demo/worldMap-flex/swfobject.js"></script>
 <script type="text/javascript">
 // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. 
 var swfVersionStr = "11.4.0";
