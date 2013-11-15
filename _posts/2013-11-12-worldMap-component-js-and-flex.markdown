@@ -33,7 +33,7 @@ attributes.name = "FlashMap";
 attributes.align = "middle";
 swfobject.embedSWF(
 "../assets/demo/worldMap-flex/FlashMap.swf", "flashContent", 
-"100%", "100%", 
+"560", "470", 
 swfVersionStr, xiSwfUrlStr, 
 flashvars, params, attributes);
 // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
