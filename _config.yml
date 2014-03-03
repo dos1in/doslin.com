@@ -6,7 +6,7 @@ subscribe: http://doslin.com/feed.xml
 exclude: [ README.md, newpost.rb ]
 domain: doslin.com
 author: DosLin
-email: root@ijava.me
+email: doslino@gmail.com
 auto: true
 twitterID: javachord
 googleAnalyticsID: UA-40430247-1
