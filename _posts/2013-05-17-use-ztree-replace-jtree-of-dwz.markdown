@@ -43,14 +43,14 @@ categories:
 1、树节点添加DWZ中的rel属性（添加DWZ中的external属性同理）：
 
 找到`makeDOMNodeNameBefore`方法（当前版本位于1112行），在html.push方法后添加：
+
 	if (node.rel) {
 		html.push("' rel='", node.rel);
 	}
 
-2、更改节点的默认Target为navTab：
+2、更改节点的默认Target为`navTab`：
 
-找到`makeNodeTarget`方法（当前版本位于1178行），return语句修改为
-	return (node.target || "navTab");
+找到`makeNodeTarget`方法（当前版本位于1178行），return语句修改为`return (node.target || "navTab");`
 
 3、修改节点属性更新方法`updateNode`（当前版本位于1639行），追加`view.setNodeRel(this.setting, node)`。
 
@@ -82,11 +82,13 @@ setNodeRel方法定义如下：
 
 现在的zTree调用方式：
 将上述树DOM内容更改为
+
 	<div class="zTreeDemoBackground left">
 		<ul id="treeDemo" class="ztree"></ul>
 	</div>
 
 添加如下调用脚本：
+
 	var setting = {
 			data: {
 				simpleData: {
