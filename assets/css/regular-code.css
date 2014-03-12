@@ -1,0 +1,17 @@
+code {
+    color: blue;
+}
+
+code em{
+    color: red;
+}
+
+div.warning {
+	background-color: #ffD0D0;
+	margin: 1em 0;
+	padding: 1em;
+}
+
+h3 {
+	border-bottom: 1px dotted gray;
+}
