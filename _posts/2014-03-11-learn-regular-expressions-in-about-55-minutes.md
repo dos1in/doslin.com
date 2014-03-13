@@ -147,7 +147,7 @@ categories:
 <h4>练习</h4>
 <p>结合目前所学，在字典中，使用正则表达式查找有连续的元音和连续的辅音的单词。</p>
 <h4><button onclick="toggle('a3');">答案</button></h4>
-<p id="a3" style="display: none;"><code>[aeiou][aeiou][aeiou][aeiou][aeiou][aeiou]</code>匹配到六元音单词<code>euouae</code> and <code>euouaes</code>，而可怕的<code>[bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz]</code>找到了有十个辅音的华丽的<code>sulphhydryls</code>。我们将会会快看到如何简化这些恐怖的表达式。</p>
+<p id="a3" style="display: none;"><code>[aeiou][aeiou][aeiou][aeiou][aeiou][aeiou]</code>匹配到六元音单词<code>euouae</code> and <code>euouaes</code>，而可怕的<code>[bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz]</code>找到了有十个辅音的华丽的<code>sulphhydryls</code>。我们将会很快看到如何简化这些恐怖的表达式。</p>
 </div>
 
 ###字符类区间（ranges）
@@ -278,7 +278,7 @@ categories:
 <p>编写一个能匹配双引号字符串的正则表达式。同时该字符串可以拥有任意数量的字符。</p>
 <p>用你已经学到的之时，修改上面的正则表达式，来找到了双引号字符串，但它们之间没有多余的双引号。</p>
 <h4><button onclick="toggle('a7');">答案</button></h4>
-<p id="a7" style="display: none;"><code>".{0,}"</code>，然后是<code>"[^"]{0,}"</code>.</p>
+<p id="a7" style="display: none;"><code>".{0,}"</code>，然后是<code>"[^"]{0,}"</code>。</p>
 </div>
 
 ###乘法器补充
@@ -380,7 +380,7 @@ categories:
 <h4>练习</h4>
 <p>在<i>《时光机器》</i>这本书中，使用正则表达式来查找包裹在括号中的句子。接着，修改你的答案来查找没有被括号包裹的句子。</p>
 <h4><button onclick="toggle('a12');">答案</button></h4>
-<p id="a12" style="display: none;"><code>\(.*\)</code>。然后是<code>\([^()]*\)</code>。</p>
+<p id="a12" style="display: none;"><code>\(.*\)</code>，然后是<code>\([^()]*\)</code>。</p>
 </div>
 
 
@@ -532,7 +532,7 @@ categories:
 <h4>练习</h4>
 <p>使用<code>r</code>替换<i>《时间机器》</i>中所有的元音字母。确保使用正确的大小写！</p>
 <h4><button onclick="toggle('a16');">答案</button></h4>
-<p id="a16" style="display: none;">分别使用正则表达式<code>[aeiou]</code>和<code>[AEIOU]</code>，替换表达式<code>r</code>和<code>R</code> respectively。</p>
+<p id="a16" style="display: none;">分别使用正则表达式<code>[aeiou]</code>和<code>[AEIOU]</code>，替换表达式<code>r</code>和<code>R</code>。</p>
 </div>
 
 然而，你可以在你的替换表达式中引用捕获组。这是你可以在替换表达式唯一能的特殊的事，它是令人难以置信的强大，因为它意味着你不必完全销毁你刚刚发现的东西。
