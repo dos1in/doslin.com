@@ -1,17 +1,61 @@
-code {
-    color: blue;
-}
 
-code em{
-    color: red;
+@font-face {
+	font-family: 'Ubuntu Mono';
+	font-style: normal;
+	font-weight: 700;
+	src: local('Ubuntu Mono Bold'), local('UbuntuMono-Bold'), url('http://themes.googleusercontent.com/static/fonts/ubuntumono/v3/ceqTZGKHipo8pJj4molytjqR_3kx9_hJXbbyU8S6IN0.woff') format('woff');
 }
-
+body {
+	margin: 2em;
+	padding: 0;
+	font-family: Tahoma;
+}
+h1 {
+	font-size: 2em;
+}
+h2 {
+	margin-top: 1.8em;
+	font-size: 1.8em;
+}
+h3 {
+	margin-top: 1.6em;
+	font-size: 1.6em;
+	color: #777777;
+	border-bottom: 1px dotted gray;
+}
+h4 {
+	margin-top: 1em;
+	font-size: 1em;
+	font-weight: bold;
+}
+pre {
+	margin-left: 2em;
+}
+pre, code {
+	color: blue;
+	font-family: "Ubuntu Mono", monospace;
+}
+code em, pre em {
+	color: red;
+	font-style: normal;
+}
+div.exercise {
+	background-color: #d0ffd0;
+	margin: 1em 0;
+	padding: 1em;
+}
 div.warning {
 	background-color: #ffD0D0;
 	margin: 1em 0;
 	padding: 1em;
 }
-
-h3 {
-	border-bottom: 1px dotted gray;
+div.exercise > :first-child,
+div.warning > :first-child {
+	margin-top: 0;
 }
+div.exercise > :last-child,
+div.warning > :last-child {
+	margin-bottom: 0;
+}
+		
+

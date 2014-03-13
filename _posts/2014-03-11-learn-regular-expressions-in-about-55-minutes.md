@@ -10,6 +10,14 @@ categories:
 
 <link href="../assets/css/regular-code.css" type="text/css" rel="stylesheet"></link>
 
+<script type="text/javascript">
+	// For flipping between displayed things
+	var toggle = function (id) {
+		var e = document.getElementById(id);
+		e.style.display = e.style.display === "none" ? "" : "none";
+	};
+</script>
+
 [原文地址-Sam Hughes](http://qntm.org/files/re/re.html)
 
 翻译水平有限，如有谬误，欢迎评论斧正或者[Pull Request](https://github.com/JChord/jchord.github.io)。
@@ -40,9 +48,17 @@ categories:
 * 一个正则表达式拥有*输入*（文本）和*输出*（模式匹配，和有些时候的自定义文本）。
 * 存在语法错误——不是每个字符串都是合法的正则表达式！
 * 语法有些怪异，也可以说是恐怖。
-* 一个正则表达式有时候可以被*编译*以便更快运行。
+* 一个正则表达式有时候可以被*编译*以便更快运行。  
 
-正则实现一直有着显著的改变。对于本文，我所关注的是那些几乎每个正则表达式都实现了的核心语法。
+正则实现一直有着显著的改变。对于本文，我所关注的是那些几乎每个正则表达式都实现了的核心语法。  
+
+<div class="exercise">
+<h4>练习</h4>
+<p>获取一个支持正则的文本编辑器。我推荐<a href="http://notepad-plus-plus.org/">Notepad++</a>。</p>
+<p>下载一篇很长的散文故事比如<a href="http://www.gutenberg.org/cache/epub/35/pg35.txt">Gutenberg出版社出版的H. G. Wells的<i>《时光机器》</i></a>然后打开它。</p>
+<p>下载一部字典，比如<a href="../assets/file/learn-regular-expressions-in-about-55-minutes/words.zip">这个</a>，解压然后打开。</p>
+<p>一切准备就绪，稍后开始练习。</p>
+</div>
 
 <div class="warning">
 <p><strong>提示：</strong> 正则表达式与<a href="http://en.wikipedia.org/wiki/Glob_%28programming%29">文件通配符</a>语法完全不兼容，比如<code>*.xml</code>。</p>
@@ -87,7 +103,21 @@ categories:
 
 <div class="warning">
 <p><strong>注意！</strong> 在一些实现中，<code>.</code> 会匹配任意字符除了 <em>换行符</em>。这意味着“换行符”在不同的实现中也会变化。 要查看你的文档。在这篇文章中， 我会确保<code>.</code> 会匹配任意字符。</p>
-<p>在其它情况下， 通常会有一个标记来调整这种行为。</p>
+<p>在其它情况下， 通常会有一个标记来调整这种行为，那就是`DOTALL`或类似的标记</p>
+</div>
+
+<div class="exercise">
+<h4>练习</h4>
+<p>使用你目前所学，在字典中使用正则表达式，匹配一个有两个<code>z</code>的单词，其中这两个<code>z</code>离得越远越好。</p>
+<h4><button onclick="toggle('a1');">答案</button></h4>
+<p id="a1" style="display: none;">你最终的正则表达式应该是<code>z.......z</code>会匹配到四个单词: <code>razzamatazz</code>，<code>razzamatazzes</code>，<code>zwischenzug</code>以及<code>zwischenzugs</code>。</p>
+</div>
+
+<div class="exercise">
+<h4>练习</h4>
+<p>在<i>《时光机器》</i>这本书中，使用正则表达式来查找以介词收尾的句子。</p>
+<h4><button onclick="toggle('a2');">答案</button></h4>
+<p id="a2" style="display: none;">你的正则表达式应该类似这样<code>up\.</code>。</p>
 </div>
 
 ###字符类（Character classes）
@@ -111,6 +141,13 @@ categories:
 <p>在字符类内部的“规则”和在字符类内部的规则有所不同。一些字符在字符类内部扮演着元字符的角色，但在字符类外部则充当字面值。还有一些字符做着相反的事。一些字符在<em>两种情形</em>都为元字符，但在各自情形里代表不同的含义。
 </p>
 <p>特别地, <code>.</code>表示“匹配任意字符”，但是<code>[.]</code>表示“匹配句点”。不能并为一谈。</p>
+</div>
+
+<div class="exercise">
+<h4>练习</h4>
+<p>结合目前所学，在字典中，使用正则表达式查找有连续的元音和连续的辅音的单词。</p>
+<h4><button onclick="toggle('a3');">答案</button></h4>
+<p id="a3" style="display: none;"><code>[aeiou][aeiou][aeiou][aeiou][aeiou][aeiou]</code>匹配到六元音单词<code>euouae</code> and <code>euouaes</code>，而可怕的<code>[bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz]</code>找到了有十个辅音的华丽的<code>sulphhydryls</code>。我们将会会快看到如何简化这些恐怖的表达式。</p>
 </div>
 
 ###字符类区间（ranges）
@@ -137,6 +174,13 @@ categories:
 <p><strong>注意。</strong> 区间是字符的区间，不是数字的区间。正则表达式<code>[1-31]</code>表示“找到一个<code>1</code>或一个 <code>2</code>或一个<code>3</code>”，<em>不是</em>“找到一个从<code>1</code>到<code>31</code>的整数"。</p>
 </div>
 
+<div class="exercise">
+<h4>练习</h4>
+<p>使用目前学习，编写一个查找以YYYY-MM-DD为格式的日期的正则表达式。</p>
+<h4><button onclick="toggle('a4');">答案</button></h4>
+<p id="a4" style="display: none;">目前我们能写出来的是<code>[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]</code>。同样地，我们将能够很快简化这个式子。</p>
+</div>
+
 ###字符类的否定（negation）
 
 你可以通过在最开始的位置使用插入符号（译者注：`^`）来*否定*一个字符类。
@@ -145,6 +189,13 @@ categories:
 * `[^a-zA-Z0-9]`表示“找到一个非字母数字字符”。
 * `[\^abc]`表示“找到一个插入符或者`a`或者`b`或者`c`”。
 * `[^\^]`表示“找到除了插入符外的任意字符”。（呕！）  
+
+<div class="exercise">
+<h4>练习</h4>
+<p>在字典中，使用正则表达式去找到这个规则的反例“<code>i</code>位于<code>e</code> 前面并且不出现在<code>c</code>的后面”。</p>
+<h4><button onclick="toggle('a5');">答案</button></h4>
+<p id="a5" style="display: none;"><code>cie</code>和<code>[^c]ei</code>都会找到很多的反例，比如<code>ancient</code>，<code>science</code>，<code>veil</code>，<code>weigh</code>。</p>
+</div>
 
 ###字符类补充
 
@@ -164,6 +215,15 @@ categories:
 
 你可能也注意到了，句点`.`本质上是*一个包含任意字符的字符类*。
 
+许多实现提供了很多额外的字符类或标记，它们通过扩展现有的字符类来覆盖ASCII之外范围的字符。提示：Unicode包含更多的“数字字符”而不仅仅是`0`到`9`，这一点同样对于“单词”和“空格”也适用。注意你的文档所写。
+
+<div class="exercise">
+<h4>练习</h4>
+<p>简化正则表达式<code>[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]</code>。</p>
+<h4><button onclick="toggle('a6');">答案</button></h4>
+<p id="a6" style="display: none;"><code>\d\d\d\d-\d\d-\d\d</code>.</p>
+</div>
+
 ###乘法器（Multipliers）
 
 你可以在一个字面值或者字符类后跟着一个大括号来使用*乘法器*。
@@ -176,6 +236,24 @@ categories:
 
 <div class="warning">
 <p><strong>注意。</strong> 乘法器没有记忆。该正则表达式<code>[abc]{2}</code>表示“匹配<code>a</code>或者<code>b</code>或者<code>c</code>，接着匹配<code>a</code>或者<code>b</code>或者<code>c</code>。这跟“匹配<code>aa</code>或<code>ab</code>或<code>ac</code>或<code>ba</code>或<code>bb</code>或<code>bc</code>或<code>ca</code>或<code>cb</code>或<code>cc</code>”相同。这跟“匹配<code>aa</code>或<code>bb</code>或<code>cc</code>”含义<em>不同</em>！
+</div>
+
+<div class="exercise">
+<h4>练习</h4>
+<p>简化以下正则表达式：</p>
+<ul>
+	<li><code>z.......z</code></li>
+	<li><code>\d\d\d\d-\d\d-\d\d</code></li>
+	<li><code>[aeiou][aeiou][aeiou][aeiou][aeiou][aeiou]</code></li>
+	<li><code>[bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz][bcdfghjklmnpqrstvwxyz]</code></li>
+</ul>
+<h4><button onclick="toggle('a6A');">答案</button></h4>
+<ul id="a6A" style="display: none;">
+	<li><code>z.{7}z</code></li>
+	<li><code>\d{4}-\d{2}-\d{2}</code></li>
+	<li><code>[aeiou]{6}</code></li>
+	<li><code>[bcdfghjklmnpqrstvwxyz]{10}</code></li>
+</ul>
 </div>
 
 ###乘法器区间
@@ -195,6 +273,14 @@ categories:
 * `a{1,}`表示“在一列中找到一个或多个a”。然而你的乘法器将会是贪婪的。在找到第一个`a`后，它将会尽可能匹配到更多的`a`。
 * `.{0,}`表示“匹配任何情形”。不管你的输入文本是什么——甚至为空——这个正则表达式都会匹配整个字符串然后返回给你。    
 
+<div class="exercise">
+<h4>练习</h4>
+<p>编写一个能匹配双引号字符串的正则表达式。同时该字符串可以拥有任意数量的字符。</p>
+<p>用你已经学到的之时，修改上面的正则表达式，来找到了双引号字符串，但它们之间没有多余的双引号。</p>
+<h4><button onclick="toggle('a7');">答案</button></h4>
+<p id="a7" style="display: none;"><code>".{0,}"</code>，然后是<code>"[^"]{0,}"</code>.</p>
+</div>
+
 ###乘法器补充
 
 `?`代表的含义与`{0,1}`相同。比如说，`colour?r`表示“匹配`colour`或`color`”。
@@ -207,6 +293,31 @@ categories:
 
 * `\?\*\+`表示“匹配一个问号，接着找到一个星号，然后跟着一个加号”。
 * `[?*+]`表示“找到一个问号或者一个星号或者一个加号”。  
+
+<div class="exercise">
+<h4>练习</h4>
+<p>简化下面的正则表达式：</p>
+<ul>
+	<li><code>".{0,}"</code>和<code>"[^"]{0,}"</code></li>
+	<li><code>x?x?x?</code></li>
+	<li><code>y*y*</code></li>
+	<li><code>z+z+z+z+</code></li>
+</ul>
+<h4><button onclick="toggle('a8');">答案</button></h4>
+<ul id="a8" style="display: none;">
+	<li><code>".*"</code>和<code>"[^"]*"</code></li>
+	<li><code>x{0,3}</code></li>
+	<li><code>y*</code></li>
+	<li><code>z{4,}</code></li>
+</ul>
+</div>
+
+<div class="exercise">
+<h4>练习</h4>
+<p>编写一个表达式来查找非单词字符分隔的两个单词。如果改为三个单词或者六个单词又该怎么写？</p>
+<h4><button onclick="toggle('a9');">答案</button></h4>
+<p id="a9" style="display: none;"><code>\w+\W+\w+</code>，<code>\w+\W+\w+\W+\w+</code>，<code>\w+\W+\w+\W+\w+\W+\w+\W+\w+\W+\w+</code>。当然，我们之后会学习如何简化它们。</p>
+</div>
 
 ###惰性（Non-greed）
 
@@ -228,6 +339,34 @@ categories:
 * `cat|dog|\|`表示“匹配`cat`或`dog`或`管道符号`”。
 * `[cat|dog]`表示“找到`a`或`c`或`d`或`d`或`g`或`o`或`t`或一个管道符号”。  
 
+<div class="exercise">
+<h4>练习</h4>
+<p>尽你所能简化下述正则表达式：</p>
+<ul>
+	<li><code>s|t|u|v|w</code></li>
+	<li><code>aa|ab|ba|bb</code></li>
+	<li><code>[abc]|[^abc]</code></li>
+	<li><code>[^ab]|[^bc]</code></li>
+	<li><code>[ab][ab][ab]?[ab]?</code></li>
+</ul>
+<h4><button onclick="toggle('a10');">答案</button></h4>
+<ul id="a10" style="display: none;">
+	<li><code>[s-w]</code></li>
+	<li><code>[ab]{2}</code></li>
+	<li><code>.</code></li>
+	<li><code>[^b]</code></li>
+	<li><code>[ab]{2,4}</code></li>
+</ul>
+</div>
+
+<div class="exercise">
+<h4>练习</h4>
+<p>编写一个正则表达式匹配1到31（含）之间的整数。 记住，<code>[1-31]</code>不是正确答案。</p>
+<h4><button onclick="toggle('a11');">答案</button></h4>
+<p id="a11" style="display: none;">有几种方法都可以做到这一点。我认为其中<code>[1-9]|[12][0-9]|3[01]</code>可读性最好。</p>
+</div>
+
+
 ###组合（Grouping）
 
 你可以使用圆括号来*组合*表达式：
@@ -236,6 +375,14 @@ categories:
 * `(\w*)ility`等同于`\w*ility`。都表示“找到以`ility`结尾的单词”。为什么第一种形式更有用，后面会看到...
 * `\(\)`表示“匹配一个左圆括号后，再匹配一个右圆括号”。
 * `[()]`表示“匹配一个左圆括号或一个右圆括号”。
+
+<div class="exercise">
+<h4>练习</h4>
+<p>在<i>《时光机器》</i>这本书中，使用正则表达式来查找包裹在括号中的句子。接着，修改你的答案来查找没有被括号包裹的句子。</p>
+<h4><button onclick="toggle('a12');">答案</button></h4>
+<p id="a12" style="display: none;"><code>\(.*\)</code>。然后是<code>\([^()]*\)</code>。</p>
+</div>
+
 
 组合可能会包含空字符串：
 
@@ -247,13 +394,20 @@ categories:
 * `(red|blue)?`等同于`(red|blue|)`。
 * `\w+(\s+\w+)*`代表“找到一个或多个单词，它们以空格隔开”。  
 
+<div class="exercise">
+<h4>练习</h4>
+<p>简化<code>\w+\W+\w+\W+\w+</code>和<code>\w+\W+\w+\W+\w+\W+\w+\W+\w+\W+\w+</code>。</p>
+<h4><button onclick="toggle('a13');">答案</button></h4>
+<p id="a13" style="display: none;"><code>\w+(\W+\w+){2}</code>，<code>\w+(\W+\w+){5}</code>。</p>
+</div>
+
 ###单词边界（Word boundaries）
 
 单词边界是一个单词字符和非单词字符之间的位置。记住，一个单词字符是`\w`，它是`[0-9A-Za-z_]`，一个非单词字符是`\W`，也就是`[^0-9A-Za-z_]`。
 
 文本的开头和结尾总是当作单词边界。
 
-输入的文本`it's a cat`有捌个单词边界。如果我们在`cat`后追加一个空格，这里就会有玖个单词边界。
+输入的文本`it's a cat`有八个单词边界。如果我们在`cat`后追加一个空格，这里就会有九个单词边界。
 
 * 正则表达式`\b`表示“匹配一个单词边界”。
 * `\b\w\w\w\b`表示“匹配一个三个字母的单词”。
@@ -265,6 +419,14 @@ categories:
 * `(\bcat\b)`
 * `\b(cat)\b`
 * `\b(cat\b)`  
+
+<div class="exercise">
+<h4>练习</h4>
+<p>查找字典中最长的单词。</p>
+<h4><button onclick="toggle('a14');">答案</button></h4>
+<p id="a14" style="display: none;">在一些试验和错误之后，这个正则表达式就是<code>\b.{45,}\b</code>，在字典中找到唯一一个结果： <code>pneumonoultramicroscopicsilicovolcanoconiosis</code>。</p>
+</div>
+
 
 ###行边界（Line boundaries）
 
@@ -309,6 +471,13 @@ categories:
 * `(^cat$)`
 * `^(cat)$`
 * `^(cat$)`  
+
+<div class="exercise">
+<h4>练习</h4>
+<p>适用正则表达式查找<i>《时光机器》</i>中最长的一行。</p>
+<h4><button onclick="toggle('a15');">答案</button></h4>
+<p id="a15" style="display: none;">Gutenberg出版社的这个版本一行最多有73个字符，使用该<code>^.{73,}$</code>表达式。许多行都是这个长度。</p>
+</div>
 
 ###文本边界（Text boundaries）
 
@@ -359,6 +528,13 @@ categories:
 * PHP的`String.replace()`函数
 * 等等
 
+<div class="exercise">
+<h4>练习</h4>
+<p>使用<code>r</code>替换<i>《时间机器》</i>中所有的元音字母。确保使用正确的大小写！</p>
+<h4><button onclick="toggle('a16');">答案</button></h4>
+<p id="a16" style="display: none;">分别使用正则表达式<code>[aeiou]</code>和<code>[AEIOU]</code>，替换表达式<code>r</code>和<code>R</code> respectively。</p>
+</div>
+
 然而，你可以在你的替换表达式中引用捕获组。这是你可以在替换表达式唯一能的特殊的事，它是令人难以置信的强大，因为它意味着你不必完全销毁你刚刚发现的东西。
 
 比方说，你尝试去用ISO 8691格式的日期（YYYY-MM-DD）去替换美式日期（MM/DD/YY）。
@@ -386,6 +562,13 @@ categories:
 你可以在同样的表达式中引用同一个捕获组。这称为*后向引用*。
 
 举个例子，再次调用前面的表达式`[abc]{2}`表示“匹配`aa`或`ab`或`ac` or `ba`或`bb`或`bc`或`ca`或`cb`或`cc`”。但是表达式`([abc])\1`表示“匹配`aa`或`bb`或`cc`”。
+
+<div class="exercise">
+<h4>练习</h4>
+<p>在字典中，找到出现两次相同字符串的最长的单词（比如<code>papa</code>， <code>coco</code>）。</p>
+<h4><button onclick="toggle('a17');">答案</button></h4>
+<p id="a17" style="display: none;"><code>\b(.{6,})\1\b</code>匹配到<code>chiquichiqui</code>。如果我们不关心完整的单词，我们可以舍去单词边界断言，使用<code>(.{7,})\1</code>会找到<code>countercountermeasure</code>和<code>countercountermeasures</code>。</p>
+</div>
 
 ##结合正则表达式编程
 
@@ -456,6 +639,13 @@ categories:
 
 其实，为什么不直接去掉所有非数字字符，然后再进行验证？要做到这一点，使用正则表达式`\D`和空字符串来替换表达式。
 
+<div class="exercise">
+<h4>练习</h4>
+<p>编写一个正则表达式，可以验证我的卡号而不用让我删去非数字字符。</p>
+<h4><button onclick="toggle('a18');">答案</button></h4>
+<p id="a18" style="display: none;"><code>\D*(\d\D*){16}</code>是能多种实现中的一个方式。</p>
+</div>
+
 **名字**
 
 不要使用正则表达式来验证用户的名字。其实，不需要验证名字，你无能无力。
@@ -517,3 +707,8 @@ categories:
 ###感谢阅读
 正则表达式无处不在，令人难以置信的有用。那些在编辑文本和写电脑程序方面将花费大量时间的人们应该学会如何使用它们。
 到目前为止，我们只接触了冰山一角。
+
+<div class="exercise">
+<h4>练习</h4>
+<p>继续阅读你选择的正则表达式实现的对应文档。我保证在我们这里所讨论的部分之外还有更多的特性并未涉及。</p>
+</div>
