@@ -12,7 +12,7 @@
 			{% capture previousUrl %}{{ site.baseurl }}/page{{ paginator.previous_page }}{% endcapture %}
 		{% endif %}
 		<li class="previous">
-			<a rel="prev" href="{{ previousUrl }}/">← 新文章</a>
+			<a rel="prev" href="/page{{ paginator.previous_page }}/">← 新文章</a>
 		</li>
 	{% endif %}
 	{% if paginator.next_page %}
