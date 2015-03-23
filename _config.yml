@@ -1,5 +1,4 @@
-markdown: rdiscount 
-permalink: /:title 
+markdown: rdiscount
 title: DosLin's Blog
 url: http://doslin.com
 subscribe: http://doslin.com/feed.xml
@@ -11,4 +10,3 @@ auto: true
 twitterID: javachord
 googleAnalyticsID: UA-40430247-1
 disqusShortname: doslin
-paginate: 12
