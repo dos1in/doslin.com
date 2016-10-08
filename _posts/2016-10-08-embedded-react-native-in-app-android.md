@@ -13,10 +13,10 @@ categories:
 
 1、由于通过命令`react-native init`初始化的**React Native**（以下简称RN）项目结构与原生项目有区别，所以不能单纯直接在已有项目的根目录下运行该命令。
 
-2、RN需要Android4.1或以上的环境，故集成RN的Android项目的minSdkVersion需设置为**API16**或以上。
+2、RN需要Android4.1或以上的环境，故集成RN的Android项目的`minSdkVersion`需设置为**API16**或以上。
 
 3、本机安装NPM支持：
-新版的RN依赖都将发布在**NPM**（包管理工具，如同Maven仓库）中，所以我们先要安装NPM。
+新版的RN依赖都将发布在**NPM**（包管理工具，如同Maven仓库）中，故需安装NPM。
 
 4、本文安装环境为**MAC**，Windows或Linux上的命令差异请参考[官方文档](http://facebook.github.io/react-native/docs/getting-started.html)。
 
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
 AppRegistry.registerComponent('RN_Demo', () => RN_Demo);
 ```
 
-记住上面的组件名**RN-Demo**。
+记住上面的组件名**RN_Demo**。
 
 ### 4.添加RN依赖
 编辑`app`目录下的`build.gradle`，添加
