@@ -22,6 +22,7 @@ categories:
 
 ## 集成步骤
 ### 1. 安装NPM
+
 之后于同时需要NodeJS服务器，故只需安装NodeJS，NPM会随同安装。
 
 ```
@@ -55,6 +56,7 @@ npm install
 完成后将出现`node_modules`文件夹。
 
 ### 3.添加页面文件
+
 在根目录下，新建文件`index.android.js`，内容如下：
 
 ```
@@ -110,6 +112,7 @@ AppRegistry.registerComponent('RN_Demo', () => RN_Demo);
 记住上面的组件名**RN_Demo**。
 
 ### 4.添加RN依赖
+
 编辑`app`目录下的`build.gradle`，添加
 
 ```
@@ -133,6 +136,7 @@ allprojects {
 否则未写明版本的RN依赖可能是**jcenter**中的旧版本。
 
 ### 5.新建Activity与Application
+
 新建一个继承自`ReactActivity`的`activity`，内容如下：
 
 ```
@@ -178,6 +182,7 @@ public class MainApplication extends Application implements ReactApplication {
 ```
 
 ### 6.编辑`AndroidManifest.xml`
+
 添加应用的网络访问权限，以及刚刚新建的`Activity`及`Application`：
 
 ```
@@ -208,7 +213,26 @@ public class MainApplication extends Application implements ReactApplication {
 </manifest>
 ```
 
-### 7.启动**Packager Server**
+### 7.添加NDK支持
+
+在`gradle.properties`中添加如下内容：
+
+```
+android.useDeprecatedNdk=true
+```
+
+在**app**下的`build.gradle`中添加如下内容：
+
+```
+ndk {
+    abiFilters 'armeabi', 'armeabi-v7a'
+}
+```
+
+如果你的app需要在x86下运行，请额外进行配置`x86`。
+
+### 8.启动**Packager Server**
+
 在`package.json`同级目录下运行
 ```react-native start```
 之后为了防止出现`error “Could not get BatchedBridge, make sure your bundle is packaged properly” on start of app`的异常，先运行
