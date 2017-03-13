@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="git," />
 
 
 
@@ -87,12 +87,40 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="DosLin's Blog">
-<meta property="og:url" content="http://doslin.com/index.html">
+<meta name="description" content="前言
+以下内容不牵涉Git的内部实现原理，阅读正文将花费您大约15分钟。
+文中的所有Git命令省略了参数，完整调用请查阅官方文档。
+本文基于一次组内分享的内容整理，希望对各位有所帮助。
+
+作为开发者，使用Git作为项目的代码控制系统已经是必备技能了（当然，还有本文的MarkDown），而日常工作中的你是否只停留在无尽的pull与push中呢？
+下面就来介绍Git中的几种实用命令，相信会对你今后可能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tricky Git Tips">
+<meta property="og:url" content="http://doslin.com/2016/12/22/tricky-git-tips/index.html">
 <meta property="og:site_name" content="DosLin's Blog">
+<meta property="og:description" content="前言
+以下内容不牵涉Git的内部实现原理，阅读正文将花费您大约15分钟。
+文中的所有Git命令省略了参数，完整调用请查阅官方文档。
+本文基于一次组内分享的内容整理，希望对各位有所帮助。
+
+作为开发者，使用Git作为项目的代码控制系统已经是必备技能了（当然，还有本文的MarkDown），而日常工作中的你是否只停留在无尽的pull与push中呢？
+下面就来介绍Git中的几种实用命令，相信会对你今后可能">
+<meta property="og:image" content="http://doslin.com/images/2016/12/git01.png">
+<meta property="og:image" content="http://doslin.com/images/2016/12/git02.png">
+<meta property="og:image" content="http://doslin.com/images/2016/12/git03.png">
+<meta property="og:image" content="http://doslin.com/images/2016/12/git04.png">
+<meta property="og:image" content="http://doslin.com/images/2016/12/git05.png">
+<meta property="og:updated_time" content="2017-03-13T10:33:07.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="DosLin's Blog">
+<meta name="twitter:title" content="Tricky Git Tips">
+<meta name="twitter:description" content="前言
+以下内容不牵涉Git的内部实现原理，阅读正文将花费您大约15分钟。
+文中的所有Git命令省略了参数，完整调用请查阅官方文档。
+本文基于一次组内分享的内容整理，希望对各位有所帮助。
+
+作为开发者，使用Git作为项目的代码控制系统已经是必备技能了（当然，还有本文的MarkDown），而日常工作中的你是否只停留在无尽的pull与push中呢？
+下面就来介绍Git中的几种实用命令，相信会对你今后可能">
+<meta name="twitter:image" content="http://doslin.com/images/2016/12/git01.png">
 
 
 
@@ -120,13 +148,13 @@
 
 
 
-  <link rel="canonical" href="http://doslin.com/"/>
+  <link rel="canonical" href="http://doslin.com/2016/12/22/tricky-git-tips/"/>
 
 
 
 
 
-  <title> DosLin's Blog </title>
+  <title> Tricky Git Tips | DosLin's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -151,9 +179,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -236,9 +262,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -268,10 +294,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2016/12/22/tricky-git-tips/" itemprop="url">
-                  Tricky Git Tips
-                </a>
+                Tricky Git Tips
               
             
           </h1>
@@ -332,217 +355,115 @@
       
 
       
-        
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
 <li>以下内容不牵涉Git的内部实现原理，阅读正文将花费您大约15分钟。</li>
 <li>文中的所有Git命令省略了参数，完整调用请查阅官方文档。</li>
 <li>本文基于一次组内分享的内容整理，希望对各位有所帮助。</li>
 </ul>
-<p>作为开发者，使用<a href="https://zh.wikipedia.org/wiki/Git">Git</a>作为项目的代码控制系统已经是必备技能了（当然，还有本文的<a href="https://zh.wikipedia.org/wiki/Markdown">MarkDown</a>），而日常工作中的你是否只停留在无尽的<code>pull</code>与<code>push</code>中呢？</p>
+<p>作为开发者，使用<a href="https://zh.wikipedia.org/wiki/Git" target="_blank" rel="external">Git</a>作为项目的代码控制系统已经是必备技能了（当然，还有本文的<a href="https://zh.wikipedia.org/wiki/Markdown" target="_blank" rel="external">MarkDown</a>），而日常工作中的你是否只停留在无尽的<code>pull</code>与<code>push</code>中呢？</p>
 <p>下面就来介绍Git中的几种实用命令，相信会对你今后可能遇到的实际工作场景带来实质性的效率提升。</p>
 <p>介绍命令之前，首先我们先需要了解下Git中==操作区域==的概念。</p>
-<h2 id="操作区域"><a href="#操作区域" class="headerlink" title="操作区域"></a>操作区域</h2><p>Git的操作区域和<a href="https://zh.wikipedia.org/wiki/Vi">vi</a>中的缓冲区的概念很类似，不同的Git命令会在不同的操作区域中工作。</p>
+<h2 id="操作区域"><a href="#操作区域" class="headerlink" title="操作区域"></a>操作区域</h2><p>Git的操作区域和<a href="https://zh.wikipedia.org/wiki/Vi" target="_blank" rel="external">vi</a>中的缓冲区的概念很类似，不同的Git命令会在不同的操作区域中工作。</p>
 <p><img src="/images/2016/12/git01.png" alt="操作区域"></p>
 <p>如图所示，Git的<code>add</code>操作会将文件的修改记录保存在==暂存区==，之后进行的<code>commit</code>操作会将暂存区的修改内容全部提交到==历史区==，最后进行的<code>push</code>操作将会把本地的操作记录推送到==远程仓库==中去。<br>之所以此处远程库的背景色使用了暗色调，是因为推送到远程库的代码是需要你“负责”的，一旦发布即是历史的诞生，请对<code>push</code>的操作保持敬畏和责任感。同时这里也牵涉到Git中<strong>提交哲学</strong>的概念。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/12/22/tricky-git-tips/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+<a id="more"></a>
+<h2 id="提交哲学"><a href="#提交哲学" class="headerlink" title="提交哲学"></a>提交哲学</h2><p>我们可以根据每个提交的粒度大小，我们可以将Git中的提交方式划分为两种派别。</p>
+<ul>
+<li><strong>现实化提交</strong>：尽快提交每个修改，保证提交历史记录中记录了所有的变更细节。</li>
+<li><strong>理想化提交</strong>：清理不好的中间决策，每次提交保证合乎逻辑，改动具有完整性。</li>
+</ul>
+<p>这里没有最优的实践，我们可以在一个项目中同时存在两种提交风格，我们也可以在<code>push</code>到远程仓库之前，整理历史区中的提交记录，通过<strong>重新排序</strong>、<strong>合并</strong>、<strong>删除</strong>甚至<strong>添加</strong>新提交，使得原先的==现实化提交==转化为==理想化提交==，这完全取决于自己的喜好和项目策略。不过请记住，推送到远程库的提交是已发生的历史，是“不可变更”的。</p>
+<h2 id="拉取代码"><a href="#拉取代码" class="headerlink" title="拉取代码"></a>拉取代码</h2><p>既然Git的各个工作区域是逐级向上提交的，那我们如何获取各个工作操作区域的代码呢？<br>使用如下图中的三条命令即可。</p>
+<p><img src="/images/2016/12/git02.png" alt="拉取代码"></p>
+<h2 id="工作场景"><a href="#工作场景" class="headerlink" title="工作场景"></a>工作场景</h2><p>好了，通过上面我们了解了Git的操作区域和提交哲学，下面就介绍Git命令在实际工作场景中的运用。</p>
+<h3 id="对付强迫症"><a href="#对付强迫症" class="headerlink" title="对付强迫症"></a>对付强迫症</h3><p>控几不住我记几， 怕断电怕死机总想提交怎么办？</p>
+<blockquote>
+<p>git commit –amend</p>
+</blockquote>
+<p><code>git commit --amend</code>命令可以在我们<code>push</code>代码之前修改最后一次提交内容。</p>
+<p><img src="/images/2016/12/git03.png" alt="amend"></p>
+<p>如图所示，常规<code>commit</code>会在历史中产生两次提交记录，而<code>amend</code>会对最后一次提交内容进行覆盖。</p>
+<h3 id="对付组员"><a href="#对付组员" class="headerlink" title="对付组员"></a>对付组员</h3><p>现在组内有很多业务线，大家在不同分支上开发，开发到一半想基于某条分支最新的代码进行开发怎么办？</p>
+<blockquote>
+<p>git rebase</p>
+</blockquote>
+<p><code>rebase</code>命令正是用来改变当前提交的基础而生的。</p>
+<p><img src="/images/2016/12/git04.png" alt="rebase"></p>
+<h3 id="对付产品经理"><a href="#对付产品经理" class="headerlink" title="对付产品经理"></a>对付产品经理</h3><p>产品总是改需求，开发节奏有点乱怎么办？</p>
+<blockquote>
+<p>git cherry-pick</p>
+</blockquote>
+<p><code>cherry-pick</code>命令可以引入其它分支上特定的提交来应用到当前分支。</p>
+<p><img src="/images/2016/12/git05.png" alt="cherry-pick"></p>
+<p>如图我们可以摘取指定分支中的某个“需求”实现来应用到当前分支。另外一种场景是用该命令提取修复分支上提交的某个bug修复代码。</p>
+<h3 id="对付测试"><a href="#对付测试" class="headerlink" title="对付测试"></a>对付测试</h3><p>还在写代码，测试又来提bug了，改到一半的代码怎么办？</p>
+<blockquote>
+<p>git stash</p>
+</blockquote>
+<p>Git通过<code>stash</code>命令可以暂存我们的改动文件，同时使用对应的<code>pop</code>可拿出历史的改动。值得注意的是暂存没有分支的概念，在当前分支暂存的文件可以在其它分支中取出。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>说了这么多，不妨去练练手，下面是几个Git命令的在线练习网站。</p>
+<p>1.<a href="http://shortcutfoo.com/app/dojos/git" target="_blank" rel="external">Git dojo</a><br>2.<a href="https://try.github.io/levels/1/challenges/1" target="_blank" rel="external">Learn Git in 15min</a><br>3.<a href="http://learngitbranching.js.org/" target="_blank" rel="external">LearnGitBranching</a></p>
+
+      
+    </div>
+
+    <div>
+      
         
+
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
       
     </div>
 
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://doslin.com/2016/10/08/embedded-react-native-in-app-android/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="DosLin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="DosLin's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/08/embedded-react-native-in-app-android/" itemprop="url">
-                  弹射起步：Android原生项目集成React Native模块
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-08T00:00:00+08:00">
-                2016-10-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/react-native/" itemprop="url" rel="index">
-                    <span itemprop="name">react-native</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/git/" rel="tag"># git</a>
           
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/10/08/embedded-react-native-in-app-android/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/08/embedded-react-native-in-app-android/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
         
-          <hr>
-<h2 id="说明和前提"><a href="#说明和前提" class="headerlink" title="说明和前提"></a>说明和前提</h2><p>1、由于通过命令<code>react-native init</code>初始化的<strong>React Native</strong>（以下简称RN）项目结构与原生项目有区别，所以不能单纯直接在已有项目的根目录下运行该命令。</p>
-<p>2、RN需要Android4.1或以上的环境，故集成RN的Android项目的<code>minSdkVersion</code>需设置为<strong>API16</strong>或以上。</p>
-<p>3、本机安装NPM支持：<br>新版的RN依赖都将发布在<strong>NPM</strong>（包管理工具，如同Maven仓库）中，故需安装NPM。</p>
-<p>4、本文安装环境为<strong>MAC</strong>，Windows或Linux上的命令差异请参考<a href="http://facebook.github.io/react-native/docs/getting-started.html">官方文档</a>。</p>
-<h2 id="集成步骤"><a href="#集成步骤" class="headerlink" title="集成步骤"></a>集成步骤</h2><h3 id="1-安装NPM"><a href="#1-安装NPM" class="headerlink" title="1. 安装NPM"></a>1. 安装NPM</h3><p>之后于同时需要NodeJS服务器，故只需安装NodeJS，NPM会随同安装。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew install node</div><div class="line">brew install watchman</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/10/08/embedded-react-native-in-app-android/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/08/embedded-react-native-in-app-android/" rel="next" title="弹射起步：Android原生项目集成React Native模块">
+                <i class="fa fa-chevron-left"></i> 弹射起步：Android原生项目集成React Native模块
+              </a>
+            
           </div>
-          <!--/noindex-->
-        
-      
-    </div>
 
-    <div>
-      
-    </div>
+          <span class="post-nav-divider"></span>
 
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
           
           </div>
@@ -550,6 +471,14 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/12/22/tricky-git-tips/"
+           data-title="Tricky Git Tips" data-url="http://doslin.com/2016/12/22/tricky-git-tips/">
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -569,8 +498,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -652,6 +590,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作区域"><span class="nav-number">2.</span> <span class="nav-text">操作区域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提交哲学"><span class="nav-number">3.</span> <span class="nav-text">提交哲学</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拉取代码"><span class="nav-number">4.</span> <span class="nav-text">拉取代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工作场景"><span class="nav-number">5.</span> <span class="nav-text">工作场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对付强迫症"><span class="nav-number">5.1.</span> <span class="nav-text">对付强迫症</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对付组员"><span class="nav-number">5.2.</span> <span class="nav-text">对付组员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对付产品经理"><span class="nav-number">5.3.</span> <span class="nav-text">对付产品经理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对付测试"><span class="nav-number">5.4.</span> <span class="nav-text">对付测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">6.</span> <span class="nav-text">其他</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -757,6 +711,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
