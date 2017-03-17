@@ -88,38 +88,38 @@
 
 
 <meta name="description" content="前言
-以下内容不牵涉Git的内部实现原理，阅读正文将花费您大约15分钟。
-文中的所有Git命令省略了参数，完整调用请查阅官方文档。
+以下内容不牵涉 Git 的内部实现原理，阅读正文将花费您大约15分钟。
+文中的所有 Git 命令省略了参数，完整调用请查阅官方文档。
 本文基于一次组内分享的内容整理，希望对各位有所帮助。
 
-作为开发者，使用Git作为项目的代码控制系统已经是必备技能了（当然，还有本文的MarkDown），而日常工作中的你是否只停留在无尽的pull与push中呢？
-下面就来介绍Git中的几种实用命令，相信会对你今后可能">
+作为开发者，使用 Git 作为项目的代码控制系统已经是必备技能了（当然，还有本文的MarkDown），而日常工作中的你是否只停留在无尽的 pull 与 push 中呢？
+下面就来介绍 Git 中的几种实用">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Tricky Git Tips">
 <meta property="og:url" content="http://doslin.com/2016/12/22/tricky-git-tips/index.html">
 <meta property="og:site_name" content="DosLin's Blog">
 <meta property="og:description" content="前言
-以下内容不牵涉Git的内部实现原理，阅读正文将花费您大约15分钟。
-文中的所有Git命令省略了参数，完整调用请查阅官方文档。
+以下内容不牵涉 Git 的内部实现原理，阅读正文将花费您大约15分钟。
+文中的所有 Git 命令省略了参数，完整调用请查阅官方文档。
 本文基于一次组内分享的内容整理，希望对各位有所帮助。
 
-作为开发者，使用Git作为项目的代码控制系统已经是必备技能了（当然，还有本文的MarkDown），而日常工作中的你是否只停留在无尽的pull与push中呢？
-下面就来介绍Git中的几种实用命令，相信会对你今后可能">
+作为开发者，使用 Git 作为项目的代码控制系统已经是必备技能了（当然，还有本文的MarkDown），而日常工作中的你是否只停留在无尽的 pull 与 push 中呢？
+下面就来介绍 Git 中的几种实用">
 <meta property="og:image" content="http://doslin.com/images/2016/12/git01.png">
 <meta property="og:image" content="http://doslin.com/images/2016/12/git02.png">
 <meta property="og:image" content="http://doslin.com/images/2016/12/git03.png">
 <meta property="og:image" content="http://doslin.com/images/2016/12/git04.png">
 <meta property="og:image" content="http://doslin.com/images/2016/12/git05.png">
-<meta property="og:updated_time" content="2017-03-14T06:18:26.000Z">
+<meta property="og:updated_time" content="2017-03-17T02:14:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tricky Git Tips">
 <meta name="twitter:description" content="前言
-以下内容不牵涉Git的内部实现原理，阅读正文将花费您大约15分钟。
-文中的所有Git命令省略了参数，完整调用请查阅官方文档。
+以下内容不牵涉 Git 的内部实现原理，阅读正文将花费您大约15分钟。
+文中的所有 Git 命令省略了参数，完整调用请查阅官方文档。
 本文基于一次组内分享的内容整理，希望对各位有所帮助。
 
-作为开发者，使用Git作为项目的代码控制系统已经是必备技能了（当然，还有本文的MarkDown），而日常工作中的你是否只停留在无尽的pull与push中呢？
-下面就来介绍Git中的几种实用命令，相信会对你今后可能">
+作为开发者，使用 Git 作为项目的代码控制系统已经是必备技能了（当然，还有本文的MarkDown），而日常工作中的你是否只停留在无尽的 pull 与 push 中呢？
+下面就来介绍 Git 中的几种实用">
 <meta name="twitter:image" content="http://doslin.com/images/2016/12/git01.png">
 
 
@@ -378,52 +378,52 @@
 
       
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
-<li>以下内容不牵涉Git的内部实现原理，阅读正文将花费您大约15分钟。</li>
-<li>文中的所有Git命令省略了参数，完整调用请查阅官方文档。</li>
+<li>以下内容不牵涉 Git 的内部实现原理，阅读正文将花费您大约15分钟。</li>
+<li>文中的所有 Git 命令省略了参数，完整调用请查阅官方文档。</li>
 <li>本文基于一次组内分享的内容整理，希望对各位有所帮助。</li>
 </ul>
-<p>作为开发者，使用<a href="https://zh.wikipedia.org/wiki/Git" target="_blank" rel="external">Git</a>作为项目的代码控制系统已经是必备技能了（当然，还有本文的<a href="https://zh.wikipedia.org/wiki/Markdown" target="_blank" rel="external">MarkDown</a>），而日常工作中的你是否只停留在无尽的<code>pull</code>与<code>push</code>中呢？</p>
-<p>下面就来介绍Git中的几种实用命令，相信会对你今后可能遇到的实际工作场景带来实质性的效率提升。</p>
-<p>介绍命令之前，首先我们先需要了解下Git中==操作区域==的概念。</p>
-<h2 id="操作区域"><a href="#操作区域" class="headerlink" title="操作区域"></a>操作区域</h2><p>Git的操作区域和<a href="https://zh.wikipedia.org/wiki/Vi" target="_blank" rel="external">vi</a>中的缓冲区的概念很类似，不同的Git命令会在不同的操作区域中工作。</p>
+<p>作为开发者，使用 <a href="https://zh.wikipedia.org/wiki/Git" target="_blank" rel="external">Git</a> 作为项目的代码控制系统已经是必备技能了（当然，还有本文的<a href="https://zh.wikipedia.org/wiki/Markdown" target="_blank" rel="external">MarkDown</a>），而日常工作中的你是否只停留在无尽的 <code>pull</code> 与 <code>push</code> 中呢？</p>
+<p>下面就来介绍 Git 中的几种实用命令，相信会对你今后可能遇到的实际工作场景带来实质性的效率提升。</p>
+<p>介绍命令之前，首先我们先需要了解下 Git 中<strong>操作区域</strong>的概念。</p>
+<h2 id="操作区域"><a href="#操作区域" class="headerlink" title="操作区域"></a>操作区域</h2><p>Git 的操作区域和 <a href="https://zh.wikipedia.org/wiki/Vi" target="_blank" rel="external">vi</a> 中的缓冲区的概念很类似，不同的 Git 命令会在不同的操作区域中工作。</p>
 <p><img src="/images/2016/12/git01.png" alt="操作区域"></p>
-<p>如图所示，Git的<code>add</code>操作会将文件的修改记录保存在==暂存区==，之后进行的<code>commit</code>操作会将暂存区的修改内容全部提交到==历史区==，最后进行的<code>push</code>操作将会把本地的操作记录推送到==远程仓库==中去。<br>之所以此处远程库的背景色使用了暗色调，是因为推送到远程库的代码是需要你“负责”的，一旦发布即是历史的诞生，请对<code>push</code>的操作保持敬畏和责任感。同时这里也牵涉到Git中<strong>提交哲学</strong>的概念。</p>
+<p>如图所示，Git的 <code>add</code> 操作会将文件的修改记录保存在<strong>暂存区</strong>，之后进行的 <code>commit</code> 操作会将暂存区的修改内容全部提交到<strong>历史区</strong>，最后进行的 <code>push</code> 操作将会把本地的操作记录推送到<strong>远程仓库</strong>中去。<br>之所以此处远程库的背景色使用了暗色调，是因为推送到远程库的代码是需要你“负责”的，一旦发布即是历史的诞生，请对 <code>push</code> 的操作保持敬畏和责任感。同时这里也牵涉到 Git 中<strong>提交哲学</strong>的概念。</p>
 <a id="more"></a>
-<h2 id="提交哲学"><a href="#提交哲学" class="headerlink" title="提交哲学"></a>提交哲学</h2><p>我们可以根据每个提交的粒度大小，我们可以将Git中的提交方式划分为两种派别。</p>
+<h2 id="提交哲学"><a href="#提交哲学" class="headerlink" title="提交哲学"></a>提交哲学</h2><p>我们可以根据每个提交的粒度大小，我们可以将 Git 中的提交方式划分为两种派别。</p>
 <ul>
 <li><strong>现实化提交</strong>：尽快提交每个修改，保证提交历史记录中记录了所有的变更细节。</li>
 <li><strong>理想化提交</strong>：清理不好的中间决策，每次提交保证合乎逻辑，改动具有完整性。</li>
 </ul>
-<p>这里没有最优的实践，我们可以在一个项目中同时存在两种提交风格，我们也可以在<code>push</code>到远程仓库之前，整理历史区中的提交记录，通过<strong>重新排序</strong>、<strong>合并</strong>、<strong>删除</strong>甚至<strong>添加</strong>新提交，使得原先的==现实化提交==转化为==理想化提交==，这完全取决于自己的喜好和项目策略。不过请记住，推送到远程库的提交是已发生的历史，是“不可变更”的。</p>
-<h2 id="拉取代码"><a href="#拉取代码" class="headerlink" title="拉取代码"></a>拉取代码</h2><p>既然Git的各个工作区域是逐级向上提交的，那我们如何获取各个工作操作区域的代码呢？<br>使用如下图中的三条命令即可。</p>
+<p>这里没有最优的实践，我们可以在一个项目中同时存在两种提交风格，我们也可以在 <code>push</code> 到远程仓库之前，整理历史区中的提交记录，通过<strong>重新排序</strong>、<strong>合并</strong>、<strong>删除</strong>甚至<strong>添加</strong>新提交，使得原先的<strong>现实化提交</strong>转化为<strong>理想化提交</strong>，这完全取决于自己的喜好和项目策略。不过请记住，推送到远程库的提交是已发生的历史，是“不可变更”的。</p>
+<h2 id="拉取代码"><a href="#拉取代码" class="headerlink" title="拉取代码"></a>拉取代码</h2><p>既然 Git 的各个工作区域是逐级向上提交的，那我们如何获取各个工作操作区域的代码呢？<br>使用如下图中的三条命令即可。</p>
 <p><img src="/images/2016/12/git02.png" alt="拉取代码"></p>
-<h2 id="工作场景"><a href="#工作场景" class="headerlink" title="工作场景"></a>工作场景</h2><p>好了，通过上面我们了解了Git的操作区域和提交哲学，下面就介绍Git命令在实际工作场景中的运用。</p>
+<h2 id="工作场景"><a href="#工作场景" class="headerlink" title="工作场景"></a>工作场景</h2><p>好了，通过上面我们了解了 Git 的操作区域和提交哲学，下面就介绍 Git 命令在实际工作场景中的运用。</p>
 <h3 id="对付强迫症"><a href="#对付强迫症" class="headerlink" title="对付强迫症"></a>对付强迫症</h3><p>控几不住我记几， 怕断电怕死机总想提交怎么办？</p>
 <blockquote>
 <p>git commit –amend</p>
 </blockquote>
-<p><code>git commit --amend</code>命令可以在我们<code>push</code>代码之前修改最后一次提交内容。</p>
+<p><code>git commit --amend</code>命令可以在我们 <code>push</code> 代码之前修改最后一次提交内容。</p>
 <p><img src="/images/2016/12/git03.png" alt="amend"></p>
-<p>如图所示，常规<code>commit</code>会在历史中产生两次提交记录，而<code>amend</code>会对最后一次提交内容进行覆盖。</p>
+<p>如图所示，常规 <code>commit</code> 会在历史中产生两次提交记录，而 <code>amend</code> 会对最后一次提交内容进行覆盖。</p>
 <h3 id="对付组员"><a href="#对付组员" class="headerlink" title="对付组员"></a>对付组员</h3><p>现在组内有很多业务线，大家在不同分支上开发，开发到一半想基于某条分支最新的代码进行开发怎么办？</p>
 <blockquote>
 <p>git rebase</p>
 </blockquote>
-<p><code>rebase</code>命令正是用来改变当前提交的基础而生的。</p>
+<p><code>rebase</code> 命令正是用来改变当前提交的基础而生的。</p>
 <p><img src="/images/2016/12/git04.png" alt="rebase"></p>
 <h3 id="对付产品经理"><a href="#对付产品经理" class="headerlink" title="对付产品经理"></a>对付产品经理</h3><p>产品总是改需求，开发节奏有点乱怎么办？</p>
 <blockquote>
 <p>git cherry-pick</p>
 </blockquote>
-<p><code>cherry-pick</code>命令可以引入其它分支上特定的提交来应用到当前分支。</p>
+<p><code>cherry-pick</code> 命令可以引入其它分支上特定的提交来应用到当前分支。</p>
 <p><img src="/images/2016/12/git05.png" alt="cherry-pick"></p>
 <p>如图我们可以摘取指定分支中的某个“需求”实现来应用到当前分支。另外一种场景是用该命令提取修复分支上提交的某个bug修复代码。</p>
 <h3 id="对付测试"><a href="#对付测试" class="headerlink" title="对付测试"></a>对付测试</h3><p>还在写代码，测试又来提bug了，改到一半的代码怎么办？</p>
 <blockquote>
 <p>git stash</p>
 </blockquote>
-<p>Git通过<code>stash</code>命令可以暂存我们的改动文件，同时使用对应的<code>pop</code>可拿出历史的改动。值得注意的是暂存没有分支的概念，在当前分支暂存的文件可以在其它分支中取出。</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>说了这么多，不妨去练练手，下面是几个Git命令的在线练习网站。</p>
+<p>Git 通过 <code>stash</code> 命令可以暂存我们的改动文件，同时使用对应的 <code>pop</code> 可拿出历史的改动。值得注意的是暂存没有分支的概念，在当前分支暂存的文件可以在其它分支中取出。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>说了这么多，不妨去练练手，下面是几个 Git 命令的在线练习网站。</p>
 <p>1.<a href="http://shortcutfoo.com/app/dojos/git" target="_blank" rel="external">Git dojo</a><br>2.<a href="https://try.github.io/levels/1/challenges/1" target="_blank" rel="external">Learn Git in 15min</a><br>3.<a href="http://learngitbranching.js.org/" target="_blank" rel="external">LearnGitBranching</a></p>
 
       

@@ -523,16 +523,16 @@
       
         
           <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
-<li>以下内容不牵涉Git的内部实现原理，阅读正文将花费您大约15分钟。</li>
-<li>文中的所有Git命令省略了参数，完整调用请查阅官方文档。</li>
+<li>以下内容不牵涉 Git 的内部实现原理，阅读正文将花费您大约15分钟。</li>
+<li>文中的所有 Git 命令省略了参数，完整调用请查阅官方文档。</li>
 <li>本文基于一次组内分享的内容整理，希望对各位有所帮助。</li>
 </ul>
-<p>作为开发者，使用<a href="https://zh.wikipedia.org/wiki/Git">Git</a>作为项目的代码控制系统已经是必备技能了（当然，还有本文的<a href="https://zh.wikipedia.org/wiki/Markdown">MarkDown</a>），而日常工作中的你是否只停留在无尽的<code>pull</code>与<code>push</code>中呢？</p>
-<p>下面就来介绍Git中的几种实用命令，相信会对你今后可能遇到的实际工作场景带来实质性的效率提升。</p>
-<p>介绍命令之前，首先我们先需要了解下Git中==操作区域==的概念。</p>
-<h2 id="操作区域"><a href="#操作区域" class="headerlink" title="操作区域"></a>操作区域</h2><p>Git的操作区域和<a href="https://zh.wikipedia.org/wiki/Vi">vi</a>中的缓冲区的概念很类似，不同的Git命令会在不同的操作区域中工作。</p>
+<p>作为开发者，使用 <a href="https://zh.wikipedia.org/wiki/Git">Git</a> 作为项目的代码控制系统已经是必备技能了（当然，还有本文的<a href="https://zh.wikipedia.org/wiki/Markdown">MarkDown</a>），而日常工作中的你是否只停留在无尽的 <code>pull</code> 与 <code>push</code> 中呢？</p>
+<p>下面就来介绍 Git 中的几种实用命令，相信会对你今后可能遇到的实际工作场景带来实质性的效率提升。</p>
+<p>介绍命令之前，首先我们先需要了解下 Git 中<strong>操作区域</strong>的概念。</p>
+<h2 id="操作区域"><a href="#操作区域" class="headerlink" title="操作区域"></a>操作区域</h2><p>Git 的操作区域和 <a href="https://zh.wikipedia.org/wiki/Vi">vi</a> 中的缓冲区的概念很类似，不同的 Git 命令会在不同的操作区域中工作。</p>
 <p><img src="/images/2016/12/git01.png" alt="操作区域"></p>
-<p>如图所示，Git的<code>add</code>操作会将文件的修改记录保存在==暂存区==，之后进行的<code>commit</code>操作会将暂存区的修改内容全部提交到==历史区==，最后进行的<code>push</code>操作将会把本地的操作记录推送到==远程仓库==中去。<br>之所以此处远程库的背景色使用了暗色调，是因为推送到远程库的代码是需要你“负责”的，一旦发布即是历史的诞生，请对<code>push</code>的操作保持敬畏和责任感。同时这里也牵涉到Git中<strong>提交哲学</strong>的概念。</p>
+<p>如图所示，Git的 <code>add</code> 操作会将文件的修改记录保存在<strong>暂存区</strong>，之后进行的 <code>commit</code> 操作会将暂存区的修改内容全部提交到<strong>历史区</strong>，最后进行的 <code>push</code> 操作将会把本地的操作记录推送到<strong>远程仓库</strong>中去。<br>之所以此处远程库的背景色使用了暗色调，是因为推送到远程库的代码是需要你“负责”的，一旦发布即是历史的诞生，请对 <code>push</code> 的操作保持敬畏和责任感。同时这里也牵涉到 Git 中<strong>提交哲学</strong>的概念。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/22/tricky-git-tips/#more" rel="contents">
