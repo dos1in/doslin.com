@@ -104,7 +104,8 @@
 <meta property="og:image" content="http://doslin.com/images/2017/07/jni-header.png">
 <meta property="og:image" content="http://doslin.com/images/2017/07/jni-lib.png">
 <meta property="og:image" content="http://doslin.com/images/2017/07/jni-result.png">
-<meta property="og:updated_time" content="2017-07-17T01:00:53.000Z">
+<meta property="og:image" content="http://doslin.com/images/2017/07/jni-all.png">
+<meta property="og:updated_time" content="2017-07-17T02:18:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JNI与NDK入门之一">
 <meta name="twitter:description" content="概念Android 系统架构中包含了 Applications （应用程序层）、Application framework（应用程序框架层）、Libraries + Android runtime（系统运行库层）以及 Linux Kernel（Linux核心层）。从编程语言的角度看，每层的功能模块都是使用相应的语言编写的，在此过程中，C/C++ 与 Java相互通信时就需要一个媒介来联系起来，JN">
@@ -409,6 +410,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java -Djava.library.path=. HelloJNI</div></pre></td></tr></table></figure>
 <p><img src="/images/2017/07/jni-result.png" alt="JNI 调用成功"></p>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>最后，我们总结一下 Java 本地方法如何通过 JNI 链接至 C 函数的几个步骤：</p>
+<p><img src="/images/2017/07/jni-all.png" alt="JNI 流程"></p>
 <ol>
 <li>在 Java 类中声明本地方法</li>
 <li>使用 javah 命令，生成包含 JNI 本地函数原型的头文件</li>
