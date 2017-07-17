@@ -14,7 +14,8 @@ NexT.utils = NexT.$u = {
         var $imageWrapLink = $image.parent('a');
 
         if ($imageWrapLink.size() < 1) {
-          $imageWrapLink = $image.wrap('<a href="' + this.getAttribute('src') + '"></a>').parent('a');
+	        var imageLink = ($image.attr('data-original')) ? this.getAttribute('data-original') : this.getAttribute('src');
+          $imageWrapLink = $image.wrap('<a href="' + imageLink + '"></a>').parent('a');
         }
 
         $imageWrapLink.addClass('fancybox fancybox.image');
@@ -39,8 +40,9 @@ NexT.utils = NexT.$u = {
 
   lazyLoadPostsImages: function () {
     $('#posts').find('img').lazyload({
-      placeholder: '/images/loading.gif',
-      effect: 'fadeIn'
+      //placeholder: '/images/loading.gif',
+      effect: 'fadeIn',
+      threshold : 0
     });
   },
 
@@ -64,11 +66,13 @@ NexT.utils = NexT.$u = {
       $top.toggleClass('back-to-top-on', window.pageYOffset > THRESHOLD);
 
       var scrollTop = $(window).scrollTop();
-      var docHeight = $(document).height();
+      var docHeight = $('#content').height();
       var winHeight = $(window).height();
-      var scrollPercent = (scrollTop) / (docHeight - winHeight);
+      var contentMath = (docHeight > winHeight) ? (docHeight - winHeight) : ($(document).height() - winHeight);
+      var scrollPercent = (scrollTop) / (contentMath);
       var scrollPercentRounded = Math.round(scrollPercent*100);
-      $('#scrollpercent>span').html(scrollPercentRounded);
+      var scrollPercentMaxed = (scrollPercentRounded > 100) ? 100 : scrollPercentRounded;
+      $('#scrollpercent>span').html(scrollPercentMaxed);
     });
 
     $top.on('click', function () {
@@ -161,7 +165,7 @@ NexT.utils = NexT.$u = {
   addActiveClassToMenuItem: function () {
     var path = window.location.pathname;
     path = path === '/' ? path : path.substring(0, path.length - 1);
-    $('.menu-item a[href="' + path + '"]').parent().addClass('menu-item-active');
+    $('.menu-item a[href^="' + path + '"]:first').parent().addClass('menu-item-active');
   },
 
   hasMobileUA: function () {

@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 
 
 
@@ -10,6 +10,12 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
 
 
 
@@ -68,19 +74,19 @@
 
 <link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
-
-
-
+  <meta name="keywords" content="DosLin, Android" />
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
 
 
 
@@ -101,11 +107,11 @@
   var CONFIG = {
     root: '/',
     scheme: 'Mist',
-    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
     motion: true,
     duoshuo: {
-      userId: '6396896484171711000',
+      userId: '0',
       author: '博主'
     },
     algolia: {
@@ -126,11 +132,7 @@
 
 
 
-  <title> DosLin's Blog </title>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
-
+  <title>DosLin's Blog</title>
   
 
 
@@ -145,13 +147,17 @@
 
 
 
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
     
   
 
-  <div class="container one-collumn sidebar-position-left 
+  <div class="container sidebar-position-left 
    page-home 
  ">
     <div class="headband"></div>
@@ -200,7 +206,7 @@
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
+          <a href="/archives/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
@@ -210,7 +216,7 @@
       
         
         <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
+          <a href="/tags/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
@@ -265,16 +271,8 @@
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/07/17/jni-ndk-tutorial-start/" itemprop="url">
-                  JNI与NDK入门之一
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/07/17/jni-ndk-tutorial-start/" itemprop="url">JNI与NDK入门之一</a></h1>
         
 
         <div class="post-meta">
@@ -328,7 +326,8 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2017/07/17/jni-ndk-tutorial-start/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/07/17/jni-ndk-tutorial-start/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/07/17/jni-ndk-tutorial-start/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -346,7 +345,6 @@
         </div>
       </header>
     
-
 
     <div class="post-body" itemprop="articleBody">
 
@@ -382,6 +380,9 @@
       
     </div>
 
+    <div>
+      
+    </div>
 
     <footer class="post-footer">
       
@@ -426,16 +427,8 @@
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/03/27/android-building-from-source/" itemprop="url">
-                  3分钟从源码构建React Native
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/03/27/android-building-from-source/" itemprop="url">3分钟从源码构建React Native</a></h1>
         
 
         <div class="post-meta">
@@ -489,7 +482,8 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2017/03/27/android-building-from-source/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/27/android-building-from-source/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/03/27/android-building-from-source/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -507,7 +501,6 @@
         </div>
       </header>
     
-
 
     <div class="post-body" itemprop="articleBody">
 
@@ -548,6 +541,9 @@
       
     </div>
 
+    <div>
+      
+    </div>
 
     <footer class="post-footer">
       
@@ -592,16 +588,8 @@
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2017/03/15/react-native-source-code-analysis/" itemprop="url">
-                  20分钟理解React Native For Android原理
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2017/03/15/react-native-source-code-analysis/" itemprop="url">20分钟理解React Native For Android原理</a></h1>
         
 
         <div class="post-meta">
@@ -655,7 +643,8 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2017/03/15/react-native-source-code-analysis/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/15/react-native-source-code-analysis/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/03/15/react-native-source-code-analysis/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -673,7 +662,6 @@
         </div>
       </header>
     
-
 
     <div class="post-body" itemprop="articleBody">
 
@@ -715,6 +703,9 @@
       
     </div>
 
+    <div>
+      
+    </div>
 
     <footer class="post-footer">
       
@@ -759,16 +750,8 @@
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2016/12/22/tricky-git-tips/" itemprop="url">
-                  Tricky Git Tips
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2016/12/22/tricky-git-tips/" itemprop="url">Tricky Git Tips</a></h1>
         
 
         <div class="post-meta">
@@ -822,7 +805,8 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2016/12/22/tricky-git-tips/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/22/tricky-git-tips/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/12/22/tricky-git-tips/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -840,7 +824,6 @@
         </div>
       </header>
     
-
 
     <div class="post-body" itemprop="articleBody">
 
@@ -879,6 +862,9 @@
       
     </div>
 
+    <div>
+      
+    </div>
 
     <footer class="post-footer">
       
@@ -923,16 +909,8 @@
         
         
           <h1 class="post-title" itemprop="name headline">
-            
-            
-              
                 
-                <a class="post-title-link" href="/2016/10/08/embedded-react-native-in-app-android/" itemprop="url">
-                  弹射起步：Android原生项目集成React Native模块
-                </a>
-              
-            
-          </h1>
+                <a class="post-title-link" href="/2016/10/08/embedded-react-native-in-app-android/" itemprop="url">弹射起步：Android原生项目集成React Native模块</a></h1>
         
 
         <div class="post-meta">
@@ -986,7 +964,8 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2016/10/08/embedded-react-native-in-app-android/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/10/08/embedded-react-native-in-app-android/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/10/08/embedded-react-native-in-app-android/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1004,7 +983,6 @@
         </div>
       </header>
     
-
 
     <div class="post-body" itemprop="articleBody">
 
@@ -1039,6 +1017,9 @@
       
     </div>
 
+    <div>
+      
+    </div>
 
     <footer class="post-footer">
       
@@ -1060,7 +1041,7 @@
 
   
 
-          
+
           </div>
           
 
@@ -1080,6 +1061,7 @@
   </div>
 
   <aside id="sidebar" class="sidebar">
+    
     <div class="sidebar-inner">
 
       
@@ -1100,7 +1082,7 @@
 
           
             <div class="site-state-item site-state-posts">
-              <a href="/archives">
+              <a href="/archives/">
                 <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">日志</span>
               </a>
@@ -1217,7 +1199,7 @@
         
       </div>
     
-    
+
   </div>
 
   
@@ -1237,6 +1219,16 @@
 
 
   
+
+
+  
+
+
+
+
+
+
+
 
 
 
@@ -1259,62 +1251,16 @@
   
   <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
-
   
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
-
-
-
-  
-  
-
-  
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
-
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
 
 
   
 
 
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
 
-  
-
-    <script type="text/javascript">
-      var disqus_shortname = 'doslin';
-      var disqus_identifier = 'index.html';
-
-      var disqus_title = "";
-
-
-      function run_disqus_script(disqus_script) {
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-      }
-
-      run_disqus_script('count.js');
-
-      
-
-    </script>
-  
-
-
-
-
-
-
-
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
 
 
 
@@ -1322,6 +1268,54 @@
   
 
   
+    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://doslin.disqus.com/count.js" async></script>
+    
+
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
 
   
 
@@ -1329,6 +1323,9 @@
 
   
 
+  
+
+  
 
   
 

@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 
 
 
@@ -10,6 +10,12 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
 
 
 
@@ -68,7 +74,7 @@
 
 <link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
   <meta name="keywords" content="git," />
@@ -80,7 +86,7 @@
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
 
 
 
@@ -129,11 +135,11 @@
   var CONFIG = {
     root: '/',
     scheme: 'Mist',
-    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
     motion: true,
     duoshuo: {
-      userId: '6396896484171711000',
+      userId: '0',
       author: '博主'
     },
     algolia: {
@@ -154,11 +160,7 @@
 
 
 
-  <title> Tricky Git Tips | DosLin's Blog </title>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
-
+  <title>Tricky Git Tips | DosLin's Blog</title>
   
 
 
@@ -173,13 +175,17 @@
 
 
 
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -226,7 +232,7 @@
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
+          <a href="/archives/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
@@ -236,7 +242,7 @@
       
         
         <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
+          <a href="/tags/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
@@ -290,14 +296,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                Tricky Git Tips
-              
-            
-          </h1>
+          <h1 class="post-title" itemprop="name headline">Tricky Git Tips</h1>
         
 
         <div class="post-meta">
@@ -351,7 +350,8 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2016/12/22/tricky-git-tips/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/22/tricky-git-tips/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/12/22/tricky-git-tips/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -369,7 +369,6 @@
         </div>
       </header>
     
-
 
     <div class="post-body" itemprop="articleBody">
 
@@ -443,6 +442,12 @@
       
     </div>
 
+    <div>
+      
+        
+
+      
+    </div>
 
     <footer class="post-footer">
       
@@ -454,7 +459,7 @@
       
 
       
-        
+      
       
 
       
@@ -488,16 +493,10 @@
 
     <div class="post-spread">
       
-        <!-- Go to www.addthis.com/dashboard to customize your tools -->
-<div class="addthis_inline_share_toolbox">
-  <script type = "text/javascript" src = "//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-58c785b3bdb0e440" async = "async" ></script>
-</div>
-
-      
     </div>
   </div>
 
-          
+
           </div>
           
 
@@ -508,7 +507,7 @@
       <div id="disqus_thread">
         <noscript>
           Please enable JavaScript to view the
-          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
         </noscript>
       </div>
     
@@ -528,6 +527,7 @@
   </div>
 
   <aside id="sidebar" class="sidebar">
+    
     <div class="sidebar-inner">
 
       
@@ -557,7 +557,7 @@
 
           
             <div class="site-state-item site-state-posts">
-              <a href="/archives">
+              <a href="/archives/">
                 <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">日志</span>
               </a>
@@ -690,7 +690,7 @@
         
       </div>
     
-    
+
   </div>
 
   
@@ -710,6 +710,16 @@
 
 
   
+
+
+  
+
+
+
+
+
+
+
 
 
 
@@ -732,65 +742,69 @@
   
   <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
-
   
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
-
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
 
 
   
 
 
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
 
 
 
   
 
 
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
 
   
 
-    <script type="text/javascript">
-      var disqus_shortname = 'doslin';
-      var disqus_identifier = '2016/12/22/tricky-git-tips/';
 
-      var disqus_title = "Tricky Git Tips";
+  
 
+    
+      <script id="dsq-count-scr" src="https://doslin.disqus.com/count.js" async></script>
+    
 
-      function run_disqus_script(disqus_script) {
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-      }
-
-      run_disqus_script('count.js');
-
-      
+    
+      <script type="text/javascript">
         var disqus_config = function () {
-            this.page.url = disqus_url;
-            this.page.identifier = disqus_identifier;
-            this.page.title = disqus_title;
+          this.page.url = 'http://doslin.com/2016/12/22/tricky-git-tips/';
+          this.page.identifier = '2016/12/22/tricky-git-tips/';
+          this.page.title = 'Tricky Git Tips';
         };
-        run_disqus_script('embed.js');
-      
+        var d = document, s = d.createElement('script');
+        s.src = 'https://doslin.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
 
-    </script>
+  
+
+
+
+
+	
+
+
+
+
+
   
 
 
@@ -800,19 +814,21 @@
 
 
 
-
-
-  
   
 
-  
 
-  
+
+
 
   
 
   
 
+  
+
+  
+
+  
 
   
 
