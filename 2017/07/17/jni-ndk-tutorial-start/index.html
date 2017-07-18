@@ -105,7 +105,7 @@
 <meta property="og:image" content="http://doslin.com/images/2017/07/jni-lib.png">
 <meta property="og:image" content="http://doslin.com/images/2017/07/jni-result.png">
 <meta property="og:image" content="http://doslin.com/images/2017/07/jni-all.png">
-<meta property="og:updated_time" content="2017-07-18T08:11:53.000Z">
+<meta property="og:updated_time" content="2017-07-18T11:16:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JNI与NDK入门之一">
 <meta name="twitter:description" content="概念Android 系统架构中包含了 Applications （应用程序层）、Application framework（应用程序框架层）、Libraries + Android runtime（系统运行库层）以及 Linux Kernel（Linux核心层）。从编程语言的角度看，每层的功能模块都是使用相应的语言编写的，在此过程中，C/C++ 与 Java相互通信时就需要一个媒介来联系起来，JN">
@@ -410,7 +410,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">javac HelloJNI.java</div></pre></td></tr></table></figure>
 <p>此时直接运行 HelloJNI 会抛出<br><code>java.lang.UnsatisfiedLinkError</code> 的异常。</p>
 <p><img src="/images/2017/07/jni-run.png" alt="JNI 初步运行"></p>
-<h2 id="生成-C-语言头文件"><a href="#生成-C-语言头文件" class="headerlink" title="生成 C 语言头文件"></a>生成 C 语言头文件</h2><p>下面我们生成数原型将运行库中的 C 函数与Java 代码中的本地方法映射在一起。<br>函数原型存在于 C/C++ 的头文件中。我们使用 <code>javah</code> 来生成头文件：</p>
+<h2 id="生成-C-语言头文件"><a href="#生成-C-语言头文件" class="headerlink" title="生成 C 语言头文件"></a>生成 C 语言头文件</h2><p>下面我们生成数原型将运行库中的 C 函数与Java 代码中的本地方法映射在一起。<br>函数原型存在于 C/C++ 的头文件中。我们使用 <a href="https://docs.oracle.com/javase/8/docs/technotes/tools/unix/javah.html" target="_blank" rel="external"><code>javah</code></a> 来生成头文件：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">javah &lt;包含以 native 关键字声明的方法的 Java 类名称&gt;</div></pre></td></tr></table></figure>
 <p><img src="/images/2017/07/jni-header.png" alt="JNI 生成头文件"></p>
 <p>运行 <code>javah</code> 命令后，会在当前目录下生成与  Java 类名（即 javah 命令的参数）相同名称的 C 语言头文件。在这个 C 头文件中，定义了与 Java 本地方法相链接的 C 函数原型。</p>
