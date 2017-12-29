@@ -1,0 +1,31 @@
+language: node_js
+
+node_js: stable
+
+cache:
+    apt: true
+    directories:
+        - node_modules
+
+before_install:
+    - export TZ='Asia/Shanghai'
+    - npm install hexo-cli -g
+    - chmod +x ./publish-to-gh-pages.sh
+
+install:
+    - npm install
+
+script:
+    - hexo clean
+    - hexo g
+
+after_script:
+    - ./publish-to-gh-pages.sh
+
+branches:
+    only:
+        - hexo
+
+env:
+    global:
+        - GH_REF: github.com/JChord/jchord.github.io
