@@ -13,6 +13,8 @@ categories:
 
 Android 系统架构中包含了 Applications （应用程序层）、Application framework（应用程序框架层）、Libraries + Android runtime（系统运行库层）以及 Linux Kernel（Linux核心层）。从编程语言的角度看，每层的功能模块都是使用相应的语言编写的，在此过程中，C/C++ 与 Java相互通信时就需要一个媒介来联系起来，JNI（Java Native Interface） 就充当了这一角色，它允许 Java 代码和 基于 C/C++ 编写的应用程序、模块、库进行交互操作。
 
+<!--more-->
+
 ![JNI 原理](/images/2017/07/jni-env.png)
 
 # 使用情形
@@ -22,7 +24,7 @@ Android 系统架构中包含了 Applications （应用程序层）、Applicatio
 
     不管是 Dalvik 还是 Art 虚拟机上，Java 代码的运行速度在一些情况下还是无法媲美使用 C/C++ 来开发的应用程序，特别是在开发图形处理或信号处理这类对 CPU 处理速度有较高要求的程序。我们可以使用 C/C++ 这类本地语言开发，再在 Java 中 借助JNI 将 Java 程序与 C/C++ 模块连接在一起，从而开发出一个执行效率更高的程序。
 
-<!--more-->
+
 
 - 复用 C/C++代码
 
