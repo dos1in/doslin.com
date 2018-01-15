@@ -11,7 +11,7 @@
     padding: 3px;
   }
   .post-category-list-link { color: $grey-dark; }
-  
+
   .post-description {
     font-size: 14px;
     margin-top: 2px;
@@ -19,7 +19,7 @@
 }
 
 .post-wordcount {
-  display: inline-block;
+  if !hexo-config('symbols_count_time.separated_meta') { display: inline-block; }
 }
 
 .post-meta-divider {

@@ -3,12 +3,22 @@
   {% set headlessPost = Array.prototype.indexOf.call(['quote', 'picture'], post.type) > -1 %}
 
   {% set post_class = 'post post-type-' + post.type | default('normal') %}
-  {% set post_class = post_class + ' ' + post_extra_class | default('') %}
+  {% if post_extra_class > 0 %}
+    {% set post_class = post_class + ' ' + post_extra_class | default('') %}
+  {% endif %}
   {% if post.sticky > 0 %}
     {% set post_class = post_class + ' ' + 'post-sticky' %}
   {% endif %}
 
+  {% if theme.reading_progress.enable %}
+    <div class="reading-progress-bar"></div>
+  {% endif %}
+
   <article class="{{ post_class }}" itemscope itemtype="http://schema.org/Article">
+  {##################}
+  {### POST BLOCK ###}
+  {##################}
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="{{ config.url }}{{ url_for(post.path) }}">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -26,7 +36,7 @@
 
         {# Not to show title for quote posts that do not have a title #}
         {% if not (is_index and post.type === 'quote' and not post.title) %}
-          <{% if theme.seo %}h2{% else %}h1{% endif %} class="post-title" itemprop="name headline">{#
+          <{% if theme.seo %}h2{% else %}h1{% endif %} class="post-title{% if post.direction && post.direction.toLowerCase() === 'rtl' %} rtl{% endif %}" itemprop="name headline">{#
           #}{# Link posts #}{#
           #}{% if post.link %}
               {% if post.sticky > 0 %}
@@ -63,9 +73,9 @@
               {% if theme.post_meta.item_text %}
                 <span class="post-meta-item-text">{{ __('post.posted') }}</span>
               {% endif %}
-              <time title="{{ __('post.created') }}" itemprop="dateCreated datePublished" datetime="{{ moment(post.date).format() }}">
-                {{ date(post.date, config.date_format) }}
-              </time>
+              <time title="{{ __('post.created') }}" itemprop="dateCreated datePublished" datetime="{{ moment(post.date).format() }}">{#
+              #}{{ date(post.date, config.date_format) }}{#
+            #}</time>
             {% endif %}
 
             {% if theme.post_meta.created_at and theme.post_meta.updated_at %}
@@ -77,11 +87,11 @@
                 <i class="fa fa-calendar-check-o"></i>
               </span>
               {% if theme.post_meta.item_text %}
-                <span class="post-meta-item-text">{{ __('post.modified') }}</span>
+                <span class="post-meta-item-text">{{ __('post.modified') }}&#58;</span>
               {% endif %}
-              <time title="{{ __('post.modified') }}" itemprop="dateModified" datetime="{{ moment(post.updated).format() }}">
-                {{ date(post.updated, config.date_format) }}
-              </time>
+              <time title="{{ __('post.modified') }}" itemprop="dateModified" datetime="{{ moment(post.updated).format() }}">{#
+              #}{{ date(post.updated, config.date_format) }}{#
+            #}</time>
             {% endif %}
           </span>
 
@@ -112,17 +122,7 @@
           {% endif %}
 
           {% if post.comments %}
-            {% if (theme.duoshuo and theme.duoshuo.shortname) or theme.duoshuo_shortname %}
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="{{ url_for(post.path) }}#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="{{ post.path }}" itemprop="commentCount"></span>
-                </a>
-              </span>
-            {% elseif theme.facebook_comments_plugin.enable %}
+            {% if theme.facebook_comments_plugin.enable %}
               <span class="post-comments-count">
                 <span class="post-meta-divider">|</span>
                 <span class="post-meta-item-icon">
@@ -170,6 +170,26 @@
                   <span id="url::{{ post.permalink }}" class="cy_cmt_count" data-xid="{{ post.path }}" itemprop="commentsCount" ></span>
                 </a>
               {% endif %}
+            {% elseif is_post() and theme.gitment.enable and theme.gitment.mint and theme.gitment.count %}
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="{{ url_for(post.path) }}#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="{{ url_for(post.path) }}" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            {% elseif theme.valine.enable and theme.valine.appid and theme.valine.appkey %}
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="{{ url_for(post.path) }}#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="{{ url_for(post.path) }}" itemprop="commentCount"></span>
+                </a>
+              </span>
             {% endif %}
           {% endif %}
 
@@ -181,29 +201,11 @@
                  <i class="fa fa-eye"></i>
                </span>
                {% if theme.post_meta.item_text %}
-                 <span class="post-meta-item-text">{{__('post.visitors')}} </span>
+                 <span class="post-meta-item-text">{{__('post.visitors')}}&#58;</span>
                {% endif %}
                  <span class="leancloud-visitors-count"></span>
              </span>
           {% endif %}
-
-          <span class="post-time">
-               &nbsp; | &nbsp;
-              <span class="post-meta-item-text">阅读次数:</span>
-              <span id="busuanzi_value_page_pv" class="post-count">0</span>
-          </span> 
-
-          <span class="post-time">
-               &nbsp; | &nbsp;
-              <span class="post-meta-item-text">字数统计:</span>
-              <span class="post-count">{{ wordcount(post.content) }}字</span>
-          </span> 
-
-          <span class="post-time">
-                    &nbsp; | &nbsp;
-              <span class="post-meta-item-text">阅读时长:</span>
-              <span class="post-count">{{ min2read(post.content) }}分</span>
-          </span>
 
           {% if not is_index and theme.busuanzi_count.enable and theme.busuanzi_count.page_pv %}
             <span class="post-meta-divider">|</span>
@@ -212,37 +214,38 @@
             </span>
           {% endif %}
 
-          {% if theme.post_wordcount.wordcount or theme.post_wordcount.min2read %}
+          {% if config.symbols_count_time.symbols or config.symbols_count_time.time %}
             <div class="post-wordcount">
-              {% if theme.post_wordcount.wordcount %}
-                {% if not theme.post_wordcount.separated_meta %}
-                  <span class="post-meta-divider">|</span>
-                {% endif %}
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                {% if theme.post_wordcount.item_text %}
-                  <span class="post-meta-item-text">{{ __('post.wordcount') }}</span>
-                {% endif %}
-                <span title="{{ __('post.wordcount') }}">
-                  {{ wordcount(post.content) }}
-                </span>
-              {% endif %}
-
-              {% if theme.post_wordcount.wordcount and theme.post_wordcount.min2read %}
+              {% if not theme.symbols_count_time.separated_meta %}
                 <span class="post-meta-divider">|</span>
               {% endif %}
 
-              {% if theme.post_wordcount.min2read %}
+              {% if config.symbols_count_time.symbols %}
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                {% if theme.symbols_count_time.item_text_post %}
+                  <span class="post-meta-item-text">{{ __('post.wordcount') }}&#58;</span>
+                {% endif %}
+                <span title="{{ __('post.wordcount') }}">{#
+                #}{{ symbolsCount(post.content) }}{#
+              #}</span>
+              {% endif %}
+
+              {% if config.symbols_count_time.symbols and config.symbols_count_time.time %}
+                <span class="post-meta-divider">|</span>
+              {% endif %}
+
+              {% if config.symbols_count_time.time %}
                 <span class="post-meta-item-icon">
                   <i class="fa fa-clock-o"></i>
                 </span>
-                {% if theme.post_wordcount.item_text %}
-                  <span class="post-meta-item-text">{{ __('post.min2read') }}</span>
+                {% if theme.symbols_count_time.item_text_post %}
+                  <span class="post-meta-item-text">{{ __('post.min2read') }} &asymp;</span>
                 {% endif %}
-                <span title="{{ __('post.min2read') }}">
-                  {{ min2read(post.content) }}
-                </span>
+                <span title="{{ __('post.min2read') }}">{#
+                #}{{ symbolsTime(post.content, theme.symbols_count_time.awl, theme.symbols_count_time.wpm) }}{#
+              #}</span>
               {% endif %}
             </div>
           {% endif %}
@@ -257,7 +260,10 @@
       </header>
     {% endif %}
 
-    <div class="post-body{% if theme.han %} han-init-context{% endif %}" itemprop="articleBody">
+    {#################}
+    {### POST BODY ###}
+    {#################}
+    <div class="post-body{% if theme.han %} han-init-context{% endif %}{% if post.direction && post.direction.toLowerCase() === 'rtl' %} rtl{% endif %}" itemprop="articleBody">
 
       {# Gallery support #}
       {% if post.photos and post.photos.length %}
@@ -319,24 +325,27 @@
         {{ post.content }}
       {% endif  %}
     </div>
+    {#####################}
+    {### END POST BODY ###}
+    {#####################}
 
-    <div>
-      {% if not is_index %}
+    {% if theme.wechat_subscriber.enabled and not is_index %}
+      <div>
         {% include 'wechat-subscriber.swig' %}
-      {% endif %}
-    </div>
+      </div>
+    {% endif %}
 
-    <div>
-      {% if not is_index %}
+    {% if (theme.alipay or theme.wechatpay or theme.bitcoin) and not is_index %}
+      <div>
         {% include 'reward.swig' %}
-      {% endif %}
-    </div>
+      </div>
+    {% endif %}
 
-    <div>
-      {% if not is_index %}
+    {% if theme.post_copyright.enable and not is_index %}
+      <div>
         {% include 'post-copyright.swig' with { post: post } %}
-      {% endif %}
-    </div>
+      </div>
+    {% endif %}
 
     <footer class="post-footer">
       {% if post.tags and post.tags.length and not is_index %}
@@ -348,7 +357,7 @@
       {% endif %}
 
       {% if not is_index %}
-      {% if theme.rating.enable or (theme.vkontakte_api.enable and theme.vkontakte_api.like) or (theme.facebook_sdk.enable and theme.facebook_sdk.like_button) %}
+      {% if theme.rating.enable or (theme.vkontakte_api.enable and theme.vkontakte_api.like) or (theme.facebook_sdk.enable and theme.facebook_sdk.like_button) or (theme.needmoreshare2.enable and theme.needmoreshare2.postbottom.enable) %}
         <div class="post-widgets">
         {% if theme.rating.enable %}
           <div class="wp_rating">
@@ -369,6 +378,17 @@
                 <div class="fb-like" data-layout="button_count" data-share="true"></div>
               </div>
             {% endif %}
+          </div>
+        {% endif %}
+
+        {% if theme.needmoreshare2.enable and theme.needmoreshare2.postbottom.enable %}
+          {% if (theme.vkontakte_api.enable and theme.vkontakte_api.like) or (theme.facebook_sdk.enable and theme.facebook_sdk.like_button) %}
+            <span class="post-meta-divider">|</span>
+          {% endif %}
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
           </div>
         {% endif %}
         </div>
@@ -402,6 +422,10 @@
         <div class="post-eof"></div>
       {% endif %}
     </footer>
+  </div>
+  {######################}
+  {### END POST BLOCK ###}
+  {######################}
   </article>
 
 {% endmacro %}
