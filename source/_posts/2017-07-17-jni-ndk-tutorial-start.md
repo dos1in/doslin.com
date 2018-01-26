@@ -9,7 +9,7 @@ categories:
     - android
 ---
 
-# 概念
+# 概述
 
 Android 系统架构中包含了 Applications （应用程序层）、Application framework（应用程序框架层）、Libraries + Android runtime（系统运行库层）以及 Linux Kernel（Linux核心层）。从编程语言的角度看，每层的功能模块都是使用相应的语言编写的，在此过程中，C/C++ 与 Java相互通信时就需要一个媒介来联系起来，JNI（Java Native Interface） 就充当了这一角色，它允许 Java 代码和 基于 C/C++ 编写的应用程序、模块、库进行交互操作。
 
@@ -203,3 +203,5 @@ java -Djava.library.path=. HelloJNI
 3. 实现 JNI 本地函数
 4. 生成 C 共享库
 5. 通过 JNI 调用 JNI 本地函数
+
+
