@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"doslin.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="概述移动端 APP 的热修复技术已经出来了很多年，Android 方面的解决方案也有很多（iOS 已经被苹果官方叫停），比如手淘的 Sophix，微信的 Tinker 等等，他们都能做到代码修复、资源修复以及 SO 文件修复，这里的「修复」也即意味着「替换」。在接入细节、即时生效或者性能损耗等等的一些方面上，两者存在着一些差异，我们这里不做探讨，本文主要关注的是类文件是如何被替换的并且给出一个简易">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tinker 热修复原理及手写实现">
+<meta property="og:url" content="http://doslin.com/2018/01/25/hotfix-principle-of-tinker/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="概述移动端 APP 的热修复技术已经出来了很多年，Android 方面的解决方案也有很多（iOS 已经被苹果官方叫停），比如手淘的 Sophix，微信的 Tinker 等等，他们都能做到代码修复、资源修复以及 SO 文件修复，这里的「修复」也即意味着「替换」。在接入细节、即时生效或者性能损耗等等的一些方面上，两者存在着一些差异，我们这里不做探讨，本文主要关注的是类文件是如何被替换的并且给出一个简易">
+<meta property="og:locale">
+<meta property="og:image" content="http://doslin.com/images/2018/01/hotfix_1.png">
+<meta property="og:image" content="http://doslin.com/images/2018/01/hotfix_2.png">
+<meta property="og:image" content="http://doslin.com/images/2018/01/hotfix_3.png">
+<meta property="article:published_time" content="2018-01-25T06:29:36.000Z">
+<meta property="article:modified_time" content="2023-05-12T04:22:08.096Z">
+<meta property="article:author" content="DosLin">
+<meta property="article:tag" content="hotfix">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://doslin.com/images/2018/01/hotfix_1.png">
+
+
+<link rel="canonical" href="http://doslin.com/2018/01/25/hotfix-principle-of-tinker/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://doslin.com/2018/01/25/hotfix-principle-of-tinker/","path":"2018/01/25/hotfix-principle-of-tinker/","title":"Tinker 热修复原理及手写实现"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Tinker 热修复原理及手写实现 | DosLin's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DosLin's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ClassLoader"><span class="nav-number">3.</span> <span class="nav-text">ClassLoader</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%89%98%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">双亲委托模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF"><span class="nav-number">5.</span> <span class="nav-text">实现思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Multidex-%E5%88%86%E5%8C%85"><span class="nav-number">6.</span> <span class="nav-text">Multidex 分包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E4%BB%A3%E7%A0%81"><span class="nav-number">7.</span> <span class="nav-text">核心代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E5%A4%8D%E8%BF%87%E7%A8%8B"><span class="nav-number">8.</span> <span class="nav-text">修复过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2-DEX"><span class="nav-number">8.1.</span> <span class="nav-text">转换 DEX</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">8.2.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E5%AE%83"><span class="nav-number">9.</span> <span class="nav-text">其它</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">10.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https:&#x2F;&#x2F;github.com&#x2F;JChord" rel="noopener me" target="_blank"><i class="github fa-fw"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener me" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2018/01/25/hotfix-principle-of-tinker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Tinker 热修复原理及手写实现 | DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Tinker 热修复原理及手写实现
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-01-25 14:29:36" itemprop="dateCreated datePublished" datetime="2018-01-25T14:29:36+08:00">2018-01-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/android/" itemprop="url" rel="index"><span itemprop="name">android</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>移动端 APP 的热修复技术已经出来了很多年，Android 方面的解决方案也有很多（iOS 已经被苹果官方叫停），比如手淘的 <a target="_blank" rel="noopener" href="https://help.aliyun.com/document_detail/53240.html">Sophix</a>，微信的 <a target="_blank" rel="noopener" href="https://github.com/Tencent/tinker">Tinker</a> 等等，他们都能做到代码修复、资源修复以及 SO 文件修复，这里的「修复」也即意味着「替换」。在接入细节、即时生效或者性能损耗等等的一些方面上，两者存在着一些差异，我们这里不做探讨，本文主要关注的是类文件是如何被替换的并且给出一个简易的实现方案。</p>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p>目前实现代码修复主要有两种方式：native 底层替换和类加载替换。</p>
+<p>前者的特点是修复粒度小，但有稳定性问题（Sophix 已解决），局限性在于不适用于类结构发生变化的修改和修复了的非静态方法被反射调用，它的优点是能即时生效。原理是通过对底层的 ArtMethod 结构体进行完整替换来实现。</p>
+<p>后者的特性是修复粒度大，稳定性和兼容性较好，但改动需要冷启动才能生效。原理是在 APP 重新启动后让类加载器 Classloader 去加载新替换的类来实现改动。本文的热修复就是这种思路来实现。</p>
+<p>那么问题来了，Android 中的类加载器是什么呢？</p>
+<span id="more"></span>
+
+<h1 id="ClassLoader"><a href="#ClassLoader" class="headerlink" title="ClassLoader"></a>ClassLoader</h1><p>通过参考 Android 开发者官网上的 <a target="_blank" rel="noopener" href="https://developer.android.com/reference/java/lang/ClassLoader.html">ClassLoader</a> 的文档说明我们可以一窥究竟。</p>
+<p>父类是 <a target="_blank" rel="noopener" href="http://androidxref.com/8.0.0_r4/xref/libcore/ojluni/src/main/java/java/lang/ClassLoader.java">ClassLoader</a>，它的子类有点多，我们来画个图捋一捋关系。</p>
+<p><img src="/images/2018/01/hotfix_1.png" alt="ClassLoader关系图"></p>
+<p>注意图中我们高亮的部分，我们主要用到了两种类加载器 <a target="_blank" rel="noopener" href="http://androidxref.com/8.0.0_r4/xref/libcore/dalvik/src/main/java/dalvik/system/PathClassLoader.java">PathClassLoader</a> 和 <a target="_blank" rel="noopener" href="http://androidxref.com/8.0.0_r4/xref/libcore/dalvik/src/main/java/dalvik/system/DexClassLoader.java">DexClassLoader</a>。</p>
+<p>源码很简单：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// PathClassLoader</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PathClassLoader</span> <span class="keyword">extends</span> <span class="title class_">BaseDexClassLoader</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">PathClassLoader</span><span class="params">(String dexPath, ClassLoader parent)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(dexPath, <span class="literal">null</span>, <span class="literal">null</span>, parent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">PathClassLoader</span><span class="params">(String dexPath, String librarySearchPath, ClassLoader parent)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(dexPath, <span class="literal">null</span>, librarySearchPath, parent);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// DexClassLoader</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DexClassLoader</span> <span class="keyword">extends</span> <span class="title class_">BaseDexClassLoader</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">DexClassLoader</span><span class="params">(String dexPath, String optimizedDirectory,</span></span><br><span class="line"><span class="params">            String librarySearchPath, ClassLoader parent)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(dexPath, <span class="keyword">new</span> <span class="title class_">File</span>(optimizedDirectory), librarySearchPath, parent);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>他们的区别是：</p>
+<ol>
+<li>PathClassLoader：是 Android 应用中默认的类加载器，只能加载已经安装到 Android 系统中的apk文件（&#x2F;data&#x2F;app目录下，解压为 dex 后优化为 odex）。</li>
+<li>DexClassLoader：可以加载路径下的 dex&#x2F;jar&#x2F;apk&#x2F;zip 文件，比 PathClassLoader 更灵活，是实现热修复的关键。</li>
+</ol>
+<p>那我们如何将新的 DEX 文件插入到上述的类加载器中呢？观察它们的父类<a target="_blank" rel="noopener" href="http://androidxref.com/8.0.0_r4/xref/libcore/ojluni/src/main/java/java/lang/ClassLoader.java">BootClassLoader</a>，可以发现有个成员变量 <a target="_blank" rel="noopener" href="http://androidxref.com/8.0.0_r4/xref/libcore/dalvik/src/main/java/dalvik/system/DexPathList.java">DexPathList</a>，它的属性中有一个 dex 数组，也就是说我们只要将替换的类添加到 <code>dexElements</code> 前面即可，这样类加载器跟据双亲委托模型（Parent Delegation Model）的机制就会使用先找到的类。</p>
+<h1 id="双亲委托模型"><a href="#双亲委托模型" class="headerlink" title="双亲委托模型"></a>双亲委托模型</h1><p>当类加载器收到加载类或资源的请求时，通常都是先委托给父类加载器加载，也就是说只有当父类加载器找不到指定类或资源时，自身才会执行实际的类加载过程，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String className, <span class="type">boolean</span> resolve) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">    <span class="comment">// 首先从已经加载的类中查找</span></span><br><span class="line">    Class&lt;?&gt; clazz = findLoadedClass(className);</span><br><span class="line">    <span class="keyword">if</span> (clazz == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="type">ClassNotFoundException</span> <span class="variable">suppressed</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 如果没有加载过，先调用父加载器的 loadClass</span></span><br><span class="line">            clazz = parent.loadClass(className, <span class="literal">false</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">            suppressed = e;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (clazz == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 父加载器都没有加载，则尝试自己去加载</span></span><br><span class="line">                clazz = findClass(className);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                e.addSuppressed(suppressed);</span><br><span class="line">                <span class="keyword">throw</span> e;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> clazz;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一句话概括：ClassLoader 加载类时，先查看自身是否已经加载过该类，如果没有加载过会首先让父加载器去加载，如果父加载器无法加载该类时才会调用自身的 <code>findClass</code> 方法加载，该逻辑避免了类的重复加载。所以我们所要实现的就是把要替换的类可见性提前，这样类加载器就会优先找到修复过的类。</p>
+<h1 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h1><p>好了，根据上述的铺垫，我们总结一下热修复的实现过程：</p>
+<p>1、PathClassLoader 作为默认的类加载器，也就是第一个 DEX 文件是 PathClassLoader 自动加载的。可以通过下述代码验证：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ClassLoader</span> <span class="variable">classLoader</span> <span class="operator">=</span> getClassLoader();</span><br><span class="line"><span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span> (classLoader != <span class="literal">null</span>)&#123;</span><br><span class="line">    Log.d(TAG, <span class="string">&quot;ClassLoader &quot;</span> + (i++) + <span class="string">&quot; : &quot;</span> + classLoader.toString());</span><br><span class="line">    classLoader = classLoader.getParent();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>控制台输出为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ClassLoader 0 : dalvik.system.PathClassLoader[DexPathList[[zip file.....]]]</span><br><span class="line">ClassLoader 1 : java.lang.BootClassLoader@4cf7d56</span><br></pre></td></tr></table></figure>
+
+<p>可以看到我们刚才提到的 DexPathList。所以，我们需要做的就是将其他的 DEX 文件注入到 PathClassLoader 中。</p>
+<p>2、通过前面的分析来看，我们知道 PathClassLoader 里面的 DEX 文件是存放在一个 Element 数组中，可以包含多个 DEX 文件，所以我们只需要通过反射获取 PathClassLoader 中的 DexPathList 中的Element数组（已加载了第一个dex包，由系统加载），将要替换的 DEX 文件放置到这个数组中去。</p>
+<p>3、将两个Element数组合并之后，再将其赋值给 PathClassLoader 的 Element 数组。</p>
+<p>刚才我们提到了进行热修复的原理就是要替换类文件，Android 的虚拟机（基于寄存器）与 Java 的虚拟机（基于栈）有些不同，它加载的不是 .class 字节码，而是 .dex 文件（可以通过 Google 提供的 dx 工具对 .class 文件转换得到），所以上面提到的替换类文件就是等于替换 DEX 文件。那么如何将要修复的 DEX 和主工程 DEX 分开呢？那就要用到 Multidex 进行处理。</p>
+<h1 id="Multidex-分包"><a href="#Multidex-分包" class="headerlink" title="Multidex 分包"></a>Multidex 分包</h1><p>由于 DexFormat.MAX_MEMBER_IDX 的最大值（0xFFFF）限制，Android 项目中的方法数目（包括 Android 框架、库函数、自己代码中的方法）不能超过 65536，而由于这个值等于 64 X 1024，所以又称之为 64k 问题。 一旦方法数过多，我们就需要进行分包处理，那么代码会分散到不同的 DEX 包中去。命名规则为 <code>classes.dex，classes2.dex，classes3.dex ...</code>。</p>
+<p>根据上述 Android 支持分包加载的特性，我们有没有可能手动指定分包逻辑呢？也就是把核心代码放到第一个 <code>classes.dex</code> 中，其余的业务代码和开源库放到剩下的 DEX 包中，由系统去处理。</p>
+<p>答案当然是肯定的，参考官方解决 64k 问题的文档，我们可以发现 Google 提供了 在 Gradle 中显式配置<code>multiDexKeepFile</code> 文件的方式，来实现指定哪些类我们需要保存到首个 DEX 文件中。</p>
+<p>详细过程不再赘述，请参考<a target="_blank" rel="noopener" href="https://developer.android.com/studio/build/multidex.html">官方文档</a>，我们对比下分包前后的效果：</p>
+<blockquote>
+<p>分包前：</p>
+</blockquote>
+<p><img src="/images/2018/01/hotfix_2.png" alt="分包前的结构"></p>
+<blockquote>
+<p>分包后：</p>
+</blockquote>
+<p><img src="/images/2018/01/hotfix_3.png" alt="分包后的结构"></p>
+<h1 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 系统的ClassLoader</span></span><br><span class="line"><span class="type">PathClassLoader</span> <span class="variable">pathClassLoader</span> <span class="operator">=</span> (PathClassLoader) context.getClassLoader();</span><br><span class="line"><span class="type">Class</span> <span class="variable">baseDexClazzLoader</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;dalvik.system.BaseDexClassLoader&quot;</span>);</span><br><span class="line"><span class="type">Field</span> <span class="variable">pathListFiled</span> <span class="operator">=</span> baseDexClazzLoader.getDeclaredField(<span class="string">&quot;pathList&quot;</span>);</span><br><span class="line">pathListFiled.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="type">Object</span> <span class="variable">pathListObject</span> <span class="operator">=</span> pathListFiled.get(pathClassLoader);</span><br><span class="line"></span><br><span class="line"><span class="type">Class</span> <span class="variable">systemPathClazz</span> <span class="operator">=</span> pathListObject.getClass();</span><br><span class="line"><span class="type">Field</span> <span class="variable">systemElementsField</span> <span class="operator">=</span> systemPathClazz.getDeclaredField(<span class="string">&quot;dexElements&quot;</span>);</span><br><span class="line">systemElementsField.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="type">Object</span> <span class="variable">systemElements</span> <span class="operator">=</span> systemElementsField.get(pathListObject);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义 ClassLoader</span></span><br><span class="line"><span class="type">DexClassLoader</span> <span class="variable">dexClassLoader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DexClassLoader</span>(dex.getAbsolutePath(), fopt.getAbsolutePath(), <span class="literal">null</span>, context.getClassLoader());</span><br><span class="line"><span class="type">Class</span> <span class="variable">myDexClazzLoader</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;dalvik.system.BaseDexClassLoader&quot;</span>);</span><br><span class="line"><span class="type">Field</span> <span class="variable">myPathListFiled</span> <span class="operator">=</span> myDexClazzLoader.getDeclaredField(<span class="string">&quot;pathList&quot;</span>);</span><br><span class="line">myPathListFiled.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="type">Object</span> <span class="variable">myPathListObject</span> <span class="operator">=</span> myPathListFiled.get(dexClassLoader);</span><br><span class="line"></span><br><span class="line"><span class="type">Class</span> <span class="variable">myPathClazz</span> <span class="operator">=</span> myPathListObject.getClass();</span><br><span class="line"><span class="type">Field</span> <span class="variable">myElementsField</span> <span class="operator">=</span> myPathClazz.getDeclaredField(<span class="string">&quot;dexElements&quot;</span>);</span><br><span class="line">myElementsField.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="type">Object</span> <span class="variable">myElements</span> <span class="operator">=</span> myElementsField.get(myPathListObject);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 合并数组</span></span><br><span class="line">Class&lt;?&gt; sigleElementClazz = systemElements.getClass().getComponentType();</span><br><span class="line"><span class="type">int</span> <span class="variable">systemLength</span> <span class="operator">=</span> Array.getLength(systemElements);</span><br><span class="line"><span class="type">int</span> <span class="variable">myLength</span> <span class="operator">=</span> Array.getLength(myElements);</span><br><span class="line"><span class="type">int</span> <span class="variable">newSystenLength</span> <span class="operator">=</span> systemLength + myLength;</span><br><span class="line"><span class="comment">// 生成一个新的 数组，类型为Element类型</span></span><br><span class="line"><span class="type">Object</span> <span class="variable">newElementsArray</span> <span class="operator">=</span> Array.newInstance(sigleElementClazz, newSystenLength);</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; newSystenLength; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (i &lt; myLength) &#123;</span><br><span class="line">        Array.set(newElementsArray, i, Array.get(myElements, i));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        Array.set(newElementsArray, i, Array.get(systemElements, i - myLength));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 覆盖新数组</span></span><br><span class="line"><span class="type">Field</span> <span class="variable">elementsField</span> <span class="operator">=</span> pathListObject.getClass().getDeclaredField(<span class="string">&quot;dexElements&quot;</span>);</span><br><span class="line">elementsField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">elementsField.set(pathListObject, newElementsArray);</span><br></pre></td></tr></table></figure>
+
+<h1 id="修复过程"><a href="#修复过程" class="headerlink" title="修复过程"></a>修复过程</h1><h2 id="转换-DEX"><a href="#转换-DEX" class="headerlink" title="转换 DEX"></a>转换 DEX</h2><p>那么如何得到修复后的 DEX 文件呢？Android SDK 中提供了 dx 工具类（放置在 &#x2F;build-tools&#x2F; 下）。</p>
+<p>命令格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dx --dex --output ./out.dex ./WaitToFix.class</span><br></pre></td></tr></table></figure>
+
+<p>可能会遇到下述问题：</p>
+<blockquote>
+<p>PARSE ERROR:<br>class name (com&#x2F;doslin&#x2F;hotfix&#x2F;WaitToFix) does not match path (WaitToFix.class)<br>…while parsing WaitToFix.class<br>1 error; aborting</p>
+</blockquote>
+<p>请将 WaitToFix 放置在相应的目录结构下（与包名一致）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dx --dex --output ./out.dex ./com/doslin/hotfix/WaitToFix.class</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>通过 adb 命令将 DEX 文件放置到存储卡中，然后点击 「Fix」，结束应用后重新打开即可发现修复完成。示例工程代码可以参考 <a target="_blank" rel="noopener" href="https://github.com/JChord/demo_hotfix">https://github.com/JChord/demo_hotfix</a>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb push out.dex /sdcard/</span><br></pre></td></tr></table></figure>
+
+<h1 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h1><p>由于 Tinker 已开源，想了解更多实现细节的同学可去它的代码仓库上浏览。虽然 Sophix 还没开源，但它的一些技术细节已经在阿里的「深入探索 Android 热修复技术原理」这个手册中已给出，可以通读一番。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://developer.android.com/studio/build/multidex.html">https://developer.android.com/studio/build/multidex.html</a><br><a target="_blank" rel="noopener" href="https://source.android.com/devices/tech/dalvik/dalvik-bytecode">https://source.android.com/devices/tech/dalvik/dalvik-bytecode</a><br><a target="_blank" rel="noopener" href="http://google.github.io/android-gradle-dsl/current/">http://google.github.io/android-gradle-dsl/current/</a><br><a target="_blank" rel="noopener" href="https://github.com/Tencent/tinker/wiki">https://github.com/Tencent/tinker/wiki</a><br><a target="_blank" rel="noopener" href="https://jaeger.itscoder.com/android/2016/08/27/android-classloader.html">https://jaeger.itscoder.com/android/2016/08/27/android-classloader.html</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/a67a560903fa">https://www.jianshu.com/p/a67a560903fa</a><br><a target="_blank" rel="noopener" href="http://jayfeng.com/2016/03/10/%E7%94%B1Android-65K%E6%96%B9%E6%B3%95%E6%95%B0%E9%99%90%E5%88%B6%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83/">http://jayfeng.com/2016/03/10/由Android-65K方法数限制引发的思考/</a><br><a target="_blank" rel="noopener" href="https://juejin.im/entry/5a370a6d51882521033456af">https://juejin.im/entry/5a370a6d51882521033456af</a><br><a target="_blank" rel="noopener" href="https://juejin.im/post/5a42f29ef265da43333eaba0">https://juejin.im/post/5a42f29ef265da43333eaba0</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hotfix/" rel="tag"># hotfix</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/01/03/jni-ndk-tutorial-fourth/" rel="prev" title="JNI与NDK入门之四">
+                  <i class="fa fa-chevron-left"></i> JNI与NDK入门之四
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/01/20/curried-function/" rel="next" title="简单理解柯里化函数">
+                  简单理解柯里化函数 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

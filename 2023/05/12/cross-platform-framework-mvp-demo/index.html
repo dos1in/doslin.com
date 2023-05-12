@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"doslin.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="What I cannot create, I do not understand.只要我不能创造的，我就还没有理解。                          —— Richard Phillips Feynman  目标 —— 渲染 HelloMax 页面 渲染效果">
+<meta property="og:type" content="article">
+<meta property="og:title" content="移动端跨平台框架 MVP">
+<meta property="og:url" content="http://doslin.com/2023/05/12/cross-platform-framework-mvp-demo/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="What I cannot create, I do not understand.只要我不能创造的，我就还没有理解。                          —— Richard Phillips Feynman  目标 —— 渲染 HelloMax 页面 渲染效果">
+<meta property="og:locale">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp01.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp02.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp03.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp04.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp05.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp06.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp07.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp08.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp09.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp10.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp11.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp12.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp13.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp14.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp15.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp16.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp17.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp18.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp19.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp20.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp21.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp22.png">
+<meta property="og:image" content="http://doslin.com/images/2023/05/mvp23.png">
+<meta property="article:published_time" content="2023-05-12T05:58:11.000Z">
+<meta property="article:modified_time" content="2023-05-12T06:20:43.203Z">
+<meta property="article:author" content="DosLin">
+<meta property="article:tag" content="demo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://doslin.com/images/2023/05/mvp01.png">
+
+
+<link rel="canonical" href="http://doslin.com/2023/05/12/cross-platform-framework-mvp-demo/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://doslin.com/2023/05/12/cross-platform-framework-mvp-demo/","path":"2023/05/12/cross-platform-framework-mvp-demo/","title":"移动端跨平台框架 MVP"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>移动端跨平台框架 MVP | DosLin's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DosLin's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87-%E2%80%94%E2%80%94-%E6%B8%B2%E6%9F%93-HelloMax-%E9%A1%B5%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">目标 —— 渲染 HelloMax 页面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E6%95%88%E6%9E%9C"><span class="nav-number">2.</span> <span class="nav-text">渲染效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%A8%E7%AB%AF%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">跨端方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-number">4.</span> <span class="nav-text">思路</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#QuickJS"><span class="nav-number"></span> <span class="nav-text">QuickJS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E4%B8%8B%E8%BD%BD%E4%B8%8E%E7%BC%96%E8%AF%91"><span class="nav-number">2.</span> <span class="nav-text">源码下载与编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API-%E6%A2%B3%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">API 梳理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8E-Android-%E5%B7%A5%E7%A8%8B%E9%9B%86%E6%88%90"><span class="nav-number">4.</span> <span class="nav-text">与 Android 工程集成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FFI-Foreign-Function-Interface-JNI"><span class="nav-number">4.1.</span> <span class="nav-text">FFI(Foreign Function Interface) - JNI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%BA%93"><span class="nav-number">4.2.</span> <span class="nav-text">动态库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%95%E6%93%8E%E6%96%B9%E6%B3%95%E7%9A%84%E5%B0%81%E8%A3%85%E4%B8%8E%E8%B0%83%E7%94%A8"><span class="nav-number">4.3.</span> <span class="nav-text">引擎方法的封装与调用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%85%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.</span> <span class="nav-text">待实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https:&#x2F;&#x2F;github.com&#x2F;JChord" rel="noopener me" target="_blank"><i class="github fa-fw"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener me" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2023/05/12/cross-platform-framework-mvp-demo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="移动端跨平台框架 MVP | DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          移动端跨平台框架 MVP
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-05-12 13:58:11" itemprop="dateCreated datePublished" datetime="2023-05-12T13:58:11+08:00">2023-05-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/framework/" itemprop="url" rel="index"><span itemprop="name">framework</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><blockquote>
+<p>What I cannot create, I do not understand.<br>只要我不能创造的，我就还没有理解。<br>                          —— Richard Phillips Feynman</p>
+</blockquote>
+<h2 id="目标-——-渲染-HelloMax-页面"><a href="#目标-——-渲染-HelloMax-页面" class="headerlink" title="目标 —— 渲染 HelloMax 页面"></a>目标 —— 渲染 HelloMax 页面</h2><p><img src="/images/2023/05/mvp01.png"></p>
+<h2 id="渲染效果"><a href="#渲染效果" class="headerlink" title="渲染效果"></a>渲染效果</h2><p><img src="/images/2023/05/mvp02.png"></p>
+<span id="more"></span>
+
+<h2 id="跨端方案"><a href="#跨端方案" class="headerlink" title="跨端方案"></a>跨端方案</h2><blockquote>
+<p>Any application that can be written in JavaScript, will eventually be written in JavaScript.<br>任何能被 JavaScript 编写的应用，最终都会用 JavaScript 实现。<br>                                                                              —— 阿特伍德定律</p>
+</blockquote>
+<p>目前业内主流的有 Flutter、ReactNative、Weex、小程序。</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>使用 JS 编写页面，最终映射到 Android 元素页面，并且做到组件类型、样式、布局以及事件的一一映射。</p>
+<h1 id="QuickJS"><a href="#QuickJS" class="headerlink" title="QuickJS"></a>QuickJS</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>作者：Fabrice Bellard</p>
+<blockquote>
+<p>高中时开发了可执行压缩程序 LZEXE</p>
+</blockquote>
+<blockquote>
+<p>1996年，编写了最快最小的 C 语言编译器 TinyCC</p>
+</blockquote>
+<blockquote>
+<p>1997年，提出了最快速的计算<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E5%9C%86%E5%91%A8%E7%8E%87&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:745850603%7D">圆周率</a>的算法，比传统的 BBQ 算法要快 47%</p>
+</blockquote>
+<blockquote>
+<p>1998年，编写了一个简洁的 OpenGL 实现 TinyGL</p>
+</blockquote>
+<blockquote>
+<p>2000年，化名 Gérard Lantau，创建了 FFmpeg 项目</p>
+</blockquote>
+<blockquote>
+<p>2003年，开发了 Emacs 的克隆版本 QEmacs</p>
+</blockquote>
+<blockquote>
+<p>2004年，编写了一个只有 138KB 的启动加载程序 TCCBOOT，可以在 15 秒内从源代码编译并启动 Linux 系统</p>
+</blockquote>
+<blockquote>
+<p>2011年，使用 JavaScript 写了一个 PC 虚拟机 Jslinux</p>
+</blockquote>
+<blockquote>
+<p>2014年，提出 BPG 格式，用来替代 JPEG</p>
+</blockquote>
+<p>2019 年，<a target="_blank" rel="noopener" href="https://bellard.org/quickjs/"><strong>QuickJS</strong></a> 发布，支持最新 ES2020 标准，非常适合用在嵌入式开发中，编译产物只有几百 KB。</p>
+<p><img src="/images/2023/05/mvp03.png"></p>
+<h2 id="源码下载与编译"><a href="#源码下载与编译" class="headerlink" title="源码下载与编译"></a>源码下载与编译</h2><p>最新版本（2021-03-27），<strong>make</strong> 指令编译成平台相关的可执行文件 - <strong>qjs</strong>。</p>
+<p>运行 JS 文件：</p>
+<p><img src="/images/2023/05/mvp04.png"></p>
+<h2 id="API-梳理"><a href="#API-梳理" class="headerlink" title="API 梳理"></a>API 梳理</h2><p><img src="/images/2023/05/mvp05.png"></p>
+<h2 id="与-Android-工程集成"><a href="#与-Android-工程集成" class="headerlink" title="与 Android 工程集成"></a>与 Android 工程集成</h2><blockquote>
+<p>Any problem in computer science can be solved by another layer of indirection.<br>计算机科学中的所有问题都可以通过中间层来解决。<br>                                                                   —— 大卫·惠勒</p>
+</blockquote>
+<p><img src="/images/2023/05/mvp06.png"></p>
+<h3 id="FFI-Foreign-Function-Interface-JNI"><a href="#FFI-Foreign-Function-Interface-JNI" class="headerlink" title="FFI(Foreign Function Interface) - JNI"></a>FFI(Foreign Function Interface) - JNI</h3><p><img src="/images/2023/05/mvp07.png"></p>
+<p>NDK 提供了如下工具集与功能：</p>
+<ol>
+<li>包含将 C&#x2F;C++ 源代码编译成本地库的工具（编译器、连接器等）</li>
+<li>提供将编译好的本地库插入到 Android 包文件（.apk）中的功能</li>
+<li>在生成本地库时，Android 平台可支持的系统头文件与库</li>
+<li>NDK 开发相关的文档、示例、规范</li>
+</ol>
+<blockquote>
+<p>Talk is cheap. Show me the code.<br>屁话少说，放「码」过来。<br>               —— Linus Torvalds</p>
+</blockquote>
+<h3 id="动态库"><a href="#动态库" class="headerlink" title="动态库"></a>动态库</h3><p><img src="/images/2023/05/mvp08.png"></p>
+<p>创建 CMakeLists.txt，生成 libmaxtoy.so 动态库。</p>
+<p><img src="/images/2023/05/mvp09.png"></p>
+<p>配置 Android 工程打包脚本。</p>
+<p><img src="/images/2023/05/mvp10.png"></p>
+<p>编译生成动态库。</p>
+<p><img src="/images/2023/05/mvp11.png"></p>
+<p>测试函数库调用。</p>
+<p><img src="/images/2023/05/mvp12.png"></p>
+<p><img src="/images/2023/05/mvp13.png"></p>
+<p><img src="/images/2023/05/mvp14.png"></p>
+<p>使用 nm 命令查看动态库函数。</p>
+<p><img src="/images/2023/05/mvp15.png"></p>
+<p>自动加载动态库。</p>
+<p><img src="/images/2023/05/mvp16.png"></p>
+<p>编写单元测试。</p>
+<p><img src="/images/2023/05/mvp17.png"></p>
+<h3 id="引擎方法的封装与调用"><a href="#引擎方法的封装与调用" class="headerlink" title="引擎方法的封装与调用"></a>引擎方法的封装与调用</h3><p>现在开始封装 JS 引擎核心 API，我们命名为 JS Engine。它提供 JSContext 初始化，销毁以及执行 JS 等方法。</p>
+<p><img src="/images/2023/05/mvp18.png"></p>
+<p><img src="/images/2023/05/mvp19.png"></p>
+<p><img src="/images/2023/05/mvp20.png"></p>
+<p>编写单元测试用例。</p>
+<p><img src="/images/2023/05/mvp21.png"></p>
+<p>1.向 JS Context 中注册全局方法</p>
+<p>创建 JS 运行环境后，在执行业务 JS 代码前，执行自定义 JS 代码，从而注入全局对象或方法。有两种注入方式：</p>
+<p>a.C++ 侧</p>
+<p>b.Java 侧（本方案）</p>
+<p><img src="/images/2023/05/mvp22.png"></p>
+<p>2.JS 创建视图元素，Native 创建相应 View</p>
+<p><img src="/images/2023/05/mvp23.png"></p>
+<h2 id="待实现"><a href="#待实现" class="headerlink" title="待实现"></a>待实现</h2><ol>
+<li>样式布局与事件处理；</li>
+<li>组件管理与内存释放；</li>
+<li>原生能力的封装及调用，如 console.log。</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>牵涉技术栈较复杂 C&#x2F;C++&#x2F;JS&#x2F;Android；</li>
+<li>相比于 H5 方案，页面性能流畅，瓶颈主要在于 JS 引擎层；</li>
+<li>由于内存安全的问题，C++ 可用 <a target="_blank" rel="noopener" href="https://source.android.com/docs/setup/build/rust/building-rust-modules/overview?hl=zh-cn"><strong>Rust</strong></a> 替代。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/demo/" rel="tag"># demo</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/01/27/when-to-use-initializer-list/" rel="prev" title="Dart 中该何时使用初始化列表">
+                  <i class="fa fa-chevron-left"></i> Dart 中该何时使用初始化列表
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

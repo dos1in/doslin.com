@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"doslin.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="初学Struts2，整理一下本周遇到的关于Struts2的一些注意点。1.标签中引号的问题首先对于HTML语言中的标签使用来说，以链接元素举例，现在要为该元素标签的属性href指定值，我们通常以key&#x3D;”value”，即href&#x3D;”someurl”的形式。如果现在要求该url地址的值是非静态的，它的值保存在于服务器端的某个Aciton类中的对象sample的属性url中，我们就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Struts2.x的几个注意点">
+<meta property="og:url" content="http://doslin.com/2011/10/15/about-struts2/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="初学Struts2，整理一下本周遇到的关于Struts2的一些注意点。1.标签中引号的问题首先对于HTML语言中的标签使用来说，以链接元素举例，现在要为该元素标签的属性href指定值，我们通常以key&#x3D;”value”，即href&#x3D;”someurl”的形式。如果现在要求该url地址的值是非静态的，它的值保存在于服务器端的某个Aciton类中的对象sample的属性url中，我们就">
+<meta property="og:locale">
+<meta property="article:published_time" content="2011-10-15T13:45:12.000Z">
+<meta property="article:modified_time" content="2023-05-12T04:22:08.093Z">
+<meta property="article:author" content="DosLin">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Struts2">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://doslin.com/2011/10/15/about-struts2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://doslin.com/2011/10/15/about-struts2/","path":"2011/10/15/about-struts2/","title":"关于Struts2.x的几个注意点"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>关于Struts2.x的几个注意点 | DosLin's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DosLin's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https:&#x2F;&#x2F;github.com&#x2F;JChord" rel="noopener me" target="_blank"><i class="github fa-fw"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener me" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2011/10/15/about-struts2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="关于Struts2.x的几个注意点 | DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于Struts2.x的几个注意点
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2011-10-15 21:45:12" itemprop="dateCreated datePublished" datetime="2011-10-15T21:45:12+08:00">2011-10-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>初学Struts2，整理一下本周遇到的关于Struts2的一些注意点。<br><strong>1.标签中引号的问题</strong><br>首先对于HTML语言中的标签使用来说，以链接元素举例，现在要为该元素标签的属性href指定值，我们通常以key&#x3D;”value”，即href&#x3D;”someurl”的形式。<br>如果现在要求该url地址的值是非静态的，它的值保存在于服务器端的某个Aciton类中的对象sample的属性url中，我们就需要用到Struts2自带标签类来对此取值，譬如以下述两种方式：</p>
+<pre><code>&lt;a href=&quot;&lt;s:property value=&#39;sample.url&#39;&gt;&quot;&gt;&lt;/a&gt;
+&lt;a href=&quot;&lt;s:property value=&quot;sample.url&quot;&gt;&quot;&gt;&lt;/a&gt;
+</code></pre>
+<p>因为出现了两种标签——Struts标签与HTML标签，导致了属性区分的包含问题。这就需要借助于单引号与双引号的分隔：如果外围先出现了单引号，那么包含在其中的另一个标签就需要使用双引号，反之亦然。于是乎就有了上述两种形式。当然，这两种形式都无错误之处。不过，如果出现了下面这个情形，上述的表示方式就会有一定问题： 假设我们这边服务端要从数据库中取某个字符，然后在浏览器这边显示，比如数据库中存放”M”与“F”来表示性别。那么为了友好性，显示给用户的需要把相应字符串替换为“男”与“女”。 JSP页面代码部分截取如下：</p>
+<span id="more"></span>
+
+<pre><code>&lt;s:if test=&quot;emp.gender.equals(&#39;M&#39;)&quot;&gt;男&lt;/s:if&gt;
+&lt;s:else&gt;女&lt;/s:else&gt;
+</code></pre>
+<p>现在问题来了，我们会惊奇的发现不管对象emp的gender值是什么，页面中显示的都为“女“。而直接输出emp.sex属性值是正常的。<br>这是为什么呢？。排查了许久，终于发现是引号的问题。<br>虽然第一个例子中引号是有区分元素的作用，但第二个例子中引号还有起到标识引号内元素为字符串的作用。<br>如果我们以单引号引用M&#x2F;F的话，就表示该符号是一个字符，我们以字符串的equal方法比较它的话自然永远不能让它们直接划上等号。因为Struts2标签中的属性取值的实现是由OGNL实现的，而后者的底层实现又是由Java的方法组成。既然Java代码中同样字母的字符与字符串之间不相等，那么在Struts标签类中也不可能相等。<br>测试代码如下：</p>
+<pre><code>package me.ijava.test;
+public class CompareCharToString &#123;
+    public static void main(String[] args)&#123;
+        String str = &quot;a&quot;;
+        char c = &#39;a&#39;;		
+        System.out.println(str.equals(c)); //false
+    &#125;
+&#125;
+</code></pre>
+<p>因为equal()方法比较的是对象，所以字符’a’自动装箱为Character类型，两者对象比较输出结果为false。<br>另外插一点题外话：如果用JavaScript的函数比较的话，它是否也对引号问题敏感呢？<br>测试代码如下：</p>
+<pre><code>function compareTest()&#123;
+        var str = &quot;a&quot;;
+        var c = &#39;a&#39;;
+        alert(str==c);
+    &#125;
+    compareTest();
+</code></pre>
+<p>有意思的是：结果为true！这是由于弱类型的JS不区分字符串与字符。<br><strong>2.EL表达式的取值问题</strong><br>在一个应用了Struts2系列框架的项目中，在JSP页面常常要用Struts附带的标签类对的一些表单元素的取值(框架标签库引入方式)。这些标签很容易让人冷落原Servlet容器中的标签与EL表达式。那么如果使用EL表达式，能否对服务器中的bean类们顺利取值呢？<br>因为Struts2把容器中原有的HttpServletRequest对象封装成了StrutsRequestWrapper。我们先去瞅瞅Struts2的关于StrutsRequestWrapper类的部分源码。</p>
+<pre><code>    public class StrutsRequestWrapper extends HttpServletRequestWrapper &#123;
+    /**
+     * The constructor
+     * @param req The request
+     */
+    public StrutsRequestWrapper(HttpServletRequest req) &#123;
+        super(req);
+    &#125;
+    /**
+     * Gets the object, looking in the value stack if not found
+     *
+     * @param s The attribute key
+     */
+    public Object getAttribute(String s) &#123;
+        if (s != null &amp;&amp; s.startsWith(&quot;javax.servlet&quot;)) &#123;
+            // don&#39;t bother with the standard javax.servlet attributes, we can short-circuit this
+            // see WW-953 and the forums post linked in that issue for more info
+            return super.getAttribute(s);
+        &#125;
+        ActionContext ctx = ActionContext.getContext();
+        Object attribute = super.getAttribute(s);
+        if (ctx != null) &#123;
+            if (attribute == null) &#123;
+                boolean alreadyIn = false;
+                Boolean b = (Boolean) ctx.get(&quot;__requestWrapper.getAttribute&quot;);
+                if (b != null) &#123;
+                    alreadyIn = b.booleanValue();
+                &#125;
+                // note: we don&#39;t let # come through or else a request for
+                // #attr.foo or #request.foo could cause an endless loop
+                if (!alreadyIn &amp;&amp; s.indexOf(&quot;#&quot;) == -1) &#123;
+                    try &#123;
+                        // If not found, then try the ValueStack
+                        ctx.put(&quot;__requestWrapper.getAttribute&quot;, Boolean.TRUE);
+                        ValueStack stack = ctx.getValueStack();
+                        if (stack != null) &#123;
+                            attribute = stack.findValue(s);
+                        &#125;
+                    &#125; finally &#123;
+                        ctx.put(&quot;__requestWrapper.getAttribute&quot;, Boolean.FALSE);
+                    &#125;
+                &#125;
+            &#125;
+        &#125;
+        return attribute;
+    &#125;
+&#125;
+</code></pre>
+<p>我们可以发现，在该类重写的的getAttribute()方法中，首先调用了父类的（即HttpServletRequestRequestWrapper）的getAttribute()方法。之后如果属性值没有得到的话，就再去根属性存储区——值栈ValueStack中获取。<br>因为EL的取值是通过调用request的getAttribute()方法的，故虽然进行了封装后重写但在前面调用了父类的getAttribute()方法，这一点说明EL表达式可以正常使用，另一方面也带来了一个问题：<br>在某个action中，有这么一段代码:</p>
+<pre><code>public String execute()&#123;
+    value=&quot;Action Value&quot;;
+        return &quot;success&quot;;
+    &#125;
+    private String value;
+        public String getValue()&#123;
+            return value;	
+    &#125;
+    public void setValue(String value)&#123;
+        this.value = value;
+    &#125;
+</code></pre>
+<p>假设我们配置好了Struts.xml，其中接收到action请求即会调用该execute方法，并且把value属性赋值成”Action Value”，然后在JSP页面中显示其值。取值的方式有两种，<br><code>1)Struts标签：&lt;s:property value=&quot;value&quot;&gt; 2)EL表达式：$&#123;value&#125;</code> 都会在页面成功显示出“Action Value”。<br>现在我们改动一点Action的代码：</p>
+<pre><code>public String execute()&#123;
+    value=&quot;Action Value&quot;;
+    Map request = (Map) ActionContext.getContext().get(&quot;request&quot;);
+    request.put(&quot;value&quot;, &quot;Request Value&quot;);
+    return &quot;success&quot;;
+&#125;
+</code></pre>
+<p>JSP部分的代码不变，重新部署，发送请求我们又惊奇地发现，页面输出内容为：<br><code>Action Value Request Value</code><br>我们再来看标签类的实现代码：</p>
+<pre><code>public class PropertyTag extends ComponentTagSupport &#123;
+    private static final long serialVersionUID = 435308349113743852L;
+    private String defaultValue;
+    private String value;
+    private boolean escape = true;
+    private boolean escapeJavaScript = false;
+    public Component getBean(ValueStack stack, HttpServletRequest req, HttpServletResponse res) &#123;
+        return new Property(stack);
+    &#125;
+    protected void populateParams() &#123;
+        super.populateParams();
+        Property tag = (Property) component;
+        tag.setDefault(defaultValue);
+        tag.setValue(value);
+        tag.setEscape(escape);
+        tag.setEscapeJavaScript(escapeJavaScript);
+    &#125;
+    public void setDefault(String defaultValue) &#123;
+        this.defaultValue = defaultValue;
+    &#125;
+    public void setEscape(boolean escape) &#123;
+        this.escape = escape;
+    &#125;
+    public void setEscapeJavaScript(boolean escapeJavaScript) &#123;
+        this.escapeJavaScript = escapeJavaScript;
+    &#125;
+    public void setValue(String value) &#123;
+        this.value = value;
+    &#125;
+&#125;
+</code></pre>
+<p>镇定下来后的我们可以很直接地找出原因：<br>由于Struts2中的标签类&lt;s:property &#x2F;&gt;的取值默认是通过OGNL表达式实现的，而后者如果直接以属性名的方式即&lt;s:property value&#x3D;”value” &#x2F;&gt;访问的是ValueStatck的信息，而加了”#”号以&lt;s:property value&#x3D;”#value” &#x2F;&gt;形式的表达式访问的是变量存储区context中的信息。无疑，上述例子自然取出ValueStack中的“Action Value”。<br>而EL表达式由于Struts2重写getAttribute()方法的缘故，会先于原先的request中取值，也就是“Request Value”如果取不到则使用ActionContext.getContext().getValueStack()的findValue()方法在ValueStack中查找。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/Struts2/" rel="tag"># Struts2</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2011/09/30/java-and-javascript-callback-function-of-analogy/" rel="prev" title="Java与JavaScript的回调函数类比">
+                  <i class="fa fa-chevron-left"></i> Java与JavaScript的回调函数类比
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2011/11/21/analysis-of-algorithms-study-notes-e285a0/" rel="next" title="Analysis of Algorithms(Study Notes Ⅰ)">
+                  Analysis of Algorithms(Study Notes Ⅰ) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

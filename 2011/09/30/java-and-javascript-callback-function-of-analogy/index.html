@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"doslin.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本月中旬开的题，现在终于把坑添好了，Orz。Java与JavaScript（下文简称JS）除了名称上的相似之外，其它方面也并非风马牛不相及，因为同属OO家族，有些特性还是可以进行相互类比来帮助理解的：例如下面我们所要讨论的回调（Callback）： 所谓回调，全称回调函数（callback function）。回，转也。是指函数A的功能片段传递给函数B（注册的过程），当B触发了某条件后，去调用该功">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java与JavaScript的回调函数类比">
+<meta property="og:url" content="http://doslin.com/2011/09/30/java-and-javascript-callback-function-of-analogy/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="本月中旬开的题，现在终于把坑添好了，Orz。Java与JavaScript（下文简称JS）除了名称上的相似之外，其它方面也并非风马牛不相及，因为同属OO家族，有些特性还是可以进行相互类比来帮助理解的：例如下面我们所要讨论的回调（Callback）： 所谓回调，全称回调函数（callback function）。回，转也。是指函数A的功能片段传递给函数B（注册的过程），当B触发了某条件后，去调用该功">
+<meta property="og:locale">
+<meta property="article:published_time" content="2011-09-30T12:48:33.000Z">
+<meta property="article:modified_time" content="2023-05-12T04:22:08.092Z">
+<meta property="article:author" content="DosLin">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Javascript">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://doslin.com/2011/09/30/java-and-javascript-callback-function-of-analogy/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://doslin.com/2011/09/30/java-and-javascript-callback-function-of-analogy/","path":"2011/09/30/java-and-javascript-callback-function-of-analogy/","title":"Java与JavaScript的回调函数类比"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Java与JavaScript的回调函数类比 | DosLin's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DosLin's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https:&#x2F;&#x2F;github.com&#x2F;JChord" rel="noopener me" target="_blank"><i class="github fa-fw"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener me" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2011/09/30/java-and-javascript-callback-function-of-analogy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Java与JavaScript的回调函数类比 | DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java与JavaScript的回调函数类比
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2011-09-30 20:48:33" itemprop="dateCreated datePublished" datetime="2011-09-30T20:48:33+08:00">2011-09-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>本月中旬开的题，现在终于把坑添好了，Orz。<br>Java与JavaScript（下文简称JS）除了名称上的相似之外，其它方面也并非风马牛不相及，因为同属OO家族，有些特性还是可以进行相互类比来帮助理解的：例如下面我们所要讨论的回调（Callback）：</p>
+<p>所谓回调，全称回调函数（callback function）。回，转也。是指函数A的功能片段传递给函数B（注册的过程），当B触发了某条件后，去调用该功能片段的指向（实现），这时A即称为回调函数。如果用Java的方式来叙述的话，就是类A中封装了一个接口InterfaceC的方法，类B按InterfaceC的约定实现该方法后再把自己传回给A，由A进行调用。因为Java没有函数的概念，这时就不是“函数回调”，而是“类回调”了，但是思想还是一样的。网上看到句挺好的解释，回调就是：</p>
+<blockquote>
+<p><strong>If you call me, I will call back.</strong></p>
+</blockquote>
+<p>这样做的好处是什么呢？最显著的一点即是分离方法与具体实现，让调用者与被调者解耦合。</p>
+<span id="more"></span>
+<p>一、先来看看JS中的回调应用</p>
+<p>把回调的思想应用于JS，可以实现功能与内容的分离。一般来说，对于一个完善的网页页面，代码有三部分组成：内容（HTML代码）、外观（CSS代码）以及功能（JS代码）。而分离功能与内容，可以让我们的代码更容易建立与维护。杂糅总是抓狂的代名词。</p>
+<p>JS中把函数看成变量，即把函数主体看成值，而函数名称则为变量名称。</p>
+<p>普通的，JS中声明一个函数</p>
+<pre><code>function callBack()&#123;
+    alert(“I&#39;m a function”);
+&#125;
+</code></pre>
+<p>再来看另一种函数声明方式：</p>
+<pre><code>var callBack = function()&#123;
+    alert(“I&#39;m a function”);
+&#125;
+</code></pre>
+<p>上述这种方式如果舍去了函数变量名，只有一个function函数体的状态称为函数字面量（function literal）或匿名函数（anonymous function）。</p>
+<p>因为变量直接可以保存函数的引用也就意味着对于函数，我们能像操纵变量一样去操纵它。</p>
+<p>最简单而且是最常见的例子：</p>
+<p>以前我们喜欢把JS代码指派给HTML的属性：<code>&lt;body onload=”callBack()”&gt;</code></p>
+<p>现在，更优雅的方式是在<code>&lt;script type=”text/javascript”&gt;&lt;script&gt;</code>的JS代码内部中，使用函数引用设定回调函数，即<code>window.onload = callBack</code>。</p>
+<p>此处调用函数在于网页载入完成后触发，相当于在浏览器调用<code>window.onload()</code>函数时，实际上调用的是<code>callBack()</code>函数，因为我们把后者的引用覆盖了前者属性（变量）中原先存放的引用。</p>
+<p>但是现在有一个问题：假如我们现在的callBack()函数有参数传入该怎么办呢？因为变量名中一旦出现了“(args)“即意味着函数调用。</p>
+<p>很简单，这时就需要我们刚刚提到的函数字面量了：</p>
+<pre><code>window.onload = function(args)&#123;
+    alert(args);
+&#125;
+</code></pre>
+<p>此时，匿名函数一声明完，它的引用未通过中间变量的保存，直接覆盖了原函数变量中保存的引用。而对于其它事件的指派，只需要在onload中指派的匿名函数体中指派就可以了——让onload事件处理函数成为事件初始化函数。</p>
+<p>关于回调，Ajax处理服务器响应的数据时也有其中的应用。</p>
+<p>二、下面看看Java的回调方式：</p>
+<p>2.1定义一个回调接口</p>
+<pre><code>package callbackdemo.ijava.me;
+
+/**
+* 回调函数接口
+* @author doslin
+*/
+public interface CallBack &#123;
+    public void execute();
+&#125;
+</code></pre>
+<p>2.2答题者回答完立即通知提问者</p>
+<pre><code>package callbackdemo.ijava.me;
+
+/**
+* 问题解决者
+* @author DosLin
+*/
+public class Solver &#123;
+    private CallBack cb = null;//回调引用
+
+    public void getQuestion(CallBack asker)&#123;
+        cb = asker;
+    &#125;
+
+    public void soloveIt()&#123;
+        System.out.println(&quot;I&#39;m Solver,the problem is solved.&quot;);
+    cb.execute();
+    &#125;
+
+&#125;
+</code></pre>
+<p>2.3 提问者实现了回调接口，意味着有回调方法</p>
+<pre><code>package callbackdemo.ijava.me;
+/**
+* 提问者
+* @author DosLin
+*/
+public class Asker implements CallBack&#123;
+    public Asker()&#123;
+        System.out.println(&quot;I&#39;m Asker,I hava a question..&quot;);
+    &#125;
+
+    // 问题解决后响应方式
+    @Override
+    public void execute() &#123;
+        System.out.println(&quot;Thank you..&quot;);
+    &#125;
+
+    public static void main(String[] args)&#123; //测试
+        Asker asker = new Asker();//提问者
+        Solver solver = new Solver();//解决者
+
+        solver.getQuestion(asker);//看到提问者发问
+        solver.soloveIt();//通知提问者问题被解决
+    &#125;
+&#125;
+</code></pre>
+<p>综上，回调函数的重要性不言而喻，它可以取代代码中的直接调用函数，使之成为创建回调函数，当且仅当特定事件触发后才会启动回调函数。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2011/08/27/the-cet-scores-query-tool-java-version/" rel="prev" title="CET成绩查询工具Java版">
+                  <i class="fa fa-chevron-left"></i> CET成绩查询工具Java版
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2011/10/15/about-struts2/" rel="next" title="关于Struts2.x的几个注意点">
+                  关于Struts2.x的几个注意点 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

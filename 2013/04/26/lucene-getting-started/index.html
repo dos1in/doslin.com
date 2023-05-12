@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"doslin.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="配置环境首先下载最新版的Lucene分发包（如：lucene-4.2.1.tgz），并解压到工作目录，找到以下四个jar包：  core\lucene-core-{version}.jarqueryparser\lucene-queryparser-{version}.jaranalysis\common\lucene-analyzers-common-{version}.jardemo\luce">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lucene官方示例入门">
+<meta property="og:url" content="http://doslin.com/2013/04/26/lucene-getting-started/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="配置环境首先下载最新版的Lucene分发包（如：lucene-4.2.1.tgz），并解压到工作目录，找到以下四个jar包：  core\lucene-core-{version}.jarqueryparser\lucene-queryparser-{version}.jaranalysis\common\lucene-analyzers-common-{version}.jardemo\luce">
+<meta property="og:locale">
+<meta property="article:published_time" content="2013-04-26T06:45:10.000Z">
+<meta property="article:modified_time" content="2023-05-12T04:22:08.093Z">
+<meta property="article:author" content="DosLin">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Lucene">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://doslin.com/2013/04/26/lucene-getting-started/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://doslin.com/2013/04/26/lucene-getting-started/","path":"2013/04/26/lucene-getting-started/","title":"Lucene官方示例入门"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Lucene官方示例入门 | DosLin's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DosLin's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">配置环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E4%BE%8B%E5%AD%90"><span class="nav-number">2.</span> <span class="nav-text">运行例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">源码解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">4.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https:&#x2F;&#x2F;github.com&#x2F;JChord" rel="noopener me" target="_blank"><i class="github fa-fw"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener me" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2013/04/26/lucene-getting-started/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Lucene官方示例入门 | DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Lucene官方示例入门
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2013-04-26 14:45:10" itemprop="dateCreated datePublished" datetime="2013-04-26T14:45:10+08:00">2013-04-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h2><p>首先下载最新版的<a target="_blank" rel="noopener" href="http://www.apache.org/dyn/closer.cgi/lucene/java/">Lucene分发包</a>（如：lucene-4.2.1.tgz），并解压到工作目录，找到以下四个jar包：</p>
+<blockquote>
+<p>core\lucene-core-{version}.jar<br>queryparser\lucene-queryparser-{version}.jar<br>analysis\common\lucene-analyzers-common-{version}.jar<br>demo\lucene-demo-{version}.jar  </p>
+</blockquote>
+<p>将上述jar文件放入某个目录（如：D:\lucene）并配置到CLASSPATH中，追加环境变量中的CLASSPATH内容为</p>
+<blockquote>
+<p>;D:\lucene\lucene-core-4.2.1.jar;D:\lucene\lucene-queryparser-4.2.1.jar;D:\lucene\lucene-analyzers-common-4.2.1.jar;D:\lucene\lucene-demo-4.2.1.jar;</p>
+</blockquote>
+<h2 id="运行例子"><a href="#运行例子" class="headerlink" title="运行例子"></a>运行例子</h2><p>确保你的CLASSPATH设置无误之后，我们下面使用演示例子创建索引文件。在控制台中键入以下命令：</p>
+<pre><code>cd D:\lucene
+java org.apache.lucene.demo.IndexFiles -docs &#123;path-to-lucene&#125;/src
+</code></pre>
+<p>这将会对lucene的源码目录创建索引，并将索引文件放在D:\lucene下的index目录中。</p>
+<p>之后我们根据创建的索引文件来搜索文件，键入：</p>
+<pre><code>java org.apache.lucene.demo.SearchFiles
+</code></pre>
+<p>程序将提示我们输入要查询的字符<code>（Enter query:）</code>，输入<code>string</code>回车，将会返回给我们十个匹配结果，输入<code>n</code>回车，会再返回十个结果，输入<code>q</code>退出。</p>
+<h2 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h2><p>下面我们将浏览一遍这个lucene命令行例子，分解一下它的函数以便于理解如何在我们的程序中应用Lucene。<br><a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/demo/src-html/org/apache/lucene/demo/IndexFiles.html">IndexFiles.java</a>是创建索引的代码。<br><a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/demo/src-html/org/apache/lucene/demo/SearchFiles.html">SearchFiles.java</a>是根据索引来检索的代码。</p>
+<blockquote>
+<p>###<strong>索引文件</strong></p>
+</blockquote>
+<p>main()函数接受命令行中的参数，之后通过构造一个<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/store/Directory.html">Directory</a>对象，并实例化<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/analyzers-common/org/apache/lucene/analysis/standard/StandardAnalyzer.html">StandardAnalyzer</a>和<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/index/IndexWriterConfig.html">IndexWriterConfig</a>作为实例化<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/index/IndexWriter.html">IndexWriter</a>的准备工作。</p>
+<p>命令行中的<code>-index</code>参数接收的是存放索引文件的目录名称。如果在相对路径下用<code>-index</code>参数或者没有<code>-index</code>参数的情况下（将会使用默认的索引文件夹名index）调用IndexFiles，这个索引文件夹将会在当前工作目录下作为子目录创建（如果还没创建的话）。但在有一些平台中，这个索引文件夹的创建路径可能不同（比如会在用户的主目录中创建）。</p>
+<p><code>-docs</code>参数接收的是存放那些要进行创建索引的目标文件的文件夹路径。</p>
+<p><code>-update</code>参数告诉IndexWriter类：不要删除已经存在的索引文件。如果没给出<code>-update</code>参数，IndexFiles将会在创建新的索引文件前清空旧索引。</p>
+<p>IndexFiles中使用的<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/store/Directory.html">Directory</a>类是为了在索引中储存信息。另外这个类的一个实现<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/store/FSDirectory.html">FSDirectory</a>，它有三个子类分别实现向内存、数据库等等其它介质中写入索引。</p>
+<p>Analyzer类也称为将文本拆分为可被索引的词元（tokens）的处理管道。它会对这些词元中的词（Term）进行一些可选操作，比如大小写转换，插入同义词以及过滤不想要的词元等等。我们这里使用的词法分析器是StandardAnalyzer，它使用在<a target="_blank" rel="noopener" href="http://unicode.org/reports/tr29/">Unicode Standard Annex #29</a>中指定的Unicode Text Segmentation算法作为单词拆分规则，接着将词元转换成小写形式，然后过滤出停词（stopword）。停词指的是一般语言中的冠词（a,an,the,etc。）和那些没有检索价值的词元。值得注意的是不同的语言有不同的拆分规则。目前Lucene针对不同的语言提供了许多<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/analyzers-common/overview-summary.html">分析器</a>。</p>
+<p>IndexWriterConfig的实例保存了IndexWriter类的配置。比如说，我们根据<code>-update</code>参数设置了OpenMode。</p>
+<p>往下看，在IndexWriter实例后面，你可以看到indexDocs()代码。这个递归函数爬取指定目录下的所有文件并为它们建立<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/document/Document.html">Document</a>对象。Document对象是表示相应文件的文本内容，创建时间以及位置等信息的简单数据对象。这些实例被添加到IndexWriter中。如果给定了<code>-update</code>参数，IndexWriterConfig OpenMode将被设置为<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/index/IndexWriterConfig.OpenMode.html#CREATE_OR_APPEND">OpenMode.CREATE_OR_APPEND</a>，代表IndexWriter将对已经拥有相同标识符（在上述例子中，文件路径作为该标识符）的已建立索引的文档的索引进行更新操作，不存在则创建。反之，不给定<code>-update</code> 参数将表示删除先前已索引的文档，在目录中创建新索引。</p>
+<blockquote>
+<p>###<strong>搜索文件</strong></p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/demo/src-html/org/apache/lucene/demo/SearchFiles.html">SearchFiles</a>类很简单。它主要通过和<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/search/IndexSearcher.html">IndexSearcher</a>，<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/analyzers-common/org/apache/lucene/analysis/standard/StandardAnalyzer.html">StandardAnalyzer</a>(在IndexFiles中也用到了）以及<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/queryparser/org/apache/lucene/queryparser/classic/QueryParser.html">QueryParser</a>协作。查询语句解析器是由分析器来构建的，和之前文档解析的方式一样用于解析你的查询语句：搜寻单词边界，大小写转换以及移除那些像 ‘a’，‘an’，和‘the’ 的无用单词。<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/search/Query.html">Query</a>对象包含了传给扫描器的<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/queryparser/org/apache/lucene/queryparser/classic/QueryParser.html">QuqeryParser</a>的结果。需要注意的是，以编程方式去构造一个富<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/search/Query.html">Query</a>对象而不是用查询语句解析器是可行的。因为查询语句解析器仅仅是能够将<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description">Lucene query syntax</a>解码为相应的<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/search/Query.html">Query</a>对象。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/demo/overview-summary.html">http://lucene.apache.org/core/4_2_1&#x2F;demo&#x2F;overview-summary.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/Lucene/" rel="tag"># Lucene</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2013/03/28/make-ie-capable-of-css3-features/" rel="prev" title="IE6+加入CSS3支持">
+                  <i class="fa fa-chevron-left"></i> IE6+加入CSS3支持
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2013/05/02/high-performance-javascript-note-2-data-access/" rel="next" title="《高性能JavaScript》读书笔记[2]-数据访问">
+                  《高性能JavaScript》读书笔记[2]-数据访问 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

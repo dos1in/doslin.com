@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"doslin.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1、更改器方法(mutator method)：对实例域做出修改的方法； 访问器方法(accessor method)：仅访问实例域而不进行修改的方法。 2、构造器总是伴随着new操作符的执行而被调用，而不能对一个已经存在的对象调用构造器来达到重新设置实例域的目的。 3、所有的Java对象都是在堆中构造的，构造器总是伴随着new操作符一起使用。 4、可以将实例域用final修饰：构造对象时必须初始">
+<meta property="og:type" content="article">
+<meta property="og:title" content="读书笔记-Core Java，Volume I：Fundamentals，Chapter4">
+<meta property="og:url" content="http://doslin.com/2011/04/25/core-java-chapter4-notebook/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="1、更改器方法(mutator method)：对实例域做出修改的方法； 访问器方法(accessor method)：仅访问实例域而不进行修改的方法。 2、构造器总是伴随着new操作符的执行而被调用，而不能对一个已经存在的对象调用构造器来达到重新设置实例域的目的。 3、所有的Java对象都是在堆中构造的，构造器总是伴随着new操作符一起使用。 4、可以将实例域用final修饰：构造对象时必须初始">
+<meta property="og:locale">
+<meta property="article:published_time" content="2011-04-25T12:49:40.000Z">
+<meta property="article:modified_time" content="2023-05-12T04:22:08.091Z">
+<meta property="article:author" content="DosLin">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://doslin.com/2011/04/25/core-java-chapter4-notebook/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://doslin.com/2011/04/25/core-java-chapter4-notebook/","path":"2011/04/25/core-java-chapter4-notebook/","title":"读书笔记-Core Java，Volume I：Fundamentals，Chapter4"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>读书笔记-Core Java，Volume I：Fundamentals，Chapter4 | DosLin's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DosLin's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https:&#x2F;&#x2F;github.com&#x2F;JChord" rel="noopener me" target="_blank"><i class="github fa-fw"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener me" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2011/04/25/core-java-chapter4-notebook/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="读书笔记-Core Java，Volume I：Fundamentals，Chapter4 | DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          读书笔记-Core Java，Volume I：Fundamentals，Chapter4
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2011-04-25 20:49:40" itemprop="dateCreated datePublished" datetime="2011-04-25T20:49:40+08:00">2011-04-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>1、更改器方法(mutator method)：对实例域做出修改的方法；</p>
+<p>访问器方法(accessor method)：仅访问实例域而不进行修改的方法。</p>
+<p>2、构造器总是伴随着new操作符的执行而被调用，而不能对一个已经存在的对象调用构造器来达到重新设置实例域的目的。</p>
+<p>3、所有的Java对象都是在堆中构造的，构造器总是伴随着new操作符一起使用。</p>
+<p>4、可以将实例域用final修饰：构造对象时必须初始化该实例域，并且在后面的操作时，不能够再对它进行修改。</p>
+<p>5、如果将域定义为static(静态域)，表明每个类中只有一个这样的域。该类的每个实例对象都共享该静态域。即使没有实例对象，静态域也存在，因为它属于雷尔不属于任何独立的对象。(类域)</p>
+<p>6、实例域通过类对象去访问，静态域通过类本身去访问。</p>
+<span id="more"></span>
+
+<p>7、静态方法是一种不能像对象实施操作的方法。换句话说，就是没有隐式的参数(this)。</p>
+<p>8、因为静态方法不能操作对象，故不能在静态方法中访问实例域。但是他可以访问自身类中的静态域。</p>
+<p>9、可以使用对象调用静态方法(不建议)。即静态方法不能操作对象，但对象可以调用静态方法。</p>
+<p>10、使用静态方法的三种情况：1)该方法不需要访问对象状态，其所需参数都通过显示参数提供(如Math.pow)；</p>
+<p>2)一个方法只需要访问类的静态域；</p>
+<p>3)工厂设计模式。</p>
+<p>11、一个方法可以修改传递引用所对应的变量值，而不能修改传递值调用所对应的变量值。</p>
+<p>12、Java程序设计语言对对象采用的不是引用调用，对象引用实际上进行的是值传递。即一个方法可以改变一个对象参数的状态，但不能实现让一个对象参数引用一个新的对象。</p>
+<p>13、基本数据类型：数值型+布尔型；</p>
+<p>引用数据类型。</p>
+<p>14、如果类中至少提供了一个构造器，但是没有提供默认的构造器(即不带参数的构造器)，则在构造对象时如果没有提供构造参数就会被视为不合法。</p>
+<p>15、标记为public的部分可以被任意的类使用；标记为private的部分只能被定义它们的类使用。如果没有指定public或private，这个部分(类、方法或变量)可以被同一个包中的所有程序访问。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2011/04/15/define-sql-data/" rel="prev" title="数据定义">
+                  <i class="fa fa-chevron-left"></i> 数据定义
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2011/04/26/shanxun-in-linux-to-surfing-the-internet/" rel="next" title="闪讯钳制下Linux系统上网解决方案">
+                  闪讯钳制下Linux系统上网解决方案 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

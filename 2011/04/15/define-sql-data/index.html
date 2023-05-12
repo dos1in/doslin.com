@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"doslin.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="&#x2F;*例5 建立一个“学生”表 Student*&#x2F; CREATE TABLE Student (Sno CHAR(9) PRIMARY KEY,   &#x2F;*列级完整性约束条件，Sno是主码*&#x2F; Sname CHAR(20) UNIQUE,       &#x2F;*Sname取唯一值*&#x2F; Ssex CHAR(2), Sage SMALLINT, Sdep CHAR(20) );  &#x2F;*例6 建立一个“课程表Co">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据定义">
+<meta property="og:url" content="http://doslin.com/2011/04/15/define-sql-data/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="&#x2F;*例5 建立一个“学生”表 Student*&#x2F; CREATE TABLE Student (Sno CHAR(9) PRIMARY KEY,   &#x2F;*列级完整性约束条件，Sno是主码*&#x2F; Sname CHAR(20) UNIQUE,       &#x2F;*Sname取唯一值*&#x2F; Ssex CHAR(2), Sage SMALLINT, Sdep CHAR(20) );  &#x2F;*例6 建立一个“课程表Co">
+<meta property="og:locale">
+<meta property="article:published_time" content="2011-04-15T05:19:41.000Z">
+<meta property="article:modified_time" content="2023-05-12T04:22:08.091Z">
+<meta property="article:author" content="DosLin">
+<meta property="article:tag" content="SQL">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://doslin.com/2011/04/15/define-sql-data/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://doslin.com/2011/04/15/define-sql-data/","path":"2011/04/15/define-sql-data/","title":"数据定义"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>数据定义 | DosLin's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DosLin's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https:&#x2F;&#x2F;github.com&#x2F;JChord" rel="noopener me" target="_blank"><i class="github fa-fw"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener me" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2011/04/15/define-sql-data/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="数据定义 | DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据定义
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2011-04-15 13:19:41" itemprop="dateCreated datePublished" datetime="2011-04-15T13:19:41+08:00">2011-04-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><pre><code>/*例5 建立一个“学生”表 Student*/
+CREATE TABLE Student
+(Sno CHAR(9) PRIMARY KEY,   /*列级完整性约束条件，Sno是主码*/
+Sname CHAR(20) UNIQUE,       /*Sname取唯一值*/
+Ssex CHAR(2),
+Sage SMALLINT,
+Sdep CHAR(20)
+);
+
+/*例6 建立一个“课程表Course”*/
+CREATE TABLE Course
+(Cno CHAR(4) PRIMARY KEY,   /*列级完整性约束条件，Sno是主码*/
+Cname CHAR(40),
+Cpno CHAR(4),
+Ccredit SMALLINT,           /*Cpno的含义是先修课*/
+);
+
+/*例7 建立学生选课表SC*/
+CREATE TABLE Sc
+(Sno CHAR(9),
+Cno CHAR(4),
+Grade SMALLINT,
+PRIMARY KEY(Sno,Cno),
+/*主码由两个属性构成，必须作为表级完整性进行定义*/
+FOREIGN KEY(Sno) REFERENCES Student(Sno),
+/*表级完整性约束条件，Sno是外码，被参照表是Student*/
+FOREIGN KEY(Cno) REFERENCES Course(Cno),
+/*表级完整性约束条件，Cno是外码，被参照表是Course*/
+);
+
+/*例8 向Student表增加“入学时间”列，其数据类型为日期型*/
+ALTER TABLE Student ADD S_entrance DATETIME;
+
+/*例9 将年龄的数据类型由字符型（假设原来的数据类型是字符型）改为整数*/
+ALTER TABLE Student ALTER COLUMN Sage INT;
+
+/*例10 增加课程名称必须取唯一值的约束条件*/
+ALTER TABLE Course ADD UNIQUE(Cname);
+
+/*例11 删除Student表*/
+DROP TABLE Student CASCADE;
+
+/*例12 若表上建有视图，选择RESTRICTS时表不能删除；CASCADE时可以删除表，视图也自动被删除*/
+CREATE VIEW IS_Student
+AS
+SELECT Sno,Sname,Sage
+FROM Student
+WHERE Sdept = &#39;IS&#39;;
+DROP TABLE Student RESTRICT;    /*删除Student表*/
+--ERROR: cannot drop table Student because other objects depend on it
+/*系统返回错误信息，存在依赖该表的对象，此表不能被删除*/
+DROP TABLE Student CASCADE;     /*删除Student表*/
+--ERROR: drop cascades to view IS_Student
+/*系统返回提示，此表上的视图也被删除*/
+SELECT *  FROM IS_Student;
+--ERROR: relation &quot;IS_Student&quot; does not exist   
+
+/*例13 建立聚簇索引，按照Sname值升序存放*/
+CREATE CLUSTER INDEX Stusname ON Student(Sname);
+   
+/*例14 */
+CREATE UNIQUE INDEX Stusno ON Student(Cno);
+CREATE UNIQUE INDEX Coucno ON Course(Cno);
+CREATE UNIQUE INDEX SCno ON SC(Sno ASC,Cno DESC);    
+
+/*例15 删除Student表的Stusname索引*/
+DROP INDEX Stusname;
+</code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"># SQL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2011/04/15/windows-live-writer-update-wordpress/" rel="prev" title="用Windows Live Writer更新WordPress日志">
+                  <i class="fa fa-chevron-left"></i> 用Windows Live Writer更新WordPress日志
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2011/04/25/core-java-chapter4-notebook/" rel="next" title="读书笔记-Core Java，Volume I：Fundamentals，Chapter4">
+                  读书笔记-Core Java，Volume I：Fundamentals，Chapter4 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

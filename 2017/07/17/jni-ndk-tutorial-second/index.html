@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"doslin.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="概述在上一篇的文章中，我们学会了在 Java 层如何通过 JNI 来调用 C 层的代码，这一篇文章我们将看一下如何在 C 层控制 Java 层的代码，主要包含以下内容：  创建 Java 对象 访问类静态成员域 调用类的静态方法 访问 Java 对象的成员变量 访问 Java 对象的方法  功能描述我们下面要实现一个 Java 层与 C 层相互调用的混编程序，调用流程如下图：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JNI与NDK入门之二">
+<meta property="og:url" content="http://doslin.com/2017/07/17/jni-ndk-tutorial-second/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="概述在上一篇的文章中，我们学会了在 Java 层如何通过 JNI 来调用 C 层的代码，这一篇文章我们将看一下如何在 C 层控制 Java 层的代码，主要包含以下内容：  创建 Java 对象 访问类静态成员域 调用类的静态方法 访问 Java 对象的成员变量 访问 Java 对象的方法  功能描述我们下面要实现一个 Java 层与 C 层相互调用的混编程序，调用流程如下图：">
+<meta property="og:locale">
+<meta property="og:image" content="http://doslin.com/images/2017/07/jni-ex2-demo.png">
+<meta property="og:image" content="http://doslin.com/images/2017/07/jni-ex2-header.png">
+<meta property="og:image" content="http://doslin.com/images/2017/07/jni-ex2-result.png">
+<meta property="og:image" content="http://doslin.com/images/2017/07/jni-ex2-descriptor.png">
+<meta property="article:published_time" content="2017-07-17T10:00:29.000Z">
+<meta property="article:modified_time" content="2023-05-12T04:22:08.095Z">
+<meta property="article:author" content="DosLin">
+<meta property="article:tag" content="jni">
+<meta property="article:tag" content="ndk">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://doslin.com/images/2017/07/jni-ex2-demo.png">
+
+
+<link rel="canonical" href="http://doslin.com/2017/07/17/jni-ndk-tutorial-second/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://doslin.com/2017/07/17/jni-ndk-tutorial-second/","path":"2017/07/17/jni-ndk-tutorial-second/","title":"JNI与NDK入门之二"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JNI与NDK入门之二 | DosLin's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DosLin's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.</span> <span class="nav-text">功能描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E5%86%99-Java-%E5%B1%82%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">编写 Java 层代码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JniFuncMain-java"><span class="nav-number">3.1.</span> <span class="nav-text">JniFuncMain.java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JniTest-java"><span class="nav-number">3.2.</span> <span class="nav-text">JniTest.java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90-JniFuncMain-h-%E5%A4%B4%E6%96%87%E4%BB%B6"><span class="nav-number">3.3.</span> <span class="nav-text">生成 JniFuncMain.h 头文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0%E5%8E%9F%E5%9E%8B-jnifunc-c"><span class="nav-number">3.4.</span> <span class="nav-text">实现函数原型 jnifunc.c</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E5%BC%95%E7%94%A8%E4%B8%8E%E5%85%A8%E5%B1%80%E5%BC%95%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">局部引用与全局引用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-%E6%BA%90%E7%A0%81-%E4%B8%AD%E7%9A%84-JNI"><span class="nav-number">5.</span> <span class="nav-text">Android 源码 中的 JNI</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https:&#x2F;&#x2F;github.com&#x2F;JChord" rel="noopener me" target="_blank"><i class="github fa-fw"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener me" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2017/07/17/jni-ndk-tutorial-second/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JNI与NDK入门之二 | DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JNI与NDK入门之二
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-07-17 18:00:29" itemprop="dateCreated datePublished" datetime="2017-07-17T18:00:29+08:00">2017-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/android/" itemprop="url" rel="index"><span itemprop="name">android</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>在上一篇的文章中，我们学会了在 Java 层如何通过 JNI 来调用 C 层的代码，这一篇文章我们将看一下如何在 C 层控制 Java 层的代码，主要包含以下内容：</p>
+<ol>
+<li>创建 Java 对象</li>
+<li>访问类静态成员域</li>
+<li>调用类的静态方法</li>
+<li>访问 Java 对象的成员变量</li>
+<li>访问 Java 对象的方法</li>
+</ol>
+<h1 id="功能描述"><a href="#功能描述" class="headerlink" title="功能描述"></a>功能描述</h1><p>我们下面要实现一个 Java 层与 C 层相互调用的混编程序，调用流程如下图：</p>
+<span id="more"></span>
+
+<p><img src="/images/2017/07/jni-ex2-demo.png" alt="调用流程图"></p>
+<ol>
+<li>整个 demo 从调用 <code>JniFuncMain</code> 类中的 <code>createJniObject()</code> 方法开始。</li>
+<li><code>Java_JniFuncMain_createJniObject()</code> 函数可以通过 JNI 来创建 <code>JniTest</code> 对象、调用该对象的方法以及访问该对象的成员变量。</li>
+</ol>
+<h1 id="编写-Java-层代码"><a href="#编写-Java-层代码" class="headerlink" title="编写 Java 层代码"></a>编写 Java 层代码</h1><h2 id="JniFuncMain-java"><a href="#JniFuncMain-java" class="headerlink" title="JniFuncMain.java"></a>JniFuncMain.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JniFuncMain</span> &#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">sIntField</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">static</span> &#123;</span><br><span class="line">		System.loadLibrary(<span class="string">&quot;jnifunc&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 使用 static 关键字声明的本地方法，可直接通过类调用</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">native</span> JniTest <span class="title function_">createJniObject</span><span class="params">()</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		System.out.println(<span class="string">&quot;[Java] 调用 createJniObject() 方法&quot;</span>);</span><br><span class="line">		<span class="comment">// 不使用 new 运算符，通过 C 函数生成 JniTest 类的对象并返回引用</span></span><br><span class="line">		<span class="type">JniTest</span> <span class="variable">jniObj</span> <span class="operator">=</span> createJniObject();</span><br><span class="line">		<span class="comment">// 可直接调用对象的成员方法</span></span><br><span class="line">		jniObj.callTest();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="JniTest-java"><a href="#JniTest-java" class="headerlink" title="JniTest.java"></a>JniTest.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">JniTest</span> &#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="type">int</span> mIntField;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">JniTest</span><span class="params">(<span class="type">int</span> num)</span> &#123;</span><br><span class="line">		mIntField = num;</span><br><span class="line">		System.out.println(<span class="string">&quot;[Java] 调用 JniTest 对象的构造方法，mIntField值为 &quot;</span> + mIntField);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="type">int</span> <span class="title function_">callByNative</span><span class="params">(<span class="type">int</span> num)</span> &#123;</span><br><span class="line">		num += mIntField;</span><br><span class="line">		System.out.println(<span class="string">&quot;[Java] 调用 JniTest 对象的 callByNative() 方法，参数值为 &quot;</span> + num);</span><br><span class="line">		<span class="keyword">return</span> num;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">callTest</span><span class="params">()</span> &#123;</span><br><span class="line">		System.out.println(<span class="string">&quot;[Java] 调用 JniTest 对象的 callTest() 方法，mIntField值为 &quot;</span> + mIntField);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="生成-JniFuncMain-h-头文件"><a href="#生成-JniFuncMain-h-头文件" class="headerlink" title="生成 JniFuncMain.h 头文件"></a>生成 JniFuncMain.h 头文件</h2><p>因为 <code>native</code> 关键字在 <code>JniFuncMain</code> 类中，这里使用前文提到的 <code>javah</code> 命令生成该类的头文件：</p>
+<p><img src="/images/2017/07/jni-ex2-header.png" alt="生成头文件"></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* DO NOT EDIT THIS FILE - it is machine generated */</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;jni.h&gt;</span></span></span><br><span class="line"><span class="comment">/* Header for class JniFuncMain */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> _Included_JniFuncMain</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _Included_JniFuncMain</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Class:     JniFuncMain</span></span><br><span class="line"><span class="comment"> * Method:    createJniObject</span></span><br><span class="line"><span class="comment"> * Signature: ()LJniTest;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">JNIEXPORT jobject JNICALL <span class="title function_">Java_JniFuncMain_createJniObject</span></span><br><span class="line">  <span class="params">(JNIEnv *, jclass)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>观察上述的头文件，我们发现生成的函数原型的第二个参数类型为 <code>jclass</code> 而不是 <code>jsobject</code>。这是因为我们在 <code>Java</code> 中将这个方法声明为 <code>static</code> 静态方法，而静态方法是通过类而非对象来进行调用的。这个参数保存的是 <code>JniFuncMain</code> 类的引用而非类对象的引用。</p>
+<h2 id="实现函数原型-jnifunc-c"><a href="#实现函数原型-jnifunc-c" class="headerlink" title="实现函数原型 jnifunc.c"></a>实现函数原型 jnifunc.c</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;JniFuncMain.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">JNIEXPORT jobject JNICALL <span class="title function_">Java_JniFuncMain_createJniObject</span></span><br><span class="line">  <span class="params">(JNIEnv *env, jclass clazz)</span> &#123;</span><br><span class="line">  	jclass targetClass;</span><br><span class="line">  	jmethodID mid;</span><br><span class="line">  	jobject newObject;</span><br><span class="line">  	jstring helloStr;</span><br><span class="line">  	jfieldID fid;</span><br><span class="line">  	jint sIntField;</span><br><span class="line">  	jint result;</span><br><span class="line"></span><br><span class="line">  	<span class="comment">// 获取 JniFuncMain 类的 sIntField 变量值</span></span><br><span class="line"></span><br><span class="line">  	<span class="comment">// 获取 sIntField 变量的 jfieldID 值</span></span><br><span class="line">  	fid  = (*env)-&gt;GetStaticFieldID(env, clazz, <span class="string">&quot;sIntField&quot;</span>, <span class="string">&quot;I&quot;</span>);</span><br><span class="line">  	<span class="comment">// 根据 jfieldID 值在 jclass 查找指定的变量</span></span><br><span class="line">  	<span class="comment">// 若访问的变量为静态变量，则调用 GetStaticFieldID() 的 JNI 函数</span></span><br><span class="line">  	<span class="comment">// 若访问的变量为成员变量，则调用 GetFieldID() 的JNI函数</span></span><br><span class="line">  	sIntField = (*env)-&gt;GetStaticIntField(env, clazz, fid);</span><br><span class="line">  	<span class="built_in">printf</span>(<span class="string">&quot;[C] 访问 JniFuncMain 类 的 sIntField 值为 %d\n&quot;</span>, sIntField);</span><br><span class="line"></span><br><span class="line">  	<span class="comment">// 查找生成对象的类</span></span><br><span class="line">  	<span class="comment">// 若想获取指定类的 jclass 指，则调用 JNI 函数 FindClass() 即可</span></span><br><span class="line">  	targetClass = (*env)-&gt;FindClass(env, <span class="string">&quot;JniTest&quot;</span>);</span><br><span class="line"></span><br><span class="line">  	<span class="comment">// 查找 JniTest 类的构造方法</span></span><br><span class="line">  	mid = (*env)-&gt;GetMethodID(env, targetClass, <span class="string">&quot;&lt;init&gt;&quot;</span>, <span class="string">&quot;(I)V&quot;</span>);</span><br><span class="line"></span><br><span class="line">  	<span class="comment">// 生成 JniTest 对象（返回对象的引用）</span></span><br><span class="line">  	<span class="built_in">printf</span>(<span class="string">&quot;[C] 创建 JniTest 对象&quot;</span>);</span><br><span class="line">  	newObject = (*env)-&gt;NewObject(env, targetClass, mid, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">  	<span class="comment">// 调用 JniTest 对象的方法</span></span><br><span class="line">  	mid = (*env)-&gt;GetMethodID(env, targetClass, <span class="string">&quot;callByNative&quot;</span>, <span class="string">&quot;(I)I&quot;</span>);</span><br><span class="line">  	<span class="comment">// 若调用的 Java 方法是静态方法，则调用的函数形式为 CallStatic&lt;type&gt; Method()</span></span><br><span class="line">  	<span class="comment">// 若调用的 Java 方法是成员方法，则调用的函数形式为 Call&lt;type&gt; Method()</span></span><br><span class="line">  	result = (*env)-&gt;CallIntMethod(env, newObject, mid, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">  	<span class="comment">// 设置 JniObject 对象的 mIntField 值</span></span><br><span class="line">  	fid = (*env)-&gt;GetFieldID(env, targetClass, <span class="string">&quot;mIntField&quot;</span>, <span class="string">&quot;I&quot;</span>);</span><br><span class="line">  	<span class="comment">// 若设置的 Java 变量是静态属性，则调用的函数形式为 setStatic&lt;type&gt; Field()</span></span><br><span class="line">  	<span class="comment">// 若调用的 Java 变量是成员属性，则调用的函数形式为 set&lt;type&gt; Field()</span></span><br><span class="line">  	(*env)-&gt;SetIntField(env, newObject, fid, result);</span><br><span class="line">  	<span class="built_in">printf</span>(<span class="string">&quot;[C] 设置 JniTest 对象的 mIntField，值为 %d\n&quot;</span>, result);</span><br><span class="line"></span><br><span class="line">  	<span class="keyword">return</span> newObject;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来生成动态链接库，如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc jnifunc.c -I /Library/Java/JavaVirtualMachines/jdk1.8.0_92.jdk/Contents/Home/include -I /Library/Java/JavaVirtualMachines/jdk1.8.0_92.jdk/Contents/Home/include/darwin -shared -o libjnifunc.jnilib</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2017/07/jni-ex2-result.png" alt="运行结果"></p>
+<p>可以从 C 代码观察到创建一个 Java 对象的顺序如下：</p>
+<ol>
+<li>查找指定的类，并将查找到的类引用赋值给 jcalss 类型的变量（<code>FindClass()</code> 方法）。</li>
+<li>查找 Java 类构造方法的 ID 值（ <code>GetMethodID()</code> 方法，参数类型为 <code>jmethodID</code>，方法名为 <code>&lt;init&gt;</code>）。</li>
+<li>生成 Java 类对象。</li>
+</ol>
+<p>关于查找方法的补充说明：</p>
+<p>如果是静态方法，则使用 <code>GetStaticMethodID()</code> ，方法的签名需要使用 <code>javap</code> 来获取。</p>
+<p><img src="/images/2017/07/jni-ex2-descriptor.png" alt="获取方法描述符"></p>
+<h1 id="局部引用与全局引用"><a href="#局部引用与全局引用" class="headerlink" title="局部引用与全局引用"></a>局部引用与全局引用</h1><p>在 JNI 本地函数中，由 <code>FindClass()、GetObjectClass()</code> 等 JNI 函数返回的 <code>jclass</code> 、 <code>jobject</code> 等引用都是局部引用，此类引用的作用域只在 JNI 本地函数中。一旦 JNI 本地函数返回后，其内部引用就会失效。<br>如果想让该引用转换成全局引用，可以使用 <code>NewGlobalRef()</code>方法，之后将返回值存放在全局变量中，以便于在整个 C 代码中使用。如有要销毁该全局引用，请调用 <code>DeleteGlobalRef()</code> 方法。</p>
+<h1 id="Android-源码-中的-JNI"><a href="#Android-源码-中的-JNI" class="headerlink" title="Android 源码 中的 JNI"></a>Android 源码 中的 JNI</h1><p>如果有兴趣了解 Android 底层是如何使用 JNI 的，可以查看下列源码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">frameworks\base\core\jni</span><br><span class="line">frameworks\base\services\jni</span><br><span class="line">frameworks\base\media\jni</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/jni/" rel="tag"># jni</a>
+              <a href="/tags/ndk/" rel="tag"># ndk</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/07/17/jni-ndk-tutorial-start/" rel="prev" title="JNI与NDK入门之一">
+                  <i class="fa fa-chevron-left"></i> JNI与NDK入门之一
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/07/18/jni-ndk-tutorial-third/" rel="next" title="JNI与NDK入门之三">
+                  JNI与NDK入门之三 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

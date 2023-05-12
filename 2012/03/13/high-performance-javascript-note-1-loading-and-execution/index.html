@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"doslin.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="###优化的必要性  目前的应用比早期Web应用（05年以前）相比更庞大复杂，JavaScript代码量指数级增长。IE6引擎的“静态垃圾回收机制”难以应付JS代码产生的越来越多的对象。因为JS作为解释性代码以及解释器很少有优化，往往意味着代码怎么写，就被怎么执行。相较于编译性的代码由编译处理器优化，在JS中通常需要我们开发人员自己完成优化工作。  ###JS的特点-阻塞  无论JS代码是内嵌（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《高性能JavaScript》读书笔记[1]-加载与执行">
+<meta property="og:url" content="http://doslin.com/2012/03/13/high-performance-javascript-note-1-loading-and-execution/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="###优化的必要性  目前的应用比早期Web应用（05年以前）相比更庞大复杂，JavaScript代码量指数级增长。IE6引擎的“静态垃圾回收机制”难以应付JS代码产生的越来越多的对象。因为JS作为解释性代码以及解释器很少有优化，往往意味着代码怎么写，就被怎么执行。相较于编译性的代码由编译处理器优化，在JS中通常需要我们开发人员自己完成优化工作。  ###JS的特点-阻塞  无论JS代码是内嵌（">
+<meta property="og:locale">
+<meta property="article:published_time" content="2012-03-13T14:26:30.000Z">
+<meta property="article:modified_time" content="2023-05-12T04:22:08.093Z">
+<meta property="article:author" content="DosLin">
+<meta property="article:tag" content="JavaScript">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://doslin.com/2012/03/13/high-performance-javascript-note-1-loading-and-execution/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://doslin.com/2012/03/13/high-performance-javascript-note-1-loading-and-execution/","path":"2012/03/13/high-performance-javascript-note-1-loading-and-execution/","title":"《高性能JavaScript》读书笔记[1]-加载与执行"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>《高性能JavaScript》读书笔记[1]-加载与执行 | DosLin's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DosLin's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E8%AE%BAJS%E4%BB%A3%E7%A0%81%E6%98%AF%E5%86%85%E5%B5%8C%EF%BC%88%E4%BB%A5-lt-script-gt-%E6%A0%87%E7%AD%BE%E5%8C%85%E5%90%AB%EF%BC%89%E8%BF%98%E6%98%AF%E4%BB%8E%E5%A4%96%E9%83%A8%E6%96%87%E4%BB%B6%E5%BC%95%E5%85%A5%EF%BC%88%E4%BB%A5-lt-script-gt-%E6%A0%87%E7%AD%BE%E7%9A%84src%E5%B1%9E%E6%80%A7%E5%BC%95%E5%85%A5%EF%BC%89%EF%BC%8C%E8%AF%A5%E6%A0%87%E7%AD%BE%E4%B8%80%E5%87%BA%E7%8E%B0%E5%B0%B1%E4%BC%9A%E8%AE%A9%E9%A1%B5%E9%9D%A2%E7%9A%84%E4%B8%8B%E8%BD%BD%E5%92%8C%E6%B8%B2%E6%9F%93%E6%9A%82%E6%97%B6%E5%81%9C%E6%AD%A2%EF%BC%8C%E7%AD%89%E5%BE%85%E8%AF%A5%E8%84%9A%E6%9C%AC%E8%A7%A3%E6%9E%90%E5%92%8C%E6%89%A7%E8%A1%8C%E5%AE%8C%E6%88%90%E6%89%8D%E8%83%BD%E7%BB%A7%E7%BB%AD%E8%A7%A3%E6%9E%90%E5%92%8C%E6%B8%B2%E6%9F%93%E9%A1%B5%E9%9D%A2%E3%80%82%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88"><span class="nav-number">1.</span> <span class="nav-text">无论JS代码是内嵌（以&lt;script&gt;标签包含）还是从外部文件引入（以&lt;script&gt;标签的src属性引入），该标签一出现就会让页面的下载和渲染暂时停止，等待该脚本解析和执行完成才能继续解析和渲染页面。优化方案</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https:&#x2F;&#x2F;github.com&#x2F;JChord" rel="noopener me" target="_blank"><i class="github fa-fw"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener me" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2012/03/13/high-performance-javascript-note-1-loading-and-execution/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="《高性能JavaScript》读书笔记[1]-加载与执行 | DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《高性能JavaScript》读书笔记[1]-加载与执行
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2012-03-13 22:26:30" itemprop="dateCreated datePublished" datetime="2012-03-13T22:26:30+08:00">2012-03-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><blockquote>
+<p>###<strong>优化的必要性</strong></p>
+</blockquote>
+<p>目前的应用比早期Web应用（05年以前）相比更庞大复杂，JavaScript代码量指数级增长。IE6引擎的“静态垃圾回收机制”难以应付JS代码产生的越来越多的对象。<br>因为JS作为解释性代码以及解释器很少有优化，往往意味着代码怎么写，就被怎么执行。相较于编译性的代码由编译处理器优化，在JS中通常需要我们开发人员自己完成优化工作。</p>
+<blockquote>
+<p>###<strong>JS的特点-阻塞</strong></p>
+</blockquote>
+<h2 id="无论JS代码是内嵌（以-lt-script-gt-标签包含）还是从外部文件引入（以-lt-script-gt-标签的src属性引入），该标签一出现就会让页面的下载和渲染暂时停止，等待该脚本解析和执行完成才能继续解析和渲染页面。优化方案"><a href="#无论JS代码是内嵌（以-lt-script-gt-标签包含）还是从外部文件引入（以-lt-script-gt-标签的src属性引入），该标签一出现就会让页面的下载和渲染暂时停止，等待该脚本解析和执行完成才能继续解析和渲染页面。优化方案" class="headerlink" title="无论JS代码是内嵌（以&lt;script&gt;标签包含）还是从外部文件引入（以&lt;script&gt;标签的src属性引入），该标签一出现就会让页面的下载和渲染暂时停止，等待该脚本解析和执行完成才能继续解析和渲染页面。优化方案"></a>无论JS代码是内嵌（以<code>&lt;script&gt;</code>标签包含）还是从外部文件引入（以<code>&lt;script&gt;</code>标签的src属性引入），该标签一出现就会让页面的下载和渲染暂时停止，等待该脚本解析和执行完成才能继续解析和渲染页面。<br><br>优化方案</h2><blockquote>
+<p>###<strong>将脚本放在页面底部</strong></p>
+</blockquote>
+<p>推荐将所有的<code>&lt;script&gt;</code>标签尽可能放到<code>&lt;body&gt;</code>标签底部，来减少对整个页面下载的影响。<br>浏览器为了确保内嵌脚本在执行时能获得最精准的样式信息，所以会出现如果内嵌脚本处于引用外链样式表的<code>&lt;link&gt;</code>标签之后会导致页面阻塞去等待样式表下载完成，所以不要把内嵌脚本跟在<code>&lt;link&gt;</code>标签后。</p>
+<blockquote>
+<p>###<strong>减少<scirpt>标签数量</strong></p>
+</blockquote>
+<p>因为HTTP请求的额外开销，下载单个100KB的文件比下载4个25KB的文件更块！请试着合并JS文件。<br>因为上文提到不管内嵌或外链JS，<code>&lt;script&gt;</code>标签元素都会阻塞浏览器，所以内嵌<code>&lt;script&gt;</code>标签数量同样也要限制。</p>
+<blockquote>
+<p>###<strong>使用无阻塞脚本（页面加载结束后才去加载执行JS）</strong></p>
+</blockquote>
+<p>合并JS文件可能使得单个JS变大，虽然只产生一个HTTP请求，但会锁死浏览器一大段时间，为了避免此情形，需要采用无阻塞脚本方案逐步加载JS文件。无阻塞即window对象的onload事件触发后才下载脚本。</p>
+<blockquote>
+<p>###<strong>延迟脚本</strong></p>
+</blockquote>
+<p>使用 <code>&lt;script&gt;</code> 的 defer 属性(仅适用于IE和Firefox3.5+)，该属性指明本元素所含的脚本不会修改DOM，因此代码能安全地延迟执行；</p>
+<pre><code>&lt;script defer=&quot;defer&quot; type=&quot;text/javascript&quot;&gt;
+    alert(&quot;defer&quot;);
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    alert(&quot;script&quot;);
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    windows.onload=function()&#123;
+    alert(&quot;load&quot;);
+&#125;;
+&lt;/script&gt;
+</code></pre>
+<ul>
+<li>动态脚本元素</li>
+</ul>
+<p>使用动态创建的 <code>&lt;script&gt;</code> 元素来下载并执行代码；</p>
+<pre><code>function loadScript(url, callback)&#123;
+    var script = document.createElement(&quot;script&quot;);
+    script.type = &quot;text/javascript&quot;;
+    if (script.readyState) &#123; // IE
+        script.onreadystatechange = function() &#123;
+            if (/loaded|complete/.test(script.readyState)) &#123;
+                script.onreadystatechange = null; // 避免事件执行两次
+                callback();
+            &#125;
+        &#125;;
+    &#125; else &#123;// 其它浏览器
+        script.onload = function() &#123;
+        callback();
+    &#125;;
+&#125;
+
+script.src = url;
+document.getElementsByTagName(&quot;head&quot;)[0].appendChild(script);
+&#125;
+</code></pre>
+<ul>
+<li>XMLHttpRequest脚本注入</li>
+</ul>
+<p>使用 XMLHttpRequest 对象下载js代码并注入到页面；</p>
+<pre><code>var xhr = new XMLHttpRequest();
+xhr.open(&quot;get&quot;,&quot;file1.js&quot;,true);
+xhr.onreadystatechange = function()&#123;
+    if(xhr.readyState == 4)&#123;
+    //2XX表示有响应，304意味着从缓存读取
+        if(xhr.status &gt;= 200 &amp;&amp; xhr.status &lt; 300 || xhr.status == 304)&#123;
+            var script = document.createElement(&quot;script&quot;);
+            script.type = &quot;text/javascript&quot;;
+            script.text = xhr.responseText;
+            document.body.appendChild(script);
+
+        &#125;
+    &#125;
+&#125;;
+
+xhr.send(null);
+</code></pre>
+<p>这种方法的主要优点是可以下载JS代码但不会立即执行。由于代码时在<code>&lt;script&gt;</code>标签之外返回的，我们可以把脚本的执行推迟到准备好的时候而且它可跨浏览器。局限性在于它不能跨域执行。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2011/11/21/analysis-of-algorithms-study-notes-e285a0/" rel="prev" title="Analysis of Algorithms(Study Notes Ⅰ)">
+                  <i class="fa fa-chevron-left"></i> Analysis of Algorithms(Study Notes Ⅰ)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2013/03/28/make-ie-capable-of-css3-features/" rel="next" title="IE6+加入CSS3支持">
+                  IE6+加入CSS3支持 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

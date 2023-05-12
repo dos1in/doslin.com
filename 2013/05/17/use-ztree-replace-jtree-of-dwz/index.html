@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"doslin.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="组件版本 DWZ: v1.4.5  zTree: v3.5.12   替换步骤 ###样式文件替换  定位dwz的themes&#x2F;css下的core.css文件，在184行~216行中注释JTree样式。 提取zTree的样式文件zTreeStyle.css（位于css&#x2F;zTreeStyle）及图标资源img文件夹。前者代码置于dwz的core.css的底部以防止dwz预定义的样">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用zTree替换DWZ(j-UI)中的jTree">
+<meta property="og:url" content="http://doslin.com/2013/05/17/use-ztree-replace-jtree-of-dwz/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="组件版本 DWZ: v1.4.5  zTree: v3.5.12   替换步骤 ###样式文件替换  定位dwz的themes&#x2F;css下的core.css文件，在184行~216行中注释JTree样式。 提取zTree的样式文件zTreeStyle.css（位于css&#x2F;zTreeStyle）及图标资源img文件夹。前者代码置于dwz的core.css的底部以防止dwz预定义的样">
+<meta property="og:locale">
+<meta property="article:published_time" content="2013-05-17T04:48:49.000Z">
+<meta property="article:modified_time" content="2023-05-12T04:22:08.094Z">
+<meta property="article:author" content="DosLin">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="DWZ">
+<meta property="article:tag" content="zTree">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://doslin.com/2013/05/17/use-ztree-replace-jtree-of-dwz/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://doslin.com/2013/05/17/use-ztree-replace-jtree-of-dwz/","path":"2013/05/17/use-ztree-replace-jtree-of-dwz/","title":"用zTree替换DWZ(j-UI)中的jTree"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>用zTree替换DWZ(j-UI)中的jTree | DosLin's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DosLin's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6%E7%89%88%E6%9C%AC"><span class="nav-number">1.</span> <span class="nav-text">组件版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">替换步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">调用方式</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https:&#x2F;&#x2F;github.com&#x2F;JChord" rel="noopener me" target="_blank"><i class="github fa-fw"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener me" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2013/05/17/use-ztree-replace-jtree-of-dwz/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="用zTree替换DWZ(j-UI)中的jTree | DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          用zTree替换DWZ(j-UI)中的jTree
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2013-05-17 12:48:49" itemprop="dateCreated datePublished" datetime="2013-05-17T12:48:49+08:00">2013-05-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="组件版本"><a href="#组件版本" class="headerlink" title="组件版本"></a>组件版本</h2><ul>
+<li><p>DWZ: <a target="_blank" rel="noopener" href="https://code.google.com/p/jquerytree/downloads/list">v1.4.5</a></p>
+</li>
+<li><p>zTree: <a target="_blank" rel="noopener" href="https://code.google.com/p/jquerytree/downloads/list">v3.5.12</a></p>
+</li>
+</ul>
+<h2 id="替换步骤"><a href="#替换步骤" class="headerlink" title="替换步骤"></a>替换步骤</h2><blockquote>
+<p>###<strong>样式文件替换</strong></p>
+</blockquote>
+<p>定位dwz的themes&#x2F;css下的<code>core.css</code>文件，在184行~216行中注释JTree样式。</p>
+<p>提取zTree的样式文件<code>zTreeStyle.css</code>（位于css&#x2F;zTreeStyle）及图标资源img文件夹。前者代码置于dwz的<code>core.css</code>的底部以防止dwz预定义的样式破坏zTree的样式。同时将img文件夹与<code>core.css</code>放在同一个文件夹下（themes&#x2F;css&#x2F;）。</p>
+<blockquote>
+<p>###<strong>脚本文件替换与修改</strong></p>
+</blockquote>
+<p>找到DWZ的js文件夹下的<code>dwz.tree.js</code>文件，用zTree的js文件<code>jquery.ztree.all-3.5.js</code>中的内容替换（如果不需要zTree的excheck + exedit扩展，可以使用<code>jquery.ztree.core-3.5.js</code>）。</p>
+<p>脚本内容替换完成后，需要修改<code>dwz.ui.js</code>与<code>dwz.tree.js</code>（现在它的脚本语句是zTree的）：</p>
+<ul>
+<li>dwz.ui.js</li>
+</ul>
+<p>注释掉77行的调用jTree语句。</p>
+<pre><code>$(&quot;ul.tree&quot;, $p).jTree();
+</code></pre>
+<ul>
+<li>dwz.tree.js</li>
+</ul>
+<p>1、树节点添加DWZ中的rel属性（添加DWZ中的external属性同理）：</p>
+<p>找到<code>makeDOMNodeNameBefore</code>方法（当前版本位于1112行），在html.push方法后添加：</p>
+<pre><code>if (node.rel) &#123;
+    html.push(&quot;&#39; rel=&#39;&quot;, node.rel);
+&#125;
+</code></pre>
+<p>2、更改节点的默认Target为<code>navTab</code>：</p>
+<p>找到<code>makeNodeTarget</code>方法（当前版本位于1178行），return语句修改为<code>return (node.target || &quot;navTab&quot;);</code></p>
+<p>3、修改节点属性更新方法<code>updateNode</code>（当前版本位于1639行），追加<code>view.setNodeRel(this.setting, node)</code>。</p>
+<p>setNodeRel方法定义如下：</p>
+<pre><code>setNodeRel: function(setting, node) &#123;
+        var aObj = $(&quot;#&quot; + node.tId + consts.id.A),
+        rel = treeNode.rel;
+        if (rel == null || rel.length == 0) &#123;
+            aObj.removeAttr(&quot;rel&quot;);
+        &#125; else &#123;
+            aObj.attr(&quot;rel&quot;, rel);
+        &#125;
+    &#125;
+</code></pre>
+<h2 id="调用方式"><a href="#调用方式" class="headerlink" title="调用方式"></a>调用方式</h2><p>原先的jTree调用方式</p>
+<pre><code>&lt;ul class=&quot;tree treeFolder&quot;&gt;
+    &lt;li&gt;
+        &lt;a href=&quot;tabsPage.html&quot; target=&quot;navTab&quot;&gt;主框架面板&lt;/a&gt;
+        &lt;ul&gt;
+            &lt;li&gt;&lt;a href=&quot;main.html&quot; target=&quot;navTab&quot; rel=&quot;main&quot;&gt;我的主页&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;http://www.baidu.com&quot; target=&quot;navTab&quot; rel=&quot;page1&quot;&gt;页面一(外部页面)&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;demo_page2.html&quot; target=&quot;navTab&quot; rel=&quot;external&quot; external=&quot;true&quot;&gt;iframe navTab页面&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+<p>现在的zTree调用方式：<br>将上述树DOM内容更改为</p>
+<pre><code>&lt;div class=&quot;zTreeDemoBackground left&quot;&gt;
+    &lt;ul id=&quot;treeDemo&quot; class=&quot;ztree&quot;&gt;&lt;/ul&gt;
+&lt;/div&gt;
+</code></pre>
+<p>添加如下调用脚本：</p>
+<pre><code>var setting = &#123;
+        data: &#123;
+            simpleData: &#123;
+                enable: true
+            &#125;
+        &#125;
+&#125;;
+
+var zNodes =[
+        &#123; id:1, pId:0, name:&quot;主框架面板&quot;, url:&quot;tabsPage.html&quot;, target:&quot;navTab&quot;, open:true&#125;,
+        &#123; id:2, pId:1, name:&quot;我的主页&quot;, url:&quot;main.html&quot;, target:&quot;navTab&quot;, rel:&quot;main&quot;&#125;,
+        &#123; id:3, pId:1, name:&quot;iframe navTab页面&quot;, url:&quot;demo_page2.html&quot;, target:&quot;navTab&quot;, rel:&quot;external&quot;, external:&quot;true&quot;&#125;
+    ];
+
+    $(document).ready(function()&#123;
+        $.fn.zTree.init($(&quot;#treeDemo&quot;), setting, zNodes);
+    &#125;);
+</code></pre>
+<p><em>注意：原先超链接中href属性名要更改为url。</em></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/DWZ/" rel="tag"># DWZ</a>
+              <a href="/tags/zTree/" rel="tag"># zTree</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2013/05/02/high-performance-javascript-note-2-data-access/" rel="prev" title="《高性能JavaScript》读书笔记[2]-数据访问">
+                  <i class="fa fa-chevron-left"></i> 《高性能JavaScript》读书笔记[2]-数据访问
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2013/10/15/mixed-using-mavem-and-spring-profile/" rel="next" title="Maven与Spring profile的结合使用">
+                  Maven与Spring profile的结合使用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

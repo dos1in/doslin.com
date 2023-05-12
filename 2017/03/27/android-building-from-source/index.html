@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"doslin.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言 本文假定读者已经安装并配置好了相应的开发环境： Gradle 、 Android SDK 、 Android NDK 及Android Studio等。 通过源码编译我们可以进行定制化改造和修正bug：譬如华为7.0上的边缘滑动崩溃问题。 阅读正文将花费您大约3分钟。  创建 Android 工程虽然官方已经不再推荐 Android 命令行工具创建项目，我们还是瞄一眼它的命令格式： 12an">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3分钟从源码构建React Native">
+<meta property="og:url" content="http://doslin.com/2017/03/27/android-building-from-source/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="前言 本文假定读者已经安装并配置好了相应的开发环境： Gradle 、 Android SDK 、 Android NDK 及Android Studio等。 通过源码编译我们可以进行定制化改造和修正bug：譬如华为7.0上的边缘滑动崩溃问题。 阅读正文将花费您大约3分钟。  创建 Android 工程虽然官方已经不再推荐 Android 命令行工具创建项目，我们还是瞄一眼它的命令格式： 12an">
+<meta property="og:locale">
+<meta property="og:image" content="http://doslin.com/images/2017/03/rn-build-as.png">
+<meta property="og:image" content="http://doslin.com/images/2017/03/rn-build-module.png">
+<meta property="og:image" content="http://doslin.com/images/2017/03/rn-build-var.png">
+<meta property="article:published_time" content="2017-03-27T07:27:22.000Z">
+<meta property="article:modified_time" content="2023-05-12T04:22:08.095Z">
+<meta property="article:author" content="DosLin">
+<meta property="article:tag" content="react-native">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://doslin.com/images/2017/03/rn-build-as.png">
+
+
+<link rel="canonical" href="http://doslin.com/2017/03/27/android-building-from-source/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://doslin.com/2017/03/27/android-building-from-source/","path":"2017/03/27/android-building-from-source/","title":"3分钟从源码构建React Native"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>3分钟从源码构建React Native | DosLin's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DosLin's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-Android-%E5%B7%A5%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">创建 Android 工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD-React-Native-%E6%BA%90%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">下载 React Native 源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5-ReactAndroid-Module"><span class="nav-number">4.</span> <span class="nav-text">导入 ReactAndroid Module</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5-ReactCommon"><span class="nav-number">5.</span> <span class="nav-text">导入 ReactCommon</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA-React-Native"><span class="nav-number">6.</span> <span class="nav-text">构建 React Native</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https:&#x2F;&#x2F;github.com&#x2F;JChord" rel="noopener me" target="_blank"><i class="github fa-fw"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener me" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2017/03/27/android-building-from-source/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="3分钟从源码构建React Native | DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          3分钟从源码构建React Native
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-03-27 15:27:22" itemprop="dateCreated datePublished" datetime="2017-03-27T15:27:22+08:00">2017-03-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/android/" itemprop="url" rel="index"><span itemprop="name">android</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>本文假定读者已经安装并配置好了相应的开发环境： Gradle 、 Android SDK 、 Android NDK 及Android Studio等。</li>
+<li>通过源码编译我们可以进行定制化改造和修正bug：譬如华为7.0上的边缘滑动崩溃问题。</li>
+<li>阅读正文将花费您大约3分钟。</li>
+</ul>
+<h2 id="创建-Android-工程"><a href="#创建-Android-工程" class="headerlink" title="创建 Android 工程"></a>创建 Android 工程</h2><p>虽然官方已经不再推荐 Android 命令行工具创建项目，我们还是瞄一眼它的命令格式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">android create project --target android-22 --name MyRNApp --path /home/doslin/blog/MyRNApp </span><br><span class="line">--activity MyActivity --package com.doslin.rnapp</span><br></pre></td></tr></table></figure>
+
+<p>运行后会提示：</p>
+<blockquote>
+<p>The android command is no longer available.</p>
+</blockquote>
+<blockquote>
+<p>For manual SDK and AVD management, please use Android Studio.</p>
+</blockquote>
+<blockquote>
+<p>For command-line tools, use tools&#x2F;bin&#x2F;sdkmanager and tools&#x2F;bin&#x2F;avdmanager</p>
+</blockquote>
+<span id="more"></span>
+
+<p>所以我们通过 Android Studio 创建一个项目，三步走：</p>
+<ol>
+<li>填入应用名及包名</li>
+<li>选择最小支持的 Android SDK</li>
+<li>选择 No Activity</li>
+</ol>
+<p><img src="/images/2017/03/rn-build-as.png" alt="Android Studio 创建项目"></p>
+<h2 id="下载-React-Native-源码"><a href="#下载-React-Native-源码" class="headerlink" title="下载 React Native 源码"></a>下载 React Native 源码</h2><p><code>NPM</code> 安装 <code>Package</code> 语法如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm install github:&lt;githubname&gt;/&lt;githubrepo&gt;[#&lt;commit-ish&gt;]</span><br><span class="line"></span><br><span class="line">-S, --save: Package will appear in your dependencies.</span><br></pre></td></tr></table></figure>
+
+<p>你也可以下载最新的主干分支的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save github:facebook/react-native#master</span><br></pre></td></tr></table></figure>
+<p>之后源码将下载到用户目录下的 node_modules&#x2F;react-native 下。</p>
+<p>你也可以下载指定版本的 React Native，假设我们现在要下载最新的 	<br>v0.43.0-rc.4， 它在指定的 tag 分支上，进入<a target="_blank" rel="noopener" href="https://github.com/facebook/react-native/tags">https://github.com/facebook/react-native/tags</a>下载即可。</p>
+<h2 id="导入-ReactAndroid-Module"><a href="#导入-ReactAndroid-Module" class="headerlink" title="导入 ReactAndroid Module"></a>导入 ReactAndroid Module</h2><p>在刚刚创建的项目中进行操作，首先在项目级别的 <code>build.gradle</code> 中添加 <code>gradle-download-task</code> 依赖：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">    <span class="keyword">buildscript</span> &#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">dependencies</span> &#123;</span><br><span class="line">            <span class="comment">// ↓注意这里的插件版本更改为2.2.3</span></span><br><span class="line">            <span class="keyword">classpath</span> <span class="string">&#x27;com.android.tools.build:gradle:2.2.3&#x27;</span></span><br><span class="line">            <span class="keyword">classpath</span> <span class="string">&#x27;de.undercouch:gradle-download-task:3.1.2&#x27;</span></span><br><span class="line">            <span class="comment">// <span class="doctag">NOTE:</span> Do not place your application dependencies here; they belong</span></span><br><span class="line">            <span class="comment">// in the individual module build.gradle files</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>注意将 gradle 插件版本更改为 2.2.3，否则使用最新的 2.3.0会提示如下错误：</p>
+<blockquote>
+<p>Error:(168, 0) No such property: sdkHandler for class: com.android.build.gradle.LibraryPlugin</p>
+</blockquote>
+<p>之后导入 React Native 源码目录下的 ReactAndroid 目录。</p>
+<p><img src="/images/2017/03/rn-build-module.png" alt="Android Studio 导入模块"></p>
+<h2 id="导入-ReactCommon"><a href="#导入-ReactCommon" class="headerlink" title="导入 ReactCommon"></a>导入 ReactCommon</h2><p>由于 ReactAndroid 也依赖了 ReactCommon，所以还需要将 React Native 源码目录下的 ReactCommon 目录复制到项目根目录下。如果你要已到其他路径或不进行移动，请更改 ReactAndroid 下的 <code>build.gradle</code>， 搜索 ReactCommon 关键字，将两处中的相应路径更改为相应目录。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">task</span> buildReactNdkLib(dependsOn: [prepareJSC, prepareBoost, prepareDoubleConversion, prepareFolly, prepareGlog], type: Exec) &#123;</span><br><span class="line">    inputs.<span class="keyword">file</span>(<span class="string">&#x27;src/main/jni/xreact&#x27;</span>)</span><br><span class="line">    outputs.dir(<span class="string">&quot;$buildDir/react-ndk/all&quot;</span>)</span><br><span class="line">    commandLine getNdkBuildFullPath(),</span><br><span class="line">            <span class="string">&#x27;NDK_PROJECT_PATH=null&#x27;</span>,</span><br><span class="line">            <span class="string">&quot;NDK_APPLICATION_MK=$projectDir/src/main/jni/Application.mk&quot;</span>,</span><br><span class="line">            <span class="string">&#x27;NDK_OUT=&#x27;</span> + temporaryDir,</span><br><span class="line">            <span class="string">&quot;NDK_LIBS_OUT=$buildDir/react-ndk/all&quot;</span>,</span><br><span class="line">            <span class="string">&quot;THIRD_PARTY_NDK_DIR=$buildDir/third-party-ndk&quot;</span>,</span><br><span class="line">            <span class="comment">// ↓更改为指定路径下的ReactCommon</span></span><br><span class="line">            <span class="string">&quot;REACT_COMMON_DIR=$projectDir/../ReactCommon&quot;</span>,</span><br><span class="line">            <span class="string">&#x27;-C&#x27;</span>, <span class="keyword">file</span>(<span class="string">&#x27;src/main/jni/react/jni&#x27;</span>).absolutePath,</span><br><span class="line">            <span class="string">&#x27;--jobs&#x27;</span>, <span class="keyword">project</span>.hasProperty(<span class="string">&quot;jobs&quot;</span>) ? <span class="keyword">project</span>.property(<span class="string">&quot;jobs&quot;</span>) : <span class="keyword">Runtime</span>.<span class="keyword">runtime</span>.availableProcessors()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">task</span> cleanReactNdkLib(type: Exec) &#123;</span><br><span class="line">    commandLine getNdkBuildFullPath(),</span><br><span class="line">            <span class="string">&quot;NDK_APPLICATION_MK=$projectDir/src/main/jni/Application.mk&quot;</span>,</span><br><span class="line">            <span class="string">&quot;THIRD_PARTY_NDK_DIR=$buildDir/third-party-ndk&quot;</span>,</span><br><span class="line">            <span class="comment">// ↓更改为指定路径下的ReactCommon</span></span><br><span class="line">            <span class="string">&quot;REACT_COMMON_DIR=$projectDir/../ReactCommon&quot;</span>,</span><br><span class="line">            <span class="string">&#x27;-C&#x27;</span>, <span class="keyword">file</span>(<span class="string">&#x27;src/main/jni/react/jni&#x27;</span>).absolutePath,</span><br><span class="line">            <span class="string">&#x27;clean&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="构建-React-Native"><a href="#构建-React-Native" class="headerlink" title="构建 React Native"></a>构建 React Native</h2><p>更改相应的 Build Variant 后点击 build 按钮，即可在 ReactAndroid 中的 build 下得到相应的 React Native AAR，之后你可以将它发布到自己的 Maven 仓库中。</p>
+<p><img src="/images/2017/03/rn-build-var.png" alt="Android Studio 构建"></p>
+<p>Tips：如果发现编译过慢，可能是一些第三方依赖下载过慢，可以去 ReactAndroid 下的 build.gradle 中搜索 https 替换为 http 即可。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>1.<a target="_blank" rel="noopener" href="https://developer.android.com/studio/tools/help/android.html">Android 开发者文档</a><br>2.<a target="_blank" rel="noopener" href="https://docs.npmjs.com/cli/install">NPM 官方文档</a><br>3.<a target="_blank" rel="noopener" href="http://facebook.github.io/react-native/releases/0.43/docs/android-building-from-source.html">React Native 官方文档</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/react-native/" rel="tag"># react-native</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/03/15/react-native-source-code-analysis/" rel="prev" title="20分钟理解React Native For Android原理">
+                  <i class="fa fa-chevron-left"></i> 20分钟理解React Native For Android原理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/07/17/jni-ndk-tutorial-start/" rel="next" title="JNI与NDK入门之一">
+                  JNI与NDK入门之一 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

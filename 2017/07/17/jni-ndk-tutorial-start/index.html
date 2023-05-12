@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"doslin.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="概述Android 系统架构中包含了 Applications （应用程序层）、Application framework（应用程序框架层）、Libraries + Android runtime（系统运行库层）以及 Linux Kernel（Linux核心层）。从编程语言的角度看，每层的功能模块都是使用相应的语言编写的，在此过程中，C&#x2F;C++ 与 Java相互通信时就需要一个媒介来联系">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JNI与NDK入门之一">
+<meta property="og:url" content="http://doslin.com/2017/07/17/jni-ndk-tutorial-start/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="概述Android 系统架构中包含了 Applications （应用程序层）、Application framework（应用程序框架层）、Libraries + Android runtime（系统运行库层）以及 Linux Kernel（Linux核心层）。从编程语言的角度看，每层的功能模块都是使用相应的语言编写的，在此过程中，C&#x2F;C++ 与 Java相互通信时就需要一个媒介来联系">
+<meta property="og:locale">
+<meta property="og:image" content="http://doslin.com/images/2017/07/jni-env.png">
+<meta property="og:image" content="http://doslin.com/images/2017/07/jni-run.png">
+<meta property="og:image" content="http://doslin.com/images/2017/07/jni-header.png">
+<meta property="og:image" content="http://doslin.com/images/2017/07/jni-lib.png">
+<meta property="og:image" content="http://doslin.com/images/2017/07/jni-result.png">
+<meta property="og:image" content="http://doslin.com/images/2017/07/jni-all.png">
+<meta property="article:published_time" content="2017-07-17T00:49:55.000Z">
+<meta property="article:modified_time" content="2023-05-12T04:22:08.096Z">
+<meta property="article:author" content="DosLin">
+<meta property="article:tag" content="jni">
+<meta property="article:tag" content="ndk">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://doslin.com/images/2017/07/jni-env.png">
+
+
+<link rel="canonical" href="http://doslin.com/2017/07/17/jni-ndk-tutorial-start/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://doslin.com/2017/07/17/jni-ndk-tutorial-start/","path":"2017/07/17/jni-ndk-tutorial-start/","title":"JNI与NDK入门之一"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JNI与NDK入门之一 | DosLin's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DosLin's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%83%85%E5%BD%A2"><span class="nav-number">2.</span> <span class="nav-text">使用情形</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">基本原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E5%86%99-Java-%E4%BB%A3%E7%A0%81"><span class="nav-number">3.1.</span> <span class="nav-text">编写 Java 代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91-Java-%E4%BB%A3%E7%A0%81"><span class="nav-number">3.2.</span> <span class="nav-text">编译 Java 代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90-C-%E8%AF%AD%E8%A8%80%E5%A4%B4%E6%96%87%E4%BB%B6"><span class="nav-number">3.3.</span> <span class="nav-text">生成 C 语言头文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E5%86%99-C-x2F-C-%E4%BB%A3%E7%A0%81"><span class="nav-number">3.4.</span> <span class="nav-text">编写 C&#x2F;C++ 代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90-C-%E5%85%B1%E4%BA%AB%E5%BA%93"><span class="nav-number">3.5.</span> <span class="nav-text">生成 C 共享库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C-Java-%E7%A8%8B%E5%BA%8F"><span class="nav-number">3.6.</span> <span class="nav-text">运行 Java 程序</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https:&#x2F;&#x2F;github.com&#x2F;JChord" rel="noopener me" target="_blank"><i class="github fa-fw"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener me" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2017/07/17/jni-ndk-tutorial-start/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JNI与NDK入门之一 | DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JNI与NDK入门之一
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-07-17 08:49:55" itemprop="dateCreated datePublished" datetime="2017-07-17T08:49:55+08:00">2017-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/android/" itemprop="url" rel="index"><span itemprop="name">android</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Android 系统架构中包含了 Applications （应用程序层）、Application framework（应用程序框架层）、Libraries + Android runtime（系统运行库层）以及 Linux Kernel（Linux核心层）。从编程语言的角度看，每层的功能模块都是使用相应的语言编写的，在此过程中，C&#x2F;C++ 与 Java相互通信时就需要一个媒介来联系起来，JNI（Java Native Interface） 就充当了这一角色，它允许 Java 代码和 基于 C&#x2F;C++ 编写的应用程序、模块、库进行交互操作。</p>
+<span id="more"></span>
+
+<p><img src="/images/2017/07/jni-env.png" alt="JNI 原理"></p>
+<h1 id="使用情形"><a href="#使用情形" class="headerlink" title="使用情形"></a>使用情形</h1><p>通常在下列几种情形下使用 JNI：</p>
+<ul>
+<li><p>追求运行速度</p>
+<p>  不管是 Dalvik 还是 Art 虚拟机上，Java 代码的运行速度在一些情况下还是无法媲美使用 C&#x2F;C++ 来开发的应用程序，特别是在开发图形处理或信号处理这类对 CPU 处理速度有较高要求的程序。我们可以使用 C&#x2F;C++ 这类本地语言开发，再在 Java 中 借助JNI 将 Java 程序与 C&#x2F;C++ 模块连接在一起，从而开发出一个执行效率更高的程序。</p>
+</li>
+<li><p>复用 C&#x2F;C++代码</p>
+<p>  由于历史积累的问题，我们可能需要重新使用一些已经编写好且通过测试的 C&#x2F;C++代码，减少了重复工作又确保了程序的安全性与健壮性。</p>
+</li>
+<li><p>控制硬件</p>
+<p>  硬件控制代码或者设备驱动程序通常使用 C 语言编写，借助 JNI 将设备驱动程序映射为 Java API，就可以在 Java 层实现对硬件的控制。</p>
+</li>
+</ul>
+<h1 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h1><p>在 Java 中调用 C 库函数，流程基本分为以下六个：</p>
+<ol>
+<li>编写 Java 代码</li>
+<li>编译 Java 代码</li>
+<li>生成 C 语言头文件</li>
+<li>编写 C 代码</li>
+<li>生成 C 共享库</li>
+<li>运行 Java 程序</li>
+</ol>
+<p>下面我们来通过编写一个简单的 Java 程序来演示如何通过 JNI 来调用 C 函数。被调用的 C 函数是一个向控制台输出字符串的简单函数。</p>
+<h2 id="编写-Java-代码"><a href="#编写-Java-代码" class="headerlink" title="编写 Java 代码"></a>编写 Java 代码</h2><p>首先编写 Java 端的调用代码，其中声明本地方法，而方法的具体实现则通过之后的 C&#x2F;C++来编写。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloJNI</span> &#123;</span><br><span class="line">	<span class="comment">// 使用 native 关键字声明本地方法，该方法与用 C/C++ 编写的 JNI</span></span><br><span class="line">	<span class="comment">// 函数相对应， Java 代码中只声明没有具体实现</span></span><br><span class="line">	<span class="keyword">native</span> <span class="keyword">void</span> <span class="title function_">printHello</span><span class="params">()</span>;</span><br><span class="line">	<span class="keyword">native</span> <span class="keyword">void</span> <span class="title function_">printStr</span><span class="params">(String content)</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 使用静态块加载具体实现本地方法的 C 运行库</span></span><br><span class="line">	<span class="keyword">static</span> &#123;</span><br><span class="line">		System.loadLibrary(<span class="string">&quot;hellojni&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String args[])</span> &#123;</span><br><span class="line">		<span class="type">HelloJNI</span> <span class="variable">jni</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HelloJNI</span>();</span><br><span class="line">		</span><br><span class="line">		<span class="comment">// 调用本地方法（实际调用的是使用 C 语言编写的 JNI 本地函数）</span></span><br><span class="line">		jni.printHello();</span><br><span class="line">		jni.printStr(<span class="string">&quot;The content from Java to C&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="编译-Java-代码"><a href="#编译-Java-代码" class="headerlink" title="编译 Java 代码"></a>编译 Java 代码</h2><p>使用 Java 编译器 （javac）编译 Java 源代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javac HelloJNI.java</span><br></pre></td></tr></table></figure>
+
+<p>此时直接运行 HelloJNI 会抛出<br><code>java.lang.UnsatisfiedLinkError</code> 的异常。</p>
+<p><img src="/images/2017/07/jni-run.png" alt="JNI 初步运行"></p>
+<h2 id="生成-C-语言头文件"><a href="#生成-C-语言头文件" class="headerlink" title="生成 C 语言头文件"></a>生成 C 语言头文件</h2><p>下面我们生成数原型将运行库中的 C 函数与Java 代码中的本地方法映射在一起。<br>函数原型存在于 C&#x2F;C++ 的头文件中。我们使用 <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/technotes/tools/unix/javah.html"><code>javah</code></a> 来生成头文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javah &lt;包含以 native 关键字声明的方法的 Java 类名称&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2017/07/jni-header.png" alt="JNI 生成头文件"></p>
+<p>运行 <code>javah</code> 命令后，会在当前目录下生成与  Java 类名（即 javah 命令的参数）相同名称的 C 语言头文件。在这个 C 头文件中，定义了与 Java 本地方法相链接的 C 函数原型。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* DO NOT EDIT THIS FILE - it is machine generated */</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;jni.h&gt;</span></span></span><br><span class="line"><span class="comment">/* Header for class HelloJNI */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> _Included_HelloJNI</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _Included_HelloJNI</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Class:     HelloJNI</span></span><br><span class="line"><span class="comment"> * Method:    printHello</span></span><br><span class="line"><span class="comment"> * Signature: ()V</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">JNIEXPORT <span class="type">void</span> JNICALL <span class="title function_">Java_HelloJNI_printHello</span></span><br><span class="line">  <span class="params">(JNIEnv *, jobject)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Class:     HelloJNI</span></span><br><span class="line"><span class="comment"> * Method:    printStr</span></span><br><span class="line"><span class="comment"> * Signature: (Ljava/lang/String;)V</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">JNIEXPORT <span class="type">void</span> JNICALL <span class="title function_">Java_HelloJNI_printStr</span></span><br><span class="line">  <span class="params">(JNIEnv *, jobject, jstring)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>上述文件内容中， <code>JNIEXPORT</code>、<code>JNICALL</code> 都是 JNI 关键字，表示此函数要被 JNI 调用。反过来说， JNI 如果要正常调用函数，那么函数原型中必须要有这两个关键字。其实，这两个够关键字都是宏定义，具体请查看 JDK&#x2F;include 下的 <code>jni_md.h</code> 文件。</p>
+<p>同时可以看到生成的函数原型名称遵循「Java_类名_本地方法名」的命名规则，即可推断出 JNI 本地函数与 Java 类的哪个本地方法相对应。</p>
+<p>现在查看函数原型中的参数，带有两个默认参数，第一个、第二个分别为 <code>JNIEnv *</code>、<code>jobject</code>，前者是 JNI 接口的指针，用来调用 JNI 表中的各类 JNI 函数。后者是 JNI 提供的 Java 本地类型，保存着调用本地方法的对象的一个引用，用来在 C 代码中访问 Java 对象。</p>
+<h2 id="编写-C-x2F-C-代码"><a href="#编写-C-x2F-C-代码" class="headerlink" title="编写 C&#x2F;C++ 代码"></a>编写 C&#x2F;C++ 代码</h2><p>在 C 函数原型生成后，我们编写  <code>hellojni.c</code> 文件来具体实现 JNI 本地函数。首先把定义在 <code>HelloJNI.h</code> 头文件中的函数原型复制到 <code>hellojni.c</code> 文件中。</p>
+<h2 id="生成-C-共享库"><a href="#生成-C-共享库" class="headerlink" title="生成 C 共享库"></a>生成 C 共享库</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;HelloJNI.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 从头文件中复制后，记得添加参数名</span></span><br><span class="line">JNIEXPORT <span class="type">void</span> JNICALL <span class="title function_">Java_HelloJNI_printHello</span></span><br><span class="line">  <span class="params">(JNIEnv *env, jobject obj)</span> &#123;</span><br><span class="line">  	<span class="built_in">printf</span>(<span class="string">&quot;Hello World!\n&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">JNIEXPORT <span class="type">void</span> JNICALL <span class="title function_">Java_HelloJNI_printStr</span></span><br><span class="line">  <span class="params">(JNIEnv *env, jobject obj, jstring <span class="built_in">string</span>)</span> &#123;</span><br><span class="line">  	<span class="comment">// C 语言中字符串占用8位， Java 中字符串占用16位，因此</span></span><br><span class="line">  	<span class="comment">// 需要将 jstring 类型的字符串转换成 C 语言字符串</span></span><br><span class="line">  	<span class="type">const</span> <span class="type">char</span> *str = (*env)-&gt;GetStringUTFChars(env, <span class="built_in">string</span>, <span class="number">0</span>);</span><br><span class="line">  	<span class="built_in">printf</span>(<span class="string">&quot;%s!\n&quot;</span>, str);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+
+<p>在命令行中，输入如下编译命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">本机是 mac 环境，生成的是动态链接库是 .dylib 作为扩展名（ Mach-O 格式），linux 改成 .so，windows 下则是 .dll。</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">至于为什么 unix/linux 下的动态链接库命名规则需要加上 .lib 的原因请参考 http://www.swig.org/Doc1.3/Java.html<span class="comment">#dynamic_linking_problems</span></span></span><br><span class="line">gcc hellojni.c -I /Library/Java/JavaVirtualMachines/jdk1.8.0_92.jdk/Contents/Home/include -I /Library/Java/JavaVirtualMachines/jdk1.8.0_92.jdk/Contents/Home/include/darwin -shared -o libhellojni.dylib </span><br></pre></td></tr></table></figure>
+
+<p>注意这里几个 <code>gcc</code> 的参数，<code>-shared</code> 说明要生成动态库，对于两个  <code>-I</code> 的选项，前者指定了头文件 <code>&lt;jni.h&gt;</code> 的存放路径，后者指定了头文件 <code>&lt;jni_md.h&gt;</code> 的存放路径，请根据你的环境配置更改。</p>
+<p><img src="/images/2017/07/jni-lib.png" alt="JNI 生成动态链接库"></p>
+<h2 id="运行-Java-程序"><a href="#运行-Java-程序" class="headerlink" title="运行 Java 程序"></a>运行 Java 程序</h2><p>到这里所有步骤准备完成，执行 <code>java</code> 命令，运行 <code>HelloJNI</code> 类后，查看运行结果。<br>请注意 <code>java.library.path</code> 用来指定当前动态链接库地址。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Djava.library.path=. HelloJNI</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2017/07/jni-result.png" alt="JNI 调用成功"></p>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>最后，我们总结一下 Java 本地方法如何通过 JNI 链接至 C 函数的几个步骤：</p>
+<p><img src="/images/2017/07/jni-all.png" alt="JNI 流程"></p>
+<ol>
+<li>在 Java 类中声明本地方法</li>
+<li>使用 javah 命令，生成包含 JNI 本地函数原型的头文件</li>
+<li>实现 JNI 本地函数</li>
+<li>生成 C 共享库</li>
+<li>通过 JNI 调用 JNI 本地函数</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/jni/" rel="tag"># jni</a>
+              <a href="/tags/ndk/" rel="tag"># ndk</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/03/27/android-building-from-source/" rel="prev" title="3分钟从源码构建React Native">
+                  <i class="fa fa-chevron-left"></i> 3分钟从源码构建React Native
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/07/17/jni-ndk-tutorial-second/" rel="next" title="JNI与NDK入门之二">
+                  JNI与NDK入门之二 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

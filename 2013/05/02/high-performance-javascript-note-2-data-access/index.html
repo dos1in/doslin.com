@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"doslin.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="数据的存储位置会影响其读取速度，这个问题对于JavaScript来说相对简单，因为它只有四种基本的数据存储位置:  直接量 变量 数组元素 对象成员  一般来说，使用直接量和局部变量的访问速度快于数组项和对象成员的访问速度（除非浏览器内部刻意优化）。 管理作用域 ###作用域链和标识符解析  每一个JavaScript函数都是Function对象的一个实例。而该对象拥有可编程访问的属性和不能通过代">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《高性能JavaScript》读书笔记[2]-数据访问">
+<meta property="og:url" content="http://doslin.com/2013/05/02/high-performance-javascript-note-2-data-access/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="数据的存储位置会影响其读取速度，这个问题对于JavaScript来说相对简单，因为它只有四种基本的数据存储位置:  直接量 变量 数组元素 对象成员  一般来说，使用直接量和局部变量的访问速度快于数组项和对象成员的访问速度（除非浏览器内部刻意优化）。 管理作用域 ###作用域链和标识符解析  每一个JavaScript函数都是Function对象的一个实例。而该对象拥有可编程访问的属性和不能通过代">
+<meta property="og:locale">
+<meta property="article:published_time" content="2013-05-02T07:36:16.000Z">
+<meta property="article:modified_time" content="2023-05-12T04:22:08.093Z">
+<meta property="article:author" content="DosLin">
+<meta property="article:tag" content="JavaScript">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://doslin.com/2013/05/02/high-performance-javascript-note-2-data-access/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"http://doslin.com/2013/05/02/high-performance-javascript-note-2-data-access/","path":"2013/05/02/high-performance-javascript-note-2-data-access/","title":"《高性能JavaScript》读书笔记[2]-数据访问"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>《高性能JavaScript》读书笔记[2]-数据访问 | DosLin's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DosLin's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E7%90%86%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">1.</span> <span class="nav-text">管理作用域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E6%88%90%E5%91%98"><span class="nav-number">2.</span> <span class="nav-text">对象成员</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">小结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https:&#x2F;&#x2F;github.com&#x2F;JChord" rel="noopener me" target="_blank"><i class="github fa-fw"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener me" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2013/05/02/high-performance-javascript-note-2-data-access/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="《高性能JavaScript》读书笔记[2]-数据访问 | DosLin's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《高性能JavaScript》读书笔记[2]-数据访问
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2013-05-02 15:36:16" itemprop="dateCreated datePublished" datetime="2013-05-02T15:36:16+08:00">2013-05-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>数据的存储位置会影响其读取速度，这个问题对于JavaScript来说相对简单，因为它只有<strong>四种基本的数据存储位置</strong>:</p>
+<ul>
+<li>直接量</li>
+<li>变量</li>
+<li>数组元素</li>
+<li>对象成员</li>
+</ul>
+<p>一般来说，使用直接量和局部变量的访问速度快于数组项和对象成员的访问速度（除非浏览器内部刻意优化）。</p>
+<h2 id="管理作用域"><a href="#管理作用域" class="headerlink" title="管理作用域"></a>管理作用域</h2><blockquote>
+<p>###<strong>作用域链和标识符解析</strong></p>
+</blockquote>
+<p>每一个JavaScript函数都是Function对象的一个实例。而该对象拥有可编程访问的属性和不能通过代码访问的内部属性（仅供JavaScript引擎存取）。内部属性中的<a target="_blank" rel="noopener" href="http://www.ecma-international.org/publications/standards/Ecma-262.htm">Scope</a>包含的一个函数被创建的作用域中对象的集合称为函数的作用域链。</p>
+<p>执行函数时会创建一个运行期上下文（execution context）的内部对象，每个运行期上下文对象都有自己的作用域链用于标识符解析。正是解析标识符时在作用域链中的搜索过程影响了性能。</p>
+<blockquote>
+<p>###<strong>标识符解析的性能</strong></p>
+</blockquote>
+<p>一个标识符在运行期上下文的作用域链中位置越深，它的读写速度就越慢。因为全局变量总是存在于运行期上下文作用域链的最末端，因此读写全局变量较读写局部变量来说是慢的。</p>
+<blockquote>
+<p>###<strong>改变作用域链</strong></p>
+</blockquote>
+<p>可通过<a target="_blank" rel="noopener" href="http://www.w3school.com.cn/js/pro_js_statements_with.asp">with</a>语句或<a target="_blank" rel="noopener" href="http://www.w3school.com.cn/js/js_try_catch.asp">try-catch</a>语句中的catch子句临时改变作用域链。</p>
+<blockquote>
+<p>###<strong>动态作用域</strong></p>
+</blockquote>
+<p>动态作用域只存在于代码执行过程中，因此无法通过静态分析（查看代码结构）检测出来。<code>with</code>语句、<code>try-catch</code>中的<code>catch</code>子句以及包含<code>eval()</code>的函数，都被认为是动态作用域。</p>
+<blockquote>
+<p>###<strong>闭包，作用域和内存</strong></p>
+</blockquote>
+<p>当闭包被创建时，它的<code>Scope</code>属性初始化为上下文中的活动对象和全局对象。</p>
+<p>当闭包被执行时，它的’Scope’属性中对了一个为闭包自身所创建的活动对象。所以要访问的标识符存在于作用域链第一个对象之后的位置，访问时导致性能损失。</p>
+<h2 id="对象成员"><a href="#对象成员" class="headerlink" title="对象成员"></a>对象成员</h2><blockquote>
+<p>###<strong>原型</strong></p>
+</blockquote>
+<p>JavaScript中的对象是基于原型(Prototype)的。原型定义并实现了一个新对象必须包含的成员列表，并为所有对象实例所共享。</p>
+<p>对象可以有两种成员类型：实例成员（存在于对象实例中）和原型成员（由对象原型集成而来）。</p>
+<p>可以使用<code>hasOwnProperty()</code>方法判断对象是否包含特定的实例成员（只搜索原型）。</p>
+<p>使用<code>in</code>操作符判断对象是否包含特定的属性（既搜索实例也搜索原型）。</p>
+<blockquote>
+<p>###<strong>原型链</strong></p>
+</blockquote>
+<p>对象的原型决定了实例的原型（所有的对象都是Object的实例）。</p>
+<p>访问对象成员（属性（非函数类型成员）或方法（函数类型成员））的过程就是先搜索对象的实例成员，再遍历原型链。对象成员的深度决定了访问它所需的时间。</p>
+<blockquote>
+<p>###<strong>嵌套成员</strong></p>
+</blockquote>
+<p>对象成员嵌套越深，访问速度就会越慢。如访问速度：</p>
+<pre><code>location.href &gt; widow.location.href &gt; window.location.href.toString()
+</code></pre>
+<blockquote>
+<p>###<strong>缓存成员对象值</strong></p>
+</blockquote>
+<p>在同一个函数中没有必要多次访问同一个对象成员，除非它的值发生了更改。如果需要多次查找成员变量，可以使用局部变量来进行缓存。但这种方法并不适用于<strong>使用this来进行判断执行上下文的对象方法</strong>。因为把一个方法保存在局部变量中会导致<code>this</code>绑定到window。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ul>
+<li>访问直接量和局部变量比访问数组元素和对象成员快。</li>
+<li>变量在作用域链中的位置越深，访问所需时间越长。属性或方法在原型链中的位置越深，访问它的速度也越慢。</li>
+<li>由于局部变量存在于作用域链的起始位置使得访问局部变量比访问跨作用域变量快。 </li>
+<li>由于全局变量总处在作用域链的最末端，因此访问速度最慢。</li>
+<li>避免使用<code>with</code>语句和<code>try-catch</code>语句中的<code>catch</code>子句，因为它们会改变运行期上下文作用域链。</li>
+<li>尽量少用影响性能的嵌套的对象成员。</li>
+<li>可以把常用的对象成员、数组元素、跨域变量保存在局部变量中来改善JavaScript性能。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2013/04/26/lucene-getting-started/" rel="prev" title="Lucene官方示例入门">
+                  <i class="fa fa-chevron-left"></i> Lucene官方示例入门
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2013/05/17/use-ztree-replace-jtree-of-dwz/" rel="next" title="用zTree替换DWZ(j-UI)中的jTree">
+                  用zTree替换DWZ(j-UI)中的jTree <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
