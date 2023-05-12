@@ -27,7 +27,7 @@
 <meta property="og:description" content="组件版本 DWZ: v1.4.5  zTree: v3.5.12   替换步骤 ###样式文件替换  定位dwz的themes&#x2F;css下的core.css文件，在184行~216行中注释JTree样式。 提取zTree的样式文件zTreeStyle.css（位于css&#x2F;zTreeStyle）及图标资源img文件夹。前者代码置于dwz的core.css的底部以防止dwz预定义的样">
 <meta property="og:locale">
 <meta property="article:published_time" content="2013-05-17T04:48:49.000Z">
-<meta property="article:modified_time" content="2023-05-12T04:22:08.094Z">
+<meta property="article:modified_time" content="2023-05-12T06:51:41.567Z">
 <meta property="article:author" content="DosLin">
 <meta property="article:tag" content="JavaScript">
 <meta property="article:tag" content="DWZ">
@@ -121,7 +121,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -250,6 +250,8 @@
 </code></pre>
 <p>2、更改节点的默认Target为<code>navTab</code>：</p>
 <p>找到<code>makeNodeTarget</code>方法（当前版本位于1178行），return语句修改为<code>return (node.target || &quot;navTab&quot;);</code></p>
+<span id="more"></span>
+
 <p>3、修改节点属性更新方法<code>updateNode</code>（当前版本位于1639行），追加<code>view.setNodeRel(this.setting, node)</code>。</p>
 <p>setNodeRel方法定义如下：</p>
 <pre><code>setNodeRel: function(setting, node) &#123;

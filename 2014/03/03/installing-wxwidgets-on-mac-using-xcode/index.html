@@ -27,7 +27,7 @@
 <meta property="og:description" content="安装Homebrew安装wxWidgets之前，推荐使用Homebrew管理软件包（当然，如果你熟悉MacPorts的话，也可以用它安装wxWidgets）。 在终端中键入以下命令： ruby -e &quot;$(curl -fsSL https:&#x2F;&#x2F;raw.github.com&#x2F;Homebrew&#x2F;homebrew&#x2F;go&#x2F;install)&quot;  安装wxWidgets搞定Homebrew">
 <meta property="og:locale">
 <meta property="article:published_time" content="2014-03-03T08:17:10.000Z">
-<meta property="article:modified_time" content="2023-05-12T04:22:08.094Z">
+<meta property="article:modified_time" content="2023-05-12T07:03:38.569Z">
 <meta property="article:author" content="DosLin">
 <meta property="article:tag" content="WxWidgets">
 <meta property="article:tag" content="Xcode">
@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -225,6 +225,8 @@
 //或者brew install wxmac
 </code></pre>
 <p>Homebrew将会自动为你下载好os x环境下的wxWidgets，免去编译源码的步骤。安装路径为<code>/usr/local/Cellar</code>。</p>
+<span id="more"></span>
+
 <p>接着输入：</p>
 <pre><code>wx-config --version
 </code></pre>
@@ -237,7 +239,7 @@
 <pre><code>wx-config --libs
 </code></pre>
 <p>返回：</p>
-<pre><code>-L/usr/local/Cellar/wxmac/3.0.0.0/lib   -framework IOKit -framework Carbon -framework Cocoa -framework AudioToolbox -framework System -framework OpenGL -framework QuickTime -lwx_osx_cocoau-3.0 
+<pre><code>-L/usr/local/Cellar/wxmac/3.0.0.0/lib   -framework IOKit -framework Carbon -framework Cocoa -framework AudioToolbox -framework System -framework OpenGL -framework QuickTime -lwx_osx_cocoau-3.0
 </code></pre>
 <p>将上面内容填入<code>Linking</code>下的<code>Other Linker Flags</code>。</p>
 <blockquote>
@@ -247,7 +249,7 @@
 <pre><code>wx-config --cxxflags
 </code></pre>
 <p>返回：</p>
-<pre><code>-I/usr/local/Cellar/wxmac/3.0.0.0/lib/wx/include/osx_cocoa-unicode-3.0 -I/usr/local/Cellar/wxmac/3.0.0.0/include/wx-3.0 -D_FILE_OFFSET_BITS=64 -DwxDEBUG_LEVEL=0 -DWXUSINGDLL -D__WXMAC__ -D__WXOSX__ -D__WXOSX_COCOA__ 
+<pre><code>-I/usr/local/Cellar/wxmac/3.0.0.0/lib/wx/include/osx_cocoa-unicode-3.0 -I/usr/local/Cellar/wxmac/3.0.0.0/include/wx-3.0 -D_FILE_OFFSET_BITS=64 -DwxDEBUG_LEVEL=0 -DWXUSINGDLL -D__WXMAC__ -D__WXOSX__ -D__WXOSX_COCOA__
 </code></pre>
 <p>如果输入命令后，终端没有上述内容，请输入<code>cd</code>切换到主目录，再输入上述命令。</p>
 <p>将输入内容填入<code>Custom Compiler Flags</code>下的<code>Other C++ Flags</code>。</p>

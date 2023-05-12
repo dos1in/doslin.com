@@ -113,7 +113,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -211,39 +211,16 @@
     <div class="post-body" itemprop="articleBody">
           <h2 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h2><p>首先下载最新版的<a target="_blank" rel="noopener" href="http://www.apache.org/dyn/closer.cgi/lucene/java/">Lucene分发包</a>（如：lucene-4.2.1.tgz），并解压到工作目录，找到以下四个jar包：</p>
 <blockquote>
-<p>core\lucene-core-{version}.jar<br>queryparser\lucene-queryparser-{version}.jar<br>analysis\common\lucene-analyzers-common-{version}.jar<br>demo\lucene-demo-{version}.jar  </p>
+<p>core\lucene-core-{version}.jar<br>queryparser\lucene-queryparser-{version}.jar<br>analysis\common\lucene-analyzers-common-{version}.jar<br>demo\lucene-demo-{version}.jar</p>
 </blockquote>
-<p>将上述jar文件放入某个目录（如：D:\lucene）并配置到CLASSPATH中，追加环境变量中的CLASSPATH内容为</p>
-<blockquote>
-<p>;D:\lucene\lucene-core-4.2.1.jar;D:\lucene\lucene-queryparser-4.2.1.jar;D:\lucene\lucene-analyzers-common-4.2.1.jar;D:\lucene\lucene-demo-4.2.1.jar;</p>
-</blockquote>
-<h2 id="运行例子"><a href="#运行例子" class="headerlink" title="运行例子"></a>运行例子</h2><p>确保你的CLASSPATH设置无误之后，我们下面使用演示例子创建索引文件。在控制台中键入以下命令：</p>
-<pre><code>cd D:\lucene
-java org.apache.lucene.demo.IndexFiles -docs &#123;path-to-lucene&#125;/src
-</code></pre>
-<p>这将会对lucene的源码目录创建索引，并将索引文件放在D:\lucene下的index目录中。</p>
-<p>之后我们根据创建的索引文件来搜索文件，键入：</p>
-<pre><code>java org.apache.lucene.demo.SearchFiles
-</code></pre>
-<p>程序将提示我们输入要查询的字符<code>（Enter query:）</code>，输入<code>string</code>回车，将会返回给我们十个匹配结果，输入<code>n</code>回车，会再返回十个结果，输入<code>q</code>退出。</p>
-<h2 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h2><p>下面我们将浏览一遍这个lucene命令行例子，分解一下它的函数以便于理解如何在我们的程序中应用Lucene。<br><a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/demo/src-html/org/apache/lucene/demo/IndexFiles.html">IndexFiles.java</a>是创建索引的代码。<br><a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/demo/src-html/org/apache/lucene/demo/SearchFiles.html">SearchFiles.java</a>是根据索引来检索的代码。</p>
-<blockquote>
-<p>###<strong>索引文件</strong></p>
-</blockquote>
-<p>main()函数接受命令行中的参数，之后通过构造一个<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/store/Directory.html">Directory</a>对象，并实例化<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/analyzers-common/org/apache/lucene/analysis/standard/StandardAnalyzer.html">StandardAnalyzer</a>和<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/index/IndexWriterConfig.html">IndexWriterConfig</a>作为实例化<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/index/IndexWriter.html">IndexWriter</a>的准备工作。</p>
-<p>命令行中的<code>-index</code>参数接收的是存放索引文件的目录名称。如果在相对路径下用<code>-index</code>参数或者没有<code>-index</code>参数的情况下（将会使用默认的索引文件夹名index）调用IndexFiles，这个索引文件夹将会在当前工作目录下作为子目录创建（如果还没创建的话）。但在有一些平台中，这个索引文件夹的创建路径可能不同（比如会在用户的主目录中创建）。</p>
-<p><code>-docs</code>参数接收的是存放那些要进行创建索引的目标文件的文件夹路径。</p>
-<p><code>-update</code>参数告诉IndexWriter类：不要删除已经存在的索引文件。如果没给出<code>-update</code>参数，IndexFiles将会在创建新的索引文件前清空旧索引。</p>
-<p>IndexFiles中使用的<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/store/Directory.html">Directory</a>类是为了在索引中储存信息。另外这个类的一个实现<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/store/FSDirectory.html">FSDirectory</a>，它有三个子类分别实现向内存、数据库等等其它介质中写入索引。</p>
-<p>Analyzer类也称为将文本拆分为可被索引的词元（tokens）的处理管道。它会对这些词元中的词（Term）进行一些可选操作，比如大小写转换，插入同义词以及过滤不想要的词元等等。我们这里使用的词法分析器是StandardAnalyzer，它使用在<a target="_blank" rel="noopener" href="http://unicode.org/reports/tr29/">Unicode Standard Annex #29</a>中指定的Unicode Text Segmentation算法作为单词拆分规则，接着将词元转换成小写形式，然后过滤出停词（stopword）。停词指的是一般语言中的冠词（a,an,the,etc。）和那些没有检索价值的词元。值得注意的是不同的语言有不同的拆分规则。目前Lucene针对不同的语言提供了许多<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/analyzers-common/overview-summary.html">分析器</a>。</p>
-<p>IndexWriterConfig的实例保存了IndexWriter类的配置。比如说，我们根据<code>-update</code>参数设置了OpenMode。</p>
-<p>往下看，在IndexWriter实例后面，你可以看到indexDocs()代码。这个递归函数爬取指定目录下的所有文件并为它们建立<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/document/Document.html">Document</a>对象。Document对象是表示相应文件的文本内容，创建时间以及位置等信息的简单数据对象。这些实例被添加到IndexWriter中。如果给定了<code>-update</code>参数，IndexWriterConfig OpenMode将被设置为<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/index/IndexWriterConfig.OpenMode.html#CREATE_OR_APPEND">OpenMode.CREATE_OR_APPEND</a>，代表IndexWriter将对已经拥有相同标识符（在上述例子中，文件路径作为该标识符）的已建立索引的文档的索引进行更新操作，不存在则创建。反之，不给定<code>-update</code> 参数将表示删除先前已索引的文档，在目录中创建新索引。</p>
-<blockquote>
-<p>###<strong>搜索文件</strong></p>
-</blockquote>
-<p><a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/demo/src-html/org/apache/lucene/demo/SearchFiles.html">SearchFiles</a>类很简单。它主要通过和<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/search/IndexSearcher.html">IndexSearcher</a>，<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/analyzers-common/org/apache/lucene/analysis/standard/StandardAnalyzer.html">StandardAnalyzer</a>(在IndexFiles中也用到了）以及<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/queryparser/org/apache/lucene/queryparser/classic/QueryParser.html">QueryParser</a>协作。查询语句解析器是由分析器来构建的，和之前文档解析的方式一样用于解析你的查询语句：搜寻单词边界，大小写转换以及移除那些像 ‘a’，‘an’，和‘the’ 的无用单词。<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/search/Query.html">Query</a>对象包含了传给扫描器的<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/queryparser/org/apache/lucene/queryparser/classic/QueryParser.html">QuqeryParser</a>的结果。需要注意的是，以编程方式去构造一个富<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/search/Query.html">Query</a>对象而不是用查询语句解析器是可行的。因为查询语句解析器仅仅是能够将<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description">Lucene query syntax</a>解码为相应的<a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/core/org/apache/lucene/search/Query.html">Query</a>对象。</p>
-<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="http://lucene.apache.org/core/4_2_1/demo/overview-summary.html">http://lucene.apache.org/core/4_2_1&#x2F;demo&#x2F;overview-summary.html</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2013/04/26/lucene-getting-started/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -413,7 +390,8 @@ java org.apache.lucene.demo.IndexFiles -docs &#123;path-to-lucene&#125;/src
 <blockquote>
 <p>###<strong>JS的特点-阻塞</strong></p>
 </blockquote>
-<h2 id="无论JS代码是内嵌（以-lt-script-gt-标签包含）还是从外部文件引入（以-lt-script-gt-标签的src属性引入），该标签一出现就会让页面的下载和渲染暂时停止，等待该脚本解析和执行完成才能继续解析和渲染页面。优化方案"><a href="#无论JS代码是内嵌（以-lt-script-gt-标签包含）还是从外部文件引入（以-lt-script-gt-标签的src属性引入），该标签一出现就会让页面的下载和渲染暂时停止，等待该脚本解析和执行完成才能继续解析和渲染页面。优化方案" class="headerlink" title="无论JS代码是内嵌（以&lt;script&gt;标签包含）还是从外部文件引入（以&lt;script&gt;标签的src属性引入），该标签一出现就会让页面的下载和渲染暂时停止，等待该脚本解析和执行完成才能继续解析和渲染页面。优化方案"></a>无论JS代码是内嵌（以<code>&lt;script&gt;</code>标签包含）还是从外部文件引入（以<code>&lt;script&gt;</code>标签的src属性引入），该标签一出现就会让页面的下载和渲染暂时停止，等待该脚本解析和执行完成才能继续解析和渲染页面。<br><br>优化方案</h2><blockquote>
+<p>无论JS代码是内嵌（以<code>&lt;script&gt;</code>标签包含）还是从外部文件引入（以<code>&lt;script&gt;</code>标签的src属性引入），该标签一出现就会让页面的下载和渲染暂时停止，等待该脚本解析和执行完成才能继续解析和渲染页面。</p>
+<h2 id="优化方案"><a href="#优化方案" class="headerlink" title="优化方案"></a>优化方案</h2><blockquote>
 <p>###<strong>将脚本放在页面底部</strong></p>
 </blockquote>
 <p>推荐将所有的<code>&lt;script&gt;</code>标签尽可能放到<code>&lt;body&gt;</code>标签底部，来减少对整个页面下载的影响。<br>浏览器为了确保内嵌脚本在执行时能获得最精准的样式信息，所以会出现如果内嵌脚本处于引用外链样式表的<code>&lt;link&gt;</code>标签之后会导致页面阻塞去等待样式表下载完成，所以不要把内嵌脚本跟在<code>&lt;link&gt;</code>标签后。</p>
@@ -425,69 +403,14 @@ java org.apache.lucene.demo.IndexFiles -docs &#123;path-to-lucene&#125;/src
 <p>###<strong>使用无阻塞脚本（页面加载结束后才去加载执行JS）</strong></p>
 </blockquote>
 <p>合并JS文件可能使得单个JS变大，虽然只产生一个HTTP请求，但会锁死浏览器一大段时间，为了避免此情形，需要采用无阻塞脚本方案逐步加载JS文件。无阻塞即window对象的onload事件触发后才下载脚本。</p>
-<blockquote>
-<p>###<strong>延迟脚本</strong></p>
-</blockquote>
-<p>使用 <code>&lt;script&gt;</code> 的 defer 属性(仅适用于IE和Firefox3.5+)，该属性指明本元素所含的脚本不会修改DOM，因此代码能安全地延迟执行；</p>
-<pre><code>&lt;script defer=&quot;defer&quot; type=&quot;text/javascript&quot;&gt;
-    alert(&quot;defer&quot;);
-&lt;/script&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-    alert(&quot;script&quot;);
-&lt;/script&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-    windows.onload=function()&#123;
-    alert(&quot;load&quot;);
-&#125;;
-&lt;/script&gt;
-</code></pre>
-<ul>
-<li>动态脚本元素</li>
-</ul>
-<p>使用动态创建的 <code>&lt;script&gt;</code> 元素来下载并执行代码；</p>
-<pre><code>function loadScript(url, callback)&#123;
-    var script = document.createElement(&quot;script&quot;);
-    script.type = &quot;text/javascript&quot;;
-    if (script.readyState) &#123; // IE
-        script.onreadystatechange = function() &#123;
-            if (/loaded|complete/.test(script.readyState)) &#123;
-                script.onreadystatechange = null; // 避免事件执行两次
-                callback();
-            &#125;
-        &#125;;
-    &#125; else &#123;// 其它浏览器
-        script.onload = function() &#123;
-        callback();
-    &#125;;
-&#125;
-
-script.src = url;
-document.getElementsByTagName(&quot;head&quot;)[0].appendChild(script);
-&#125;
-</code></pre>
-<ul>
-<li>XMLHttpRequest脚本注入</li>
-</ul>
-<p>使用 XMLHttpRequest 对象下载js代码并注入到页面；</p>
-<pre><code>var xhr = new XMLHttpRequest();
-xhr.open(&quot;get&quot;,&quot;file1.js&quot;,true);
-xhr.onreadystatechange = function()&#123;
-    if(xhr.readyState == 4)&#123;
-    //2XX表示有响应，304意味着从缓存读取
-        if(xhr.status &gt;= 200 &amp;&amp; xhr.status &lt; 300 || xhr.status == 304)&#123;
-            var script = document.createElement(&quot;script&quot;);
-            script.type = &quot;text/javascript&quot;;
-            script.text = xhr.responseText;
-            document.body.appendChild(script);
-
-        &#125;
-    &#125;
-&#125;;
-
-xhr.send(null);
-</code></pre>
-<p>这种方法的主要优点是可以下载JS代码但不会立即执行。由于代码时在<code>&lt;script&gt;</code>标签之外返回的，我们可以把脚本的执行推迟到准备好的时候而且它可跨浏览器。局限性在于它不能跨域执行。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2012/03/13/high-performance-javascript-note-1-loading-and-execution/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -572,15 +495,6 @@ xhr.send(null);
 <blockquote>
 <p>-Charles Leiserson</p>
 </blockquote>
-<p>下面以经典的排序问题进入这个话题：</p>
-<p><strong>Problem sorting</strong></p>
-<blockquote>
-<p>Input: sequence&lt;a1 ,a2,…,an&gt; of numbers</p>
-</blockquote>
-<p>Output: permutation &lt;a1’,a2’,…,an’&gt;</p>
-<p>$(such that): a1’≤a2’≤…≤an’</p>
-<p><strong>Insertion sort</strong></p>
-<p>以下为伪代码（pseudocode）：<br><code>Insertion Sort(A1…n) // Sorts A[1,…,n] for j←2 to n do key ← A[j] i ← i-1 while i&gt;0 and A[i] &gt; key do A[i+1] ← A[i] i ← i-1 A[i+1] ← key</code></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2011/11/21/analysis-of-algorithms-study-notes-e285a0/#more" rel="contents">

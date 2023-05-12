@@ -27,7 +27,7 @@
 <meta property="og:description" content="数据的存储位置会影响其读取速度，这个问题对于JavaScript来说相对简单，因为它只有四种基本的数据存储位置:  直接量 变量 数组元素 对象成员  一般来说，使用直接量和局部变量的访问速度快于数组项和对象成员的访问速度（除非浏览器内部刻意优化）。 管理作用域 ###作用域链和标识符解析  每一个JavaScript函数都是Function对象的一个实例。而该对象拥有可编程访问的属性和不能通过代">
 <meta property="og:locale">
 <meta property="article:published_time" content="2013-05-02T07:36:16.000Z">
-<meta property="article:modified_time" content="2023-05-12T04:22:08.093Z">
+<meta property="article:modified_time" content="2023-05-12T06:51:49.228Z">
 <meta property="article:author" content="DosLin">
 <meta property="article:tag" content="JavaScript">
 <meta name="twitter:card" content="summary">
@@ -119,7 +119,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -245,6 +245,8 @@
 </blockquote>
 <p>当闭包被创建时，它的<code>Scope</code>属性初始化为上下文中的活动对象和全局对象。</p>
 <p>当闭包被执行时，它的’Scope’属性中对了一个为闭包自身所创建的活动对象。所以要访问的标识符存在于作用域链第一个对象之后的位置，访问时导致性能损失。</p>
+<span id="more"></span>
+
 <h2 id="对象成员"><a href="#对象成员" class="headerlink" title="对象成员"></a>对象成员</h2><blockquote>
 <p>###<strong>原型</strong></p>
 </blockquote>
@@ -270,7 +272,7 @@
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ul>
 <li>访问直接量和局部变量比访问数组元素和对象成员快。</li>
 <li>变量在作用域链中的位置越深，访问所需时间越长。属性或方法在原型链中的位置越深，访问它的速度也越慢。</li>
-<li>由于局部变量存在于作用域链的起始位置使得访问局部变量比访问跨作用域变量快。 </li>
+<li>由于局部变量存在于作用域链的起始位置使得访问局部变量比访问跨作用域变量快。</li>
 <li>由于全局变量总处在作用域链的最末端，因此访问速度最慢。</li>
 <li>避免使用<code>with</code>语句和<code>try-catch</code>语句中的<code>catch</code>子句，因为它们会改变运行期上下文作用域链。</li>
 <li>尽量少用影响性能的嵌套的对象成员。</li>

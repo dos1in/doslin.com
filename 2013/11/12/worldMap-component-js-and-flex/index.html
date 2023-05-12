@@ -19,15 +19,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"doslin.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="去年写了一个地图组件worldMap-js ，因为用JS实现的，众所周知，IE6-8对JS的执行效率实在让人捉急，而国内浏览器中IE占用率又是个大头，所以萌生了用Flash重现实现这个组件的念头，使用Flex编写，目前还不完善，大体实现了地图的绘制和提示信息的展示，绘制下级地图的功能还没完成，同时MapData目前只有中国地图。 以下是Demo演示：   &#x2F;&#x2F; For version detect">
+    <meta name="description" content="去年写了一个地图组件worldMap-js ，因为用JS实现的，众所周知，IE6-8对JS的执行效率实在让人捉急，而国内浏览器中IE占用率又是个大头，所以萌生了用Flash重现实现这个组件的念头，使用Flex编写，目前还不完善，大体实现了地图的绘制和提示信息的展示，绘制下级地图的功能还没完成，同时MapData目前只有中国地图。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="WorldMap-JS的Flash版">
 <meta property="og:url" content="http://doslin.com/2013/11/12/worldMap-component-js-and-flex/index.html">
 <meta property="og:site_name" content="DosLin&#39;s Blog">
-<meta property="og:description" content="去年写了一个地图组件worldMap-js ，因为用JS实现的，众所周知，IE6-8对JS的执行效率实在让人捉急，而国内浏览器中IE占用率又是个大头，所以萌生了用Flash重现实现这个组件的念头，使用Flex编写，目前还不完善，大体实现了地图的绘制和提示信息的展示，绘制下级地图的功能还没完成，同时MapData目前只有中国地图。 以下是Demo演示：   &#x2F;&#x2F; For version detect">
+<meta property="og:description" content="去年写了一个地图组件worldMap-js ，因为用JS实现的，众所周知，IE6-8对JS的执行效率实在让人捉急，而国内浏览器中IE占用率又是个大头，所以萌生了用Flash重现实现这个组件的念头，使用Flex编写，目前还不完善，大体实现了地图的绘制和提示信息的展示，绘制下级地图的功能还没完成，同时MapData目前只有中国地图。">
 <meta property="og:locale">
 <meta property="article:published_time" content="2013-11-12T09:18:20.000Z">
-<meta property="article:modified_time" content="2023-05-12T04:22:08.094Z">
+<meta property="article:modified_time" content="2023-05-12T06:51:25.071Z">
 <meta property="article:author" content="DosLin">
 <meta property="article:tag" content="JavaScript">
 <meta property="article:tag" content="WorldMap">
@@ -121,7 +121,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -218,12 +218,14 @@
     
     
     <div class="post-body" itemprop="articleBody"><p>去年写了一个地图组件<a target="_blank" rel="noopener" href="https://github.com/JChord/worldMap-js">worldMap-js</a> ，因为用JS实现的，众所周知，IE6-8对JS的执行效率实在让人捉急，而国内浏览器中IE占用率又是个大头，所以萌生了用Flash重现实现这个组件的念头，使用Flex编写，目前还不完善，大体实现了地图的绘制和提示信息的展示，绘制下级地图的功能还没完成，同时MapData目前只有中国地图。</p>
+<span id="more"></span>
+
 <p>以下是Demo演示：</p>
 <script type="text/javascript" src="../assets/demo/worldMap-flex/swfobject.js"></script>
 <script type="text/javascript">
-// For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. 
+// For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.
 var swfVersionStr = "11.4.0";
-// To use express install, set to playerProductInstall.swf, otherwise the empty string. 
+// To use express install, set to playerProductInstall.swf, otherwise the empty string.
 var xiSwfUrlStr = "../assets/demo/worldMap-flex/playerProductInstall.swf";
 var flashvars = {};
 var params = {};
@@ -236,23 +238,23 @@ attributes.id = "FlashMap";
 attributes.name = "FlashMap";
 attributes.align = "middle";
 swfobject.embedSWF(
-"../assets/demo/worldMap-flex/FlashMap.swf", "flashContent", 
-"560", "470", 
-swfVersionStr, xiSwfUrlStr, 
+"../assets/demo/worldMap-flex/FlashMap.swf", "flashContent",
+"560", "470",
+swfVersionStr, xiSwfUrlStr,
 flashvars, params, attributes);
 // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
 swfobject.createCSS("#flashContent", "display:block;text-align:left;");
 </script>
 <div id="flashContent">
 <p>
-To view this page ensure that Adobe Flash Player version 
-11.4.0 or greater is installed. 
+To view this page ensure that Adobe Flash Player version
+11.4.0 or greater is installed.
 </p>
-<script type="text/javascript"> 
-var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
-document.write("<a target="_blank" rel="noopener" href='http://www.adobe.com/go/getflashplayer'><img src='" 
-+ pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
-</script> 
+<script type="text/javascript">
+var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://");
+document.write("<a target="_blank" rel="noopener" href='http://www.adobe.com/go/getflashplayer'><img src='"
++ pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" );
+</script>
 </div>
 
 <p>你可以在这里找到源码：<a target="_blank" rel="noopener" href="https://github.com/JChord/worldMap-flex">worldMap-flex</a></p>
